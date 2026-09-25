@@ -746,7 +746,7 @@ async function punishUser(
 // أوامر البوت
 // ======================================================
 
-const commands = [
+const rawCommands = [
 
     // --------------------------------------------------
     // PING
@@ -1104,6 +1104,17 @@ new SlashCommandBuilder()
         ? command.toJSON()
         : command
 );
+
+// إزالة أي أمر مكرر بالاسم (يحل مشكلة ظهور /help مرتين)
+const seenCommandNames = new Set();
+const commands = [];
+
+for (const cmd of rawCommands) {
+    if (!cmd || !cmd.name) continue;
+    if (seenCommandNames.has(cmd.name)) continue;
+    seenCommandNames.add(cmd.name);
+    commands.push(cmd);
+}
 
 // ======================================================
 // REST
@@ -2132,82 +2143,71 @@ client.on(
 
 
         // ==================================================
-        // HELP
+        // HELP  (محسّن + منظم حسب المطلوب)
         // ==================================================
 
         if (
             interaction.commandName === "help"
         ) {
 
-            const embed =
-                new EmbedBuilder()
-
-                    .setTitle(
-                        "🤖 W BOT | Help"
-                    )
-
-                    .setDescription(
-                        "نظام إدارة وحماية السيرفر"
-                    )
-
-                    .setColor(
-                        COLORS.BLUE
-                    )
-
-                    .addFields(
-
-                        {
-                            name: "⚙️ عامة",
-                            value:
-                                "🏓 `/ping` — سرعة البوت\n" +
-                                "📚 `/help` — قائمة الأوامر\n" +
-                                "👤 `/userinfo` أو `/user` — معلومات العضو\n" +
-                                "🏰 `/serverinfo` أو `/server` — معلومات السيرفر\n" +
-                                "🖼️ `/avatar` — الصورة الشخصية بجودة عالية"
-                        },
-
-                        {
-                            name: "🛠️ الإدارة الجديدة",
-                            value:
-                                "📊 `/poll` — استطلاع رأي\n" +
-                                "🖌️ `/embed` — رسالة Embed\n" +
-                                "🎭 `/role add|remove` — إدارة الرتب\n" +
-                                "📢 `/say` — إرسال رسالة باسم البوت\n" +
-                                "⚙️ `/setup` أو `/config` — إعداد الأنظمة\n" +
-                                "🔰 `/prefix` — تغيير Prefix"
-                        },
-
-                        {
-                            name: "🛡️ الإدارة",
-                            value:
-                                "🔨 `/ban` — حظر عضو\n" +
-                                "🔓 `/unban` — فك الحظر\n" +
-                                "👢 `/kick` — طرد عضو\n" +
-                                "🔇 `/timeout` — كتم عضو\n" +
-                                "🔊 `/untimeout` — إلغاء الكتم\n" +
-                                "⚠️ `/warn` — تحذير عضو\n" +
-                                "🧹 `/unwarn` — إزالة تحذير\n" +
-                                "🗑️ `/clear` — حذف رسائل\n\n" +
-                                "⚠️ نظام التحذيرات: 2 = كتم 6 ساعات | 4 = باند 12 ساعة | 5 = باند فوري"
-                        },
-
-                        {
-                            name: "🔐 الحماية",
-                            value:
-                                "🛡️ `/protection` — حالة الحماية\n" +
-                                "🔒 `/lockdown` — إغلاق أمني\n" +
-                                "🔓 `/unlockdown` — إلغاء الإغلاق\n" +
-                                "📋 `/setsecuritylog` — تحديد روم السجلات"
-                        }
-
-                    )
-
-                    .setFooter({
-                        text:
-                            `${interaction.guild.name} • W BOT`
-                    })
-
-                    .setTimestamp();
+            const embed = new EmbedBuilder()
+                .setTitle("🤖 W BOT • قائمة الأوامر")
+                .setDescription(
+                    "مرحباً بك في **W BOT**\n" +
+                    "اختر الأمر المناسب من الأقسام بالأسفل."
+                )
+                .setColor(0x5865F2)
+                .addFields(
+                    {
+                        name: "🌐 العامة",
+                        value:
+                            "`/ping` — سرعة استجابة البوت\n" +
+                            "`/help` — عرض قائمة الأوامر\n" +
+                            "`/userinfo` أو `/user` — معلومات العضو\n" +
+                            "`/serverinfo` أو `/server` — معلومات السيرفر\n" +
+                            "`/avatar` — عرض الصورة الشخصية بجودة عالية",
+                        inline: false
+                    },
+                    {
+                        name: "🎮 الألعاب",
+                        value:
+                            "`/play` — أوامر الألعاب المتاحة",
+                        inline: false
+                    },
+                    {
+                        name: "🎫 التذاكر",
+                        value:
+                            "`/ticket` — إرسال لوحة نظام التذاكر",
+                        inline: false
+                    },
+                    {
+                        name: "🛡️ الإدارة",
+                        value:
+                            "`/ban` — حظر عضو\n" +
+                            "`/unban` — فك الحظر\n" +
+                            "`/kick` — طرد عضو\n" +
+                            "`/timeout` — كتم عضو\n" +
+                            "`/untimeout` — إلغاء الكتم\n" +
+                            "`/warn` — تحذير عضو\n" +
+                            "`/unwarn` — إزالة تحذير\n" +
+                            "`/clear` — حذف رسائل\n" +
+                            "`/poll` — إنشاء استطلاع رأي\n" +
+                            "`/embed` — إرسال رسالة Embed\n" +
+                            "`/role` — إدارة الرتب\n" +
+                            "`/say` — إرسال رسالة باسم البوت\n" +
+                            "`/setup` أو `/config` — إعداد الأنظمة\n" +
+                            "`/prefix` — تغيير البادئة\n" +
+                            "`/protection` — حالة نظام الحماية\n" +
+                            "`/lockdown` — تفعيل الإغلاق الأمني\n" +
+                            "`/unlockdown` — إلغاء الإغلاق الأمني\n" +
+                            "`/setsecuritylog` — تحديد روم سجلات الحماية",
+                        inline: false
+                    }
+                )
+                .setFooter({
+                    text: `${interaction.guild?.name || "W BOT"} • W BOT`
+                })
+                .setTimestamp();
 
             await interaction.reply({
                 embeds: [embed]
@@ -3643,5 +3643,3 @@ client.on(
 client.login(
     process.env.TOKEN
 );
-
-

@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 const mafia = require("./mafia");
-
+const flags = require("./flags");
 
 // ======================================================
 // /PLAY
@@ -17,13 +17,11 @@ const playCommand =
         .setName("play")
         .setDescription("اختيار لعبة للعب");
 
-
 // ======================================================
 // HANDLE GAMES
 // ======================================================
 
 async function handleInteraction(interaction) {
-
     // --------------------------------------------------
     // /play
     // --------------------------------------------------
@@ -58,6 +56,12 @@ async function handleInteraction(interaction) {
                         description: "لعبة المافيا الجماعية",
                         value: "mafia",
                         emoji: "🎭"
+                    },
+                    {
+                        label: "تخمين الأعلام",
+                        description: "خمن اسم الدولة من العلم",
+                        value: "flags",
+                        emoji: "🏳️"
                     }
                 ]);
 
@@ -102,6 +106,25 @@ async function handleInteraction(interaction) {
 
             return true;
         }
+
+
+        // -------------------------
+        // FLAGS
+        // -------------------------
+
+        if (game === "flags") {
+
+            // Acknowledge the select-menu interaction first, then start
+            // the game as a normal channel message (no lobby needed).
+            await interaction.reply({
+                content: "🏳️ جاري بدء لعبة تخمين الأعلام...",
+                ephemeral: true
+            });
+
+            await flags.startFlagsGame(interaction);
+
+            return true;
+        }
     }
 
 
@@ -109,11 +132,23 @@ async function handleInteraction(interaction) {
     // MAFIA BUTTONS / MENUS
     // --------------------------------------------------
 
-    return await mafia.handleInteraction(
+    const handledByMafia = await mafia.handleInteraction(
         interaction
     );
-}
 
+    if (handledByMafia) {
+        return true;
+    }
+
+
+    // --------------------------------------------------
+    // FLAGS has no interaction-based components (answers are typed as
+    // plain messages via its own collector), so nothing else to route
+    // here — but kept as an explicit fallback for future additions.
+    // --------------------------------------------------
+
+    return false;
+}
 
 // ======================================================
 // EXPORT
