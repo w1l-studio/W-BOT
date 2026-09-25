@@ -1,0 +1,15 @@
+{
+    "version": 5,
+    "nextTicketNumber": 0,
+    "panelMessageId": null,
+    "panelChannelId": "1551759063149322332",
+    "tickets": {},
+    "stats": {
+        "created": 0,
+        "claimed": 0,
+        "closed": 0,
+        "deleted": 0,
+        "ratings": 0,
+        "totalRating": 0
+    }
+}

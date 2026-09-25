@@ -1,0 +1,35 @@
+R_DEF: Internal format may change without notice
+local
+color background_dark
+color blurple
+color blurple_dark
+color card_dark
+color gold_warning
+color green_success
+color red_error
+color surface_dark
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable ic_wbot_logo
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string bot_status_offline
+string bot_status_online
+string commands_section
+string general_section
+string home_tab
+string logging_section
+string login_with_discord
+string logout
+string protection_section
+string retry
+string save_changes
+string servers_tab
+string settings_tab
+string stats_section
+string tickets_section
+string tickets_tab
+string welcome_section
+string welcome_title
+style Theme.WBotDashboard

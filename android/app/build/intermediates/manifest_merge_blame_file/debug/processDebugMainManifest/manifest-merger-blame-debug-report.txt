@@ -1,0 +1,180 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.wbot.dashboard"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="35" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:4:5-67
+11-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:5:5-79
+12-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:5:22-76
+13    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+13-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:6:5-77
+13-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:6:22-74
+14
+15    <permission
+15-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+16        android:name="com.wbot.dashboard.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+16-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+17        android:protectionLevel="signature" />
+17-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+18
+19    <uses-permission android:name="com.wbot.dashboard.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+19-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+19-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+20
+21    <application
+21-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:8:5-40:19
+22        android:name="com.wbot.dashboard.WBotApplication"
+22-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:9:9-40
+23        android:allowBackup="true"
+23-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:10:9-35
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.15.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+25        android:debuggable="true"
+26        android:extractNativeLibs="false"
+27        android:icon="@mipmap/ic_launcher"
+27-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:11:9-43
+28        android:label="@string/app_name"
+28-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:12:9-41
+29        android:roundIcon="@mipmap/ic_launcher_round"
+29-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:13:9-54
+30        android:supportsRtl="true"
+30-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:14:9-35
+31        android:theme="@style/Theme.WBotDashboard"
+31-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:15:9-51
+32        android:usesCleartextTraffic="true" >
+32-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:16:9-44
+33        <activity
+33-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:18:9-38:20
+34            android:name="com.wbot.dashboard.MainActivity"
+34-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:19:13-41
+35            android:exported="true"
+35-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:20:13-36
+36            android:label="@string/app_name"
+36-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:21:13-45
+37            android:theme="@style/Theme.WBotDashboard"
+37-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:22:13-55
+38            android:windowSoftInputMode="adjustResize" >
+38-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:23:13-55
+39            <intent-filter>
+39-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:24:13-27:29
+40                <action android:name="android.intent.action.MAIN" />
+40-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:25:17-69
+40-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:25:25-66
+41
+42                <category android:name="android.intent.category.LAUNCHER" />
+42-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:26:17-77
+42-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:26:27-74
+43            </intent-filter>
+44
+45            <!-- Custom Scheme Deep Linking for OAuth Callback -->
+46            <intent-filter>
+46-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:30:13-37:29
+47                <action android:name="android.intent.action.VIEW" />
+47-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:31:17-69
+47-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:31:25-66
+48
+49                <category android:name="android.intent.category.DEFAULT" />
+49-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:32:17-76
+49-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:32:27-73
+50                <category android:name="android.intent.category.BROWSABLE" />
+50-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:33:17-78
+50-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:33:27-75
+51
+52                <data
+52-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:34:17-36:45
+53                    android:host="auth"
+53-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:35:21-40
+54                    android:scheme="wbot" />
+54-->C:\Users\Tota\Desktop\W BOT\android\app\src\main\AndroidManifest.xml:36:21-42
+55            </intent-filter>
+56        </activity>
+57        <activity
+57-->[androidx.compose.ui:ui-tooling-android:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\b206f43e64570eb5842e60efe690abfe\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+58            android:name="androidx.compose.ui.tooling.PreviewActivity"
+58-->[androidx.compose.ui:ui-tooling-android:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\b206f43e64570eb5842e60efe690abfe\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+59            android:exported="true" />
+59-->[androidx.compose.ui:ui-tooling-android:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\b206f43e64570eb5842e60efe690abfe\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+60
+61        <provider
+61-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+62            android:name="androidx.startup.InitializationProvider"
+62-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+63            android:authorities="com.wbot.dashboard.androidx-startup"
+63-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+64            android:exported="false" >
+64-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+65            <meta-data
+65-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+66                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+66-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+67                android:value="androidx.startup" />
+67-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+68            <meta-data
+68-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Tota\.gradle\caches\8.11.1\transforms\334d511c5f8669e9b995f3492adac9e4\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+69                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+69-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Tota\.gradle\caches\8.11.1\transforms\334d511c5f8669e9b995f3492adac9e4\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+70                android:value="androidx.startup" />
+70-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Tota\.gradle\caches\8.11.1\transforms\334d511c5f8669e9b995f3492adac9e4\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+71            <meta-data
+71-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+72                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+72-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+73                android:value="androidx.startup" />
+73-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+74        </provider>
+75
+76        <activity
+76-->[androidx.compose.ui:ui-test-manifest:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1c14f451822ce81e5a4c5697c23e92e5\transformed\ui-test-manifest-1.7.8\AndroidManifest.xml:23:9-25:39
+77            android:name="androidx.activity.ComponentActivity"
+77-->[androidx.compose.ui:ui-test-manifest:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1c14f451822ce81e5a4c5697c23e92e5\transformed\ui-test-manifest-1.7.8\AndroidManifest.xml:24:13-63
+78            android:exported="true" />
+78-->[androidx.compose.ui:ui-test-manifest:1.7.8] C:\Users\Tota\.gradle\caches\8.11.1\transforms\1c14f451822ce81e5a4c5697c23e92e5\transformed\ui-test-manifest-1.7.8\AndroidManifest.xml:25:13-36
+79
+80        <receiver
+80-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+81            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+81-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+82            android:directBootAware="false"
+82-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+83            android:enabled="true"
+83-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+84            android:exported="true"
+84-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+85            android:permission="android.permission.DUMP" >
+85-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+86            <intent-filter>
+86-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+87                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+87-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+87-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+88            </intent-filter>
+89            <intent-filter>
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+90                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+91            </intent-filter>
+92            <intent-filter>
+92-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+93                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+94            </intent-filter>
+95            <intent-filter>
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+96                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
+97            </intent-filter>
+98        </receiver>
+99    </application>
+100
+101</manifest>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">W BOT Dashboard</string>
+    <string name="welcome_title">مرحبًا بك في لوحة تحكم W BOT</string>
+    <string name="login_with_discord">تسجيل الدخول بواسطة Discord</string>
+    <string name="bot_status_online">متصل (Online)</string>
+    <string name="bot_status_offline">غير متصل (Offline)</string>
+    <string name="home_tab">الرئيسية</string>
+    <string name="servers_tab">السيرفرات</string>
+    <string name="tickets_tab">التذاكر</string>
+    <string name="settings_tab">الإعدادات</string>
+    <string name="general_section">عام</string>
+    <string name="welcome_section">الترحيب</string>
+    <string name="logging_section">السجلات</string>
+    <string name="tickets_section">التذاكر</string>
+    <string name="protection_section">الحماية</string>
+    <string name="commands_section">الأوامر</string>
+    <string name="stats_section">الإحصائيات</string>
+    <string name="save_changes">حفظ التغييرات</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="logout">تسجيل الخروج</string>
+</resources>

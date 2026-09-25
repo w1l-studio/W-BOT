@@ -1,0 +1,55 @@
+com.wbot.dashboard.app-navigation-runtime-2.8.8-0 C:\Users\Tota\.gradle\caches\8.11.1\transforms\068bea07d2f68b7a1d7482fb12b6d530\transformed\navigation-runtime-2.8.8\res
+com.wbot.dashboard.app-lifecycle-viewmodel-savedstate-2.8.7-1 C:\Users\Tota\.gradle\caches\8.11.1\transforms\0b08c3f9975067452070fa4c28d293ba\transformed\lifecycle-viewmodel-savedstate-2.8.7\res
+com.wbot.dashboard.app-lifecycle-runtime-ktx-release-2 C:\Users\Tota\.gradle\caches\8.11.1\transforms\0c0fcbc6bee18414b2a635ecde099c2d\transformed\lifecycle-runtime-ktx-release\res
+com.wbot.dashboard.app-foundation-release-3 C:\Users\Tota\.gradle\caches\8.11.1\transforms\0e62ca0eae6cd52cb765120104170a11\transformed\foundation-release\res
+com.wbot.dashboard.app-runtime-saveable-release-4 C:\Users\Tota\.gradle\caches\8.11.1\transforms\115e9990c9f1e20312fa9e805fe39588\transformed\runtime-saveable-release\res
+com.wbot.dashboard.app-emoji2-1.3.0-5 C:\Users\Tota\.gradle\caches\8.11.1\transforms\1372779d6fa48f60cf4668b02ea07c4b\transformed\emoji2-1.3.0\res
+com.wbot.dashboard.app-lifecycle-viewmodel-compose-release-6 C:\Users\Tota\.gradle\caches\8.11.1\transforms\18ccf067d28c1ed51326cc74f1945b5d\transformed\lifecycle-viewmodel-compose-release\res
+com.wbot.dashboard.app-lifecycle-runtime-release-7 C:\Users\Tota\.gradle\caches\8.11.1\transforms\1cb3dd9260623cdde981950657bc5497\transformed\lifecycle-runtime-release\res
+com.wbot.dashboard.app-material-ripple-release-8 C:\Users\Tota\.gradle\caches\8.11.1\transforms\1de99f3fe92790cb840275111637038e\transformed\material-ripple-release\res
+com.wbot.dashboard.app-ui-util-release-9 C:\Users\Tota\.gradle\caches\8.11.1\transforms\228817781c968dace8661cfb24232891\transformed\ui-util-release\res
+com.wbot.dashboard.app-annotation-experimental-1.4.1-10 C:\Users\Tota\.gradle\caches\8.11.1\transforms\24d863f85a1584dcf97daaa2bf95718e\transformed\annotation-experimental-1.4.1\res
+com.wbot.dashboard.app-core-ktx-1.15.0-11 C:\Users\Tota\.gradle\caches\8.11.1\transforms\25d8a63c551bf5291099510a77f3238f\transformed\core-ktx-1.15.0\res
+com.wbot.dashboard.app-activity-1.10.0-12 C:\Users\Tota\.gradle\caches\8.11.1\transforms\2890a66f1d529ecf7cf6386b2842871d\transformed\activity-1.10.0\res
+com.wbot.dashboard.app-core-1.15.0-13 C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ac8fd56b731b98c688941781a9d0383\transformed\core-1.15.0\res
+com.wbot.dashboard.app-ui-graphics-release-14 C:\Users\Tota\.gradle\caches\8.11.1\transforms\2afe105174cb6ef08203ab62f808d426\transformed\ui-graphics-release\res
+com.wbot.dashboard.app-material-icons-core-release-15 C:\Users\Tota\.gradle\caches\8.11.1\transforms\2ca763e4d90ab7e59c82d8b56922b500\transformed\material-icons-core-release\res
+com.wbot.dashboard.app-lifecycle-process-2.8.7-16 C:\Users\Tota\.gradle\caches\8.11.1\transforms\334d511c5f8669e9b995f3492adac9e4\transformed\lifecycle-process-2.8.7\res
+com.wbot.dashboard.app-animation-release-17 C:\Users\Tota\.gradle\caches\8.11.1\transforms\359712c886ee2d152cef681d10674d5b\transformed\animation-release\res
+com.wbot.dashboard.app-lifecycle-viewmodel-ktx-2.8.7-18 C:\Users\Tota\.gradle\caches\8.11.1\transforms\377c871a22bed58cf4c549057e0c0359\transformed\lifecycle-viewmodel-ktx-2.8.7\res
+com.wbot.dashboard.app-core-runtime-2.2.0-19 C:\Users\Tota\.gradle\caches\8.11.1\transforms\389dbfcfda9b5a910dbe39dad20ae2fb\transformed\core-runtime-2.2.0\res
+com.wbot.dashboard.app-graphics-path-1.0.1-20 C:\Users\Tota\.gradle\caches\8.11.1\transforms\3f9e2f89c4b9b8e7a005df2b15e0ec82\transformed\graphics-path-1.0.1\res
+com.wbot.dashboard.app-customview-poolingcontainer-1.0.0-21 C:\Users\Tota\.gradle\caches\8.11.1\transforms\4998b2aeb4c4f6a6b000d1ac977c675e\transformed\customview-poolingcontainer-1.0.0\res
+com.wbot.dashboard.app-profileinstaller-1.4.0-22 C:\Users\Tota\.gradle\caches\8.11.1\transforms\4cca907b49fd476459b4cb443ab9692c\transformed\profileinstaller-1.4.0\res
+com.wbot.dashboard.app-ui-tooling-preview-release-23 C:\Users\Tota\.gradle\caches\8.11.1\transforms\5cf38c3b5b5e1fcfa3afc191ded944c5\transformed\ui-tooling-preview-release\res
+com.wbot.dashboard.app-savedstate-1.2.1-24 C:\Users\Tota\.gradle\caches\8.11.1\transforms\6247365981428bf02f1e59c5459b7edf\transformed\savedstate-1.2.1\res
+com.wbot.dashboard.app-ui-release-25 C:\Users\Tota\.gradle\caches\8.11.1\transforms\6320b9156385111cad5481fbcb96b96b\transformed\ui-release\res
+com.wbot.dashboard.app-navigation-common-ktx-2.8.8-26 C:\Users\Tota\.gradle\caches\8.11.1\transforms\644feee54a10e663c6be281e7f1f90c9\transformed\navigation-common-ktx-2.8.8\res
+com.wbot.dashboard.app-tracing-1.2.0-27 C:\Users\Tota\.gradle\caches\8.11.1\transforms\703b8a9ec015a50ad63527d4198a846d\transformed\tracing-1.2.0\res
+com.wbot.dashboard.app-runtime-release-28 C:\Users\Tota\.gradle\caches\8.11.1\transforms\71cb1d83945d205ebc1293dc0a080fc1\transformed\runtime-release\res
+com.wbot.dashboard.app-lifecycle-runtime-compose-release-29 C:\Users\Tota\.gradle\caches\8.11.1\transforms\7451b95b3e7ef2da6f4b4afee46abc07\transformed\lifecycle-runtime-compose-release\res
+com.wbot.dashboard.app-ui-geometry-release-30 C:\Users\Tota\.gradle\caches\8.11.1\transforms\8ffa2ca6c97df2596fe0100c4ac23f8e\transformed\ui-geometry-release\res
+com.wbot.dashboard.app-navigation-runtime-ktx-2.8.8-31 C:\Users\Tota\.gradle\caches\8.11.1\transforms\97b66cb509ccea3f9fa9fd4aef8ddb7e\transformed\navigation-runtime-ktx-2.8.8\res
+com.wbot.dashboard.app-foundation-layout-release-32 C:\Users\Tota\.gradle\caches\8.11.1\transforms\97f06aea8cc61c184b37e6bd8e006220\transformed\foundation-layout-release\res
+com.wbot.dashboard.app-ui-text-release-33 C:\Users\Tota\.gradle\caches\8.11.1\transforms\a203723a2078e8afca333acc841ff1a4\transformed\ui-text-release\res
+com.wbot.dashboard.app-lifecycle-viewmodel-release-34 C:\Users\Tota\.gradle\caches\8.11.1\transforms\a26ad0b4878d674d7ec7a40d90761135\transformed\lifecycle-viewmodel-release\res
+com.wbot.dashboard.app-coil-base-2.7.0-35 C:\Users\Tota\.gradle\caches\8.11.1\transforms\a409d3d0e07a664e5cd6378b54e7e10a\transformed\coil-base-2.7.0\res
+com.wbot.dashboard.app-savedstate-ktx-1.2.1-36 C:\Users\Tota\.gradle\caches\8.11.1\transforms\acc6a17ce0dfc3d67a3d215f15757748\transformed\savedstate-ktx-1.2.1\res
+com.wbot.dashboard.app-navigation-common-2.8.8-37 C:\Users\Tota\.gradle\caches\8.11.1\transforms\b7ecc58edc6cd121ac2a2f5490be0c5c\transformed\navigation-common-2.8.8\res
+com.wbot.dashboard.app-material-icons-extended-release-38 C:\Users\Tota\.gradle\caches\8.11.1\transforms\b93c5230aa9920f9d73a4e9e8a143c42\transformed\material-icons-extended-release\res
+com.wbot.dashboard.app-animation-core-release-39 C:\Users\Tota\.gradle\caches\8.11.1\transforms\bc10db17c5c7a932d101ff9799b80e86\transformed\animation-core-release\res
+com.wbot.dashboard.app-activity-ktx-1.10.0-40 C:\Users\Tota\.gradle\caches\8.11.1\transforms\be0176cc371849f331a44ce81daf8eb7\transformed\activity-ktx-1.10.0\res
+com.wbot.dashboard.app-appcompat-resources-1.6.1-41 C:\Users\Tota\.gradle\caches\8.11.1\transforms\c067265f4d849cfb07f1efaf4d5c15dd\transformed\appcompat-resources-1.6.1\res
+com.wbot.dashboard.app-startup-runtime-1.1.1-42 C:\Users\Tota\.gradle\caches\8.11.1\transforms\ddfae2269899f61cb2ee75512abaf7cc\transformed\startup-runtime-1.1.1\res
+com.wbot.dashboard.app-material3-release-43 C:\Users\Tota\.gradle\caches\8.11.1\transforms\e41b07c6fbeedb4ad3a43d0ef1dfa971\transformed\material3-release\res
+com.wbot.dashboard.app-ui-unit-release-44 C:\Users\Tota\.gradle\caches\8.11.1\transforms\e9b4f661cc6daa47fbcd8cf56997bb75\transformed\ui-unit-release\res
+com.wbot.dashboard.app-navigation-compose-2.8.8-45 C:\Users\Tota\.gradle\caches\8.11.1\transforms\eb5649f17f92dd16adfb7cfb06624b1b\transformed\navigation-compose-2.8.8\res
+com.wbot.dashboard.app-lifecycle-livedata-core-2.8.7-46 C:\Users\Tota\.gradle\caches\8.11.1\transforms\f2fcfffb660a0034a1c2578437a17e59\transformed\lifecycle-livedata-core-2.8.7\res
+com.wbot.dashboard.app-activity-compose-1.10.0-47 C:\Users\Tota\.gradle\caches\8.11.1\transforms\f83ecdcfaebe7f9523c3fcabd0902026\transformed\activity-compose-1.10.0\res
+com.wbot.dashboard.app-pngs-48 C:\Users\Tota\Desktop\W BOT\android\app\build\generated\res\pngs\release
+com.wbot.dashboard.app-resValues-49 C:\Users\Tota\Desktop\W BOT\android\app\build\generated\res\resValues\release
+com.wbot.dashboard.app-packageReleaseResources-50 C:\Users\Tota\Desktop\W BOT\android\app\build\intermediates\incremental\release\packageReleaseResources\merged.dir
+com.wbot.dashboard.app-packageReleaseResources-51 C:\Users\Tota\Desktop\W BOT\android\app\build\intermediates\incremental\release\packageReleaseResources\stripped.dir
+com.wbot.dashboard.app-release-52 C:\Users\Tota\Desktop\W BOT\android\app\build\intermediates\merged_res\release\mergeReleaseResources
+com.wbot.dashboard.app-main-53 C:\Users\Tota\Desktop\W BOT\android\app\src\main\res
+com.wbot.dashboard.app-release-54 C:\Users\Tota\Desktop\W BOT\android\app\src\release\res

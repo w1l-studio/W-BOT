@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_dark">#0F1015</color>
+    <color name="blurple">#5865F2</color>
+    <color name="blurple_dark">#4752C4</color>
+    <color name="card_dark">#232631</color>
+    <color name="gold_warning">#FEE75C</color>
+    <color name="green_success">#57F287</color>
+    <color name="red_error">#ED4245</color>
+    <color name="surface_dark">#1A1C24</color>
+    <string name="app_name">W BOT Dashboard</string>
+    <string name="bot_status_offline">غير متصل (Offline)</string>
+    <string name="bot_status_online">متصل (Online)</string>
+    <string name="commands_section">الأوامر</string>
+    <string name="general_section">عام</string>
+    <string name="home_tab">الرئيسية</string>
+    <string name="logging_section">السجلات</string>
+    <string name="login_with_discord">تسجيل الدخول بواسطة Discord</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="protection_section">الحماية</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="save_changes">حفظ التغييرات</string>
+    <string name="servers_tab">السيرفرات</string>
+    <string name="settings_tab">الإعدادات</string>
+    <string name="stats_section">الإحصائيات</string>
+    <string name="tickets_section">التذاكر</string>
+    <string name="tickets_tab">التذاكر</string>
+    <string name="welcome_section">الترحيب</string>
+    <string name="welcome_title">مرحبًا بك في لوحة تحكم W BOT</string>
+    <style name="Theme.WBotDashboard" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+    </style>
+</resources>
