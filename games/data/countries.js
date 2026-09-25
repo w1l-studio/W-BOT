@@ -12,17 +12,17 @@
 // ======================================================
 
 const countries = [
-    { name_ar: "أفغانستان", name_en: "Afghanistan", flag: "🇦🇫", aliases: ["Afghanistan", "افغانستان"] },
-    { name_ar: "ألبانيا", name_en: "Albania", flag: "🇦🇱", aliases: ["Albania", "البانيا"] },
+    { name_ar: "أفغانستان", name_en: "Afghanistan", flag: "🇦🇫", aliases: ["Afghanistan"] },
+    { name_ar: "ألبانيا", name_en: "Albania", flag: "🇦🇱", aliases: ["Albania"] },
     { name_ar: "الجزائر", name_en: "Algeria", flag: "🇩🇿", aliases: ["Algeria"] },
-    { name_ar: "أندورا", name_en: "Andorra", flag: "🇦🇩", aliases: ["Andorra", "اندورا"] },
-    { name_ar: "أنغولا", name_en: "Angola", flag: "🇦🇴", aliases: ["Angola", "انغولا"] },
-    { name_ar: "أنتيغوا وباربودا", name_en: "Antigua and Barbuda", flag: "🇦🇬", aliases: ["Antigua", "Antigua and Barbuda", "Barbuda", "انتيغوا وباربودا"] },
-    { name_ar: "الأرجنتين", name_en: "Argentina", flag: "🇦🇷", aliases: ["Argentina", "الارجنتين"] },
-    { name_ar: "أرمينيا", name_en: "Armenia", flag: "🇦🇲", aliases: ["Armenia", "ارمينيا"] },
-    { name_ar: "أستراليا", name_en: "Australia", flag: "🇦🇺", aliases: ["Australia", "استراليا"] },
+    { name_ar: "أندورا", name_en: "Andorra", flag: "🇦🇩", aliases: ["Andorra"] },
+    { name_ar: "أنغولا", name_en: "Angola", flag: "🇦🇴", aliases: ["Angola"] },
+    { name_ar: "أنتيغوا وباربودا", name_en: "Antigua and Barbuda", flag: "🇦🇬", aliases: ["Antigua", "Antigua and Barbuda", "Barbuda"] },
+    { name_ar: "الأرجنتين", name_en: "Argentina", flag: "🇦🇷", aliases: ["Argentina"] },
+    { name_ar: "أرمينيا", name_en: "Armenia", flag: "🇦🇲", aliases: ["Armenia"] },
+    { name_ar: "أستراليا", name_en: "Australia", flag: "🇦🇺", aliases: ["Australia"] },
     { name_ar: "النمسا", name_en: "Austria", flag: "🇦🇹", aliases: ["Austria"] },
-    { name_ar: "أذربيجان", name_en: "Azerbaijan", flag: "🇦🇿", aliases: ["Azerbaijan", "اذربيجان"] },
+    { name_ar: "أذربيجان", name_en: "Azerbaijan", flag: "🇦🇿", aliases: ["Azerbaijan"] },
     { name_ar: "الباهاما", name_en: "Bahamas", flag: "🇧🇸", aliases: ["Bahamas", "The Bahamas"] },
     { name_ar: "البحرين", name_en: "Bahrain", flag: "🇧🇭", aliases: ["Bahrain"] },
     { name_ar: "بنغلاديش", name_en: "Bangladesh", flag: "🇧🇩", aliases: ["Bangladesh"] },
@@ -44,7 +44,7 @@ const countries = [
     { name_ar: "كمبوديا", name_en: "Cambodia", flag: "🇰🇭", aliases: ["Cambodia"] },
     { name_ar: "الكاميرون", name_en: "Cameroon", flag: "🇨🇲", aliases: ["Cameroon"] },
     { name_ar: "كندا", name_en: "Canada", flag: "🇨🇦", aliases: ["Canada"] },
-    { name_ar: "جمهورية أفريقيا الوسطى", name_en: "Central African Republic", flag: "🇨🇫", aliases: ["Central African Republic", "افريقيا الوسطى", "جمهورية افريقيا الوسطى"] },
+    { name_ar: "جمهورية أفريقيا الوسطى", name_en: "Central African Republic", flag: "🇨🇫", aliases: ["Central African Republic", "افريقيا الوسطى"] },
     { name_ar: "تشاد", name_en: "Chad", flag: "🇹🇩", aliases: ["Chad"] },
     { name_ar: "تشيلي", name_en: "Chile", flag: "🇨🇱", aliases: ["Chile"] },
     { name_ar: "الصين", name_en: "China", flag: "🇨🇳", aliases: ["China"] },
@@ -62,21 +62,21 @@ const countries = [
     { name_ar: "جيبوتي", name_en: "Djibouti", flag: "🇩🇯", aliases: ["Djibouti"] },
     { name_ar: "دومينيكا", name_en: "Dominica", flag: "🇩🇲", aliases: ["Dominica"] },
     { name_ar: "جمهورية الدومينيكان", name_en: "Dominican Republic", flag: "🇩🇴", aliases: ["Dominican Republic", "الدومينيكان"] },
-    { name_ar: "الإكوادور", name_en: "Ecuador", flag: "🇪🇨", aliases: ["Ecuador", "الاكوادور"] },
+    { name_ar: "الإكوادور", name_en: "Ecuador", flag: "🇪🇨", aliases: ["Ecuador"] },
     { name_ar: "مصر", name_en: "Egypt", flag: "🇪🇬", aliases: ["Egypt"] },
     { name_ar: "السلفادور", name_en: "El Salvador", flag: "🇸🇻", aliases: ["El Salvador", "Salvador"] },
     { name_ar: "غينيا الاستوائية", name_en: "Equatorial Guinea", flag: "🇬🇶", aliases: ["Equatorial Guinea"] },
-    { name_ar: "إريتريا", name_en: "Eritrea", flag: "🇪🇷", aliases: ["Eritrea", "اريتريا"] },
-    { name_ar: "إستونيا", name_en: "Estonia", flag: "🇪🇪", aliases: ["Estonia", "استونيا"] },
-    { name_ar: "إسواتيني", name_en: "Eswatini", flag: "🇸🇿", aliases: ["Eswatini", "Swaziland", "سوازيلاند", "اسواتيني"] },
-    { name_ar: "إثيوبيا", name_en: "Ethiopia", flag: "🇪🇹", aliases: ["Ethiopia", "اثيوبيا"] },
+    { name_ar: "إريتريا", name_en: "Eritrea", flag: "🇪🇷", aliases: ["Eritrea"] },
+    { name_ar: "إستونيا", name_en: "Estonia", flag: "🇪🇪", aliases: ["Estonia"] },
+    { name_ar: "إسواتيني", name_en: "Eswatini", flag: "🇸🇿", aliases: ["Eswatini", "Swaziland", "سوازيلاند"] },
+    { name_ar: "إثيوبيا", name_en: "Ethiopia", flag: "🇪🇹", aliases: ["Ethiopia"] },
     { name_ar: "فيجي", name_en: "Fiji", flag: "🇫🇯", aliases: ["Fiji"] },
     { name_ar: "فنلندا", name_en: "Finland", flag: "🇫🇮", aliases: ["Finland"] },
     { name_ar: "فرنسا", name_en: "France", flag: "🇫🇷", aliases: ["France"] },
     { name_ar: "الغابون", name_en: "Gabon", flag: "🇬🇦", aliases: ["Gabon"] },
     { name_ar: "غامبيا", name_en: "Gambia", flag: "🇬🇲", aliases: ["Gambia", "The Gambia"] },
     { name_ar: "جورجيا", name_en: "Georgia", flag: "🇬🇪", aliases: ["Georgia"] },
-    { name_ar: "ألمانيا", name_en: "Germany", flag: "🇩🇪", aliases: ["Germany", "المانيا"] },
+    { name_ar: "ألمانيا", name_en: "Germany", flag: "🇩🇪", aliases: ["Germany"] },
     { name_ar: "غانا", name_en: "Ghana", flag: "🇬🇭", aliases: ["Ghana"] },
     { name_ar: "اليونان", name_en: "Greece", flag: "🇬🇷", aliases: ["Greece"] },
     { name_ar: "غرينادا", name_en: "Grenada", flag: "🇬🇩", aliases: ["Grenada"] },
@@ -87,17 +87,17 @@ const countries = [
     { name_ar: "هايتي", name_en: "Haiti", flag: "🇭🇹", aliases: ["Haiti"] },
     { name_ar: "هندوراس", name_en: "Honduras", flag: "🇭🇳", aliases: ["Honduras"] },
     { name_ar: "المجر", name_en: "Hungary", flag: "🇭🇺", aliases: ["Hungary"] },
-    { name_ar: "آيسلندا", name_en: "Iceland", flag: "🇮🇸", aliases: ["Iceland", "ايسلندا"] },
+    { name_ar: "آيسلندا", name_en: "Iceland", flag: "🇮🇸", aliases: ["Iceland"] },
     { name_ar: "الهند", name_en: "India", flag: "🇮🇳", aliases: ["India"] },
-    { name_ar: "إندونيسيا", name_en: "Indonesia", flag: "🇮🇩", aliases: ["Indonesia", "اندونيسيا"] },
-    { name_ar: "إيران", name_en: "Iran", flag: "🇮🇷", aliases: ["Iran", "ايران"] },
+    { name_ar: "إندونيسيا", name_en: "Indonesia", flag: "🇮🇩", aliases: ["Indonesia"] },
+    { name_ar: "إيران", name_en: "Iran", flag: "🇮🇷", aliases: ["Iran"] },
     { name_ar: "العراق", name_en: "Iraq", flag: "🇮🇶", aliases: ["Iraq"] },
-    { name_ar: "أيرلندا", name_en: "Ireland", flag: "🇮🇪", aliases: ["Ireland", "ايرلندا"] },
-    { name_ar: "إسرائيل", name_en: "Israel", flag: "🇮🇱", aliases: ["Israel", "اسرائيل"] },
-    { name_ar: "إيطاليا", name_en: "Italy", flag: "🇮🇹", aliases: ["Italy", "ايطاليا"] },
+    { name_ar: "أيرلندا", name_en: "Ireland", flag: "🇮🇪", aliases: ["Ireland"] },
+    { name_ar: "إسرائيل", name_en: "Israel", flag: "🇮🇱", aliases: ["Israel"] },
+    { name_ar: "إيطاليا", name_en: "Italy", flag: "🇮🇹", aliases: ["Italy"] },
     { name_ar: "جامايكا", name_en: "Jamaica", flag: "🇯🇲", aliases: ["Jamaica"] },
     { name_ar: "اليابان", name_en: "Japan", flag: "🇯🇵", aliases: ["Japan"] },
-    { name_ar: "الأردن", name_en: "Jordan", flag: "🇯🇴", aliases: ["Jordan", "الاردن"] },
+    { name_ar: "الأردن", name_en: "Jordan", flag: "🇯🇴", aliases: ["Jordan"] },
     { name_ar: "كازاخستان", name_en: "Kazakhstan", flag: "🇰🇿", aliases: ["Kazakhstan"] },
     { name_ar: "كينيا", name_en: "Kenya", flag: "🇰🇪", aliases: ["Kenya"] },
     { name_ar: "كيريباتي", name_en: "Kiribati", flag: "🇰🇮", aliases: ["Kiribati"] },
@@ -126,7 +126,7 @@ const countries = [
     { name_ar: "مولدوفا", name_en: "Moldova", flag: "🇲🇩", aliases: ["Moldova"] },
     { name_ar: "موناكو", name_en: "Monaco", flag: "🇲🇨", aliases: ["Monaco"] },
     { name_ar: "منغوليا", name_en: "Mongolia", flag: "🇲🇳", aliases: ["Mongolia"] },
-    { name_ar: "الجبل الأسود", name_en: "Montenegro", flag: "🇲🇪", aliases: ["Montenegro", "الجبل الاسود"] },
+    { name_ar: "الجبل الأسود", name_en: "Montenegro", flag: "🇲🇪", aliases: ["Montenegro"] },
     { name_ar: "المغرب", name_en: "Morocco", flag: "🇲🇦", aliases: ["Morocco"] },
     { name_ar: "موزمبيق", name_en: "Mozambique", flag: "🇲🇿", aliases: ["Mozambique"] },
     { name_ar: "ميانمار", name_en: "Myanmar", flag: "🇲🇲", aliases: ["Myanmar", "Burma", "بورما"] },
@@ -172,10 +172,10 @@ const countries = [
     { name_ar: "سلوفينيا", name_en: "Slovenia", flag: "🇸🇮", aliases: ["Slovenia"] },
     { name_ar: "جزر سليمان", name_en: "Solomon Islands", flag: "🇸🇧", aliases: ["Solomon Islands"] },
     { name_ar: "الصومال", name_en: "Somalia", flag: "🇸🇴", aliases: ["Somalia"] },
-    { name_ar: "جنوب أفريقيا", name_en: "South Africa", flag: "🇿🇦", aliases: ["South Africa", "جنوب افريقيا"] },
+    { name_ar: "جنوب أفريقيا", name_en: "South Africa", flag: "🇿🇦", aliases: ["South Africa"] },
     { name_ar: "كوريا الجنوبية", name_en: "South Korea", flag: "🇰🇷", aliases: ["South Korea", "Korea"] },
     { name_ar: "جنوب السودان", name_en: "South Sudan", flag: "🇸🇸", aliases: ["South Sudan"] },
-    { name_ar: "إسبانيا", name_en: "Spain", flag: "🇪🇸", aliases: ["Spain", "اسبانيا"] },
+    { name_ar: "إسبانيا", name_en: "Spain", flag: "🇪🇸", aliases: ["Spain"] },
     { name_ar: "سريلانكا", name_en: "Sri Lanka", flag: "🇱🇰", aliases: ["Sri Lanka"] },
     { name_ar: "السودان", name_en: "Sudan", flag: "🇸🇩", aliases: ["Sudan"] },
     { name_ar: "سورينام", name_en: "Suriname", flag: "🇸🇷", aliases: ["Suriname"] },
@@ -193,13 +193,13 @@ const countries = [
     { name_ar: "تركيا", name_en: "Turkiye", flag: "🇹🇷", aliases: ["Turkey", "Turkiye"] },
     { name_ar: "تركمانستان", name_en: "Turkmenistan", flag: "🇹🇲", aliases: ["Turkmenistan"] },
     { name_ar: "توفالو", name_en: "Tuvalu", flag: "🇹🇻", aliases: ["Tuvalu"] },
-    { name_ar: "أوغندا", name_en: "Uganda", flag: "🇺🇬", aliases: ["Uganda", "اوغندا"] },
-    { name_ar: "أوكرانيا", name_en: "Ukraine", flag: "🇺🇦", aliases: ["Ukraine", "اوكرانيا"] },
+    { name_ar: "أوغندا", name_en: "Uganda", flag: "🇺🇬", aliases: ["Uganda"] },
+    { name_ar: "أوكرانيا", name_en: "Ukraine", flag: "🇺🇦", aliases: ["Ukraine"] },
     { name_ar: "الإمارات", name_en: "United Arab Emirates", flag: "🇦🇪", aliases: ["UAE", "United Arab Emirates", "الامارات", "الإمارات العربية المتحدة"] },
     { name_ar: "المملكة المتحدة", name_en: "United Kingdom", flag: "🇬🇧", aliases: ["UK", "United Kingdom", "Britain", "بريطانيا", "انجلترا"] },
-    { name_ar: "أمريكا", name_en: "United States", flag: "🇺🇸", aliases: ["USA", "US", "United States", "America", "امريكا", "أمريكا", "الولايات المتحدة"] },
-    { name_ar: "أوروغواي", name_en: "Uruguay", flag: "🇺🇾", aliases: ["Uruguay", "اوروغواي"] },
-    { name_ar: "أوزبكستان", name_en: "Uzbekistan", flag: "🇺🇿", aliases: ["Uzbekistan", "اوزبكستان"] },
+    { name_ar: "الولايات المتحدة", name_en: "United States", flag: "🇺🇸", aliases: ["USA", "US", "United States", "America", "امريكا", "أمريكا"] },
+    { name_ar: "أوروغواي", name_en: "Uruguay", flag: "🇺🇾", aliases: ["Uruguay"] },
+    { name_ar: "أوزبكستان", name_en: "Uzbekistan", flag: "🇺🇿", aliases: ["Uzbekistan"] },
     { name_ar: "فانواتو", name_en: "Vanuatu", flag: "🇻🇺", aliases: ["Vanuatu"] },
     { name_ar: "الفاتيكان", name_en: "Vatican City", flag: "🇻🇦", aliases: ["Vatican", "Vatican City", "Holy See"] },
     { name_ar: "فنزويلا", name_en: "Venezuela", flag: "🇻🇪", aliases: ["Venezuela"] },
@@ -208,5 +208,26 @@ const countries = [
     { name_ar: "زامبيا", name_en: "Zambia", flag: "🇿🇲", aliases: ["Zambia"] },
     { name_ar: "زيمبابوي", name_en: "Zimbabwe", flag: "🇿🇼", aliases: ["Zimbabwe"] }
 ];
+
+// ======================================================
+// ISO2 DERIVATION
+// ======================================================
+// Each `flag` value is a real Unicode flag emoji made of two Regional
+// Indicator Symbols, which directly encode the ISO 3166-1 alpha-2 code
+// (e.g. 🇸🇦 = "SA"). We derive `iso2` from it here instead of hand-typing
+// a code per line, so the two can never drift out of sync.
+function deriveIso2(flagEmoji) {
+    const codePoints = [...flagEmoji];
+    const letters = codePoints.map(cp => {
+        const codePoint = cp.codePointAt(0);
+        // Regional Indicator Symbols run from U+1F1E6 (A) to U+1F1FF (Z).
+        return String.fromCharCode(codePoint - 0x1F1E6 + 65);
+    });
+    return letters.join("").toLowerCase();
+}
+
+for (const country of countries) {
+    country.iso2 = deriveIso2(country.flag);
+}
 
 module.exports = countries;

@@ -114,12 +114,11 @@ async function handleInteraction(interaction) {
 
         if (game === "flags") {
 
-            // Acknowledge the select-menu interaction first, then start
-            // the game as a normal channel message (no lobby needed).
-            await interaction.reply({
-                content: "🏳️ جاري بدء لعبة تخمين الأعلام...",
-                ephemeral: true
-            });
+            // Acknowledge the select-menu interaction silently (no visible
+            // message), then let startFlagsGame post the real public
+            // announcement in the channel — visible to everyone, not just
+            // the player who opened /play.
+            await interaction.deferUpdate();
 
             await flags.startFlagsGame(interaction);
 

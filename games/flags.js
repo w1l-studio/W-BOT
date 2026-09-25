@@ -8,13 +8,19 @@ const countries = require("./data/countries.js");
 const activeGames = new Map();
 
 const COLORS = {
-    BLUE: 0x0000FF,
-    GREEN: 0x00FF7F,
-    GOLD: 0xFFD700,
-    RED: 0xFF0000
+    BLUE: 0x2B6CB0,
+    GREEN: 0x00C853,
+    GOLD: 0xF5A623,
+    RED: 0xE53E3E
 };
 
 const ROUND_TIME = 60 * 1000; // 60 ثانية لكل علم
+
+// Real flag images via flagcdn.com — free, no API key, stable HTTPS URLs
+// keyed by ISO 3166-1 alpha-2 code. `w320` gives a large, clear image.
+function flagImageUrl(iso2) {
+    return `https://flagcdn.com/w320/${iso2}.png`;
+}
 
 // ======================================================
 // HELPERS
@@ -95,6 +101,11 @@ function isSkipCommand(rawInput) {
     return key === "skip" || key === "سكب";
 }
 
+function isStopCommand(rawInput) {
+    const key = normalize(rawInput);
+    return key === "stop" || key === "ايقاف" || key === "إيقاف";
+}
+
 // Picks a random country, avoiding immediate repeats within the session
 // and avoiding the just-skipped/just-shown flag directly.
 function pickRandomCountry(game) {
@@ -137,24 +148,25 @@ function cleanupGame(channelId) {
 // ======================================================
 
 async function sendFlag(game) {
+    // Guard: if the game was stopped/cleaned up right before this call
+    // (e.g. a stop command raced with a timeout/skip), do nothing.
+    if (!activeGames.has(game.channel.id)) return;
+
     const country = pickRandomCountry(game);
 
     game.currentCountry = country;
     game.roundActive = true;
     game.startedAt = Date.now();
 
-    await game.channel.send({
-        embeds: [
-            createEmbed(
-                "🏳️ خمن الدولة!",
-                `${country.flag}\n\n` +
-                "اكتب اسم الدولة في الشات (عربي أو إنجليزي).\n" +
-                "⏭️ إذا ما عرفت، اكتب `skip` أو `سكب`\n\n" +
-                `⏱️ الوقت المتاح: **${ROUND_TIME / 1000} ثانية**`,
-                COLORS.BLUE
-            )
-        ]
-    });
+    const embed = createEmbed(
+        "🏳️ خمن الدولة!",
+        "**اكتب اسم الدولة في الشات**\n\n" +
+        "⏭️ **تخطي:** `skip` أو `سكب`\n" +
+        `⏱️ **الوقت:** ${ROUND_TIME / 1000} ثانية`,
+        COLORS.BLUE
+    ).setImage(flagImageUrl(country.iso2));
+
+    await game.channel.send({ embeds: [embed] });
 
     // Reset the round timer — guarantees only one timer per round ever runs.
     if (game.timer) clearTimeout(game.timer);
@@ -163,7 +175,7 @@ async function sendFlag(game) {
 
 async function handleTimeout(game) {
     if (!activeGames.has(game.channel.id)) return;
-    if (!game.roundActive) return; // already resolved by an answer/skip
+    if (!game.roundActive) return; // already resolved by an answer/skip/stop
 
     game.roundActive = false;
     game.timer = null;
@@ -174,8 +186,7 @@ async function handleTimeout(game) {
         embeds: [
             createEmbed(
                 "⏱️ انتهى الوقت!",
-                `${country.flag} الإجابة الصحيحة كانت: **${country.name_ar} (${country.name_en})**\n\n` +
-                "🏳️ نروح لعلم جديد...",
+                `🏳️ الإجابة الصحيحة: **${country.name_ar}**\n\n🏳️ **علم جديد...**`,
                 COLORS.GOLD
             )
         ]
@@ -192,8 +203,16 @@ async function handleSkip(game, message) {
         game.timer = null;
     }
 
+    const country = game.currentCountry;
+
     await message.channel.send({
-        embeds: [createEmbed("⏭️ تم تخطي العلم!", "نروح لعلم جديد...", COLORS.GOLD)]
+        embeds: [
+            createEmbed(
+                "⏭️ تم تخطي العلم!",
+                `🏳️ الإجابة الصحيحة: **${country.name_ar}**`,
+                COLORS.GOLD
+            )
+        ]
     });
 
     await sendFlag(game);
@@ -213,8 +232,8 @@ async function handleCorrectAnswer(game, message, country) {
     await message.channel.send({
         embeds: [
             createEmbed(
-                "🎉 إجابة صحيحة!",
-                `كفو عليك يا <@${message.author.id}>!\n\n` +
+                "🎉 كفو عليك!",
+                `<@${message.author.id}>\n\n` +
                 `🏳️ الإجابة الصحيحة: **${country.name_ar}**\n` +
                 `⏱️ جاوبت خلال **${elapsedSeconds} ثانية**`,
                 COLORS.GREEN
@@ -223,6 +242,22 @@ async function handleCorrectAnswer(game, message, country) {
     });
 
     await sendFlag(game);
+}
+
+async function handleStop(game, message) {
+    // Stop accepting anything else immediately, then clean up fully.
+    game.roundActive = false;
+    cleanupGame(game.channel.id);
+
+    await message.channel.send({
+        embeds: [
+            createEmbed(
+                "🛑 تم إيقاف اللعبة",
+                "تم إيقاف لعبة تخمين الأعلام.",
+                COLORS.RED
+            )
+        ]
+    });
 }
 
 // ======================================================
@@ -239,7 +274,13 @@ async function startFlagsGame(interactionOrMessage) {
             ephemeral: true
         };
 
-        if (typeof interactionOrMessage.reply === "function") {
+        // The caller may be a slash/select interaction that was already
+        // deferred/replied to (e.g. via deferUpdate in games/index.js),
+        // or a plain message — handle all cases without ever throwing
+        // "interaction already acknowledged".
+        if (interactionOrMessage.deferred || interactionOrMessage.replied) {
+            await interactionOrMessage.followUp(payload).catch(() => {});
+        } else if (typeof interactionOrMessage.reply === "function") {
             await interactionOrMessage.reply(payload).catch(() => {});
         }
 
@@ -260,6 +301,7 @@ async function startFlagsGame(interactionOrMessage) {
 
     activeGames.set(channel.id, game);
 
+    // Public announcement — visible to everyone in the channel.
     await channel.send({
         embeds: [
             createEmbed(
@@ -284,6 +326,13 @@ async function startFlagsGame(interactionOrMessage) {
         if (!activeGames.has(channel.id)) return;
 
         const content = message.content;
+
+        // 1) stop / ايقاف is checked before anything else, including
+        //    skip and country matching — any player can use it.
+        if (isStopCommand(content)) {
+            await handleStop(game, message);
+            return;
+        }
 
         if (isSkipCommand(content)) {
             await handleSkip(game, message);
