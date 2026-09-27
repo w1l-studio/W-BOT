@@ -19,6 +19,7 @@ const path = require("path");
 const welcome = require("./welcome");
 const games = require("./games");
 const tickets = require("./tickets");
+const protection = require("./protection/index.js");
 const general = require("./commands");
 
 const OWNER_ID = "1487388575329681570";
@@ -33,7 +34,13 @@ const PUBLIC_COMMANDS = [
     "avatar"
 ];
 
-const ADMIN_COMMANDS = new Set(general.ADMIN_COMMANDS);
+const ADMIN_COMMANDS = new Set([
+    ...general.ADMIN_COMMANDS,
+    "protection",
+    "lockdown",
+    "unlockdown",
+    "setsecuritylog"
+]);
 
 let MAINTENANCE = false;
 
@@ -535,8 +542,11 @@ async function sendSecurityLog(
 
         const data = getGuildData(guild.id);
 
+        const modularProtectionLogChannelId =
+            protection.getConfig(guild.id)?.logChannelId || null;
         const configuredLogChannelId =
             data.logChannelId ||
+            modularProtectionLogChannelId ||
             general.getGuildConfig(guild.id).logChannelId;
 
         if (!configuredLogChannelId) {
@@ -741,6 +751,97 @@ async function punishUser(
     }
 }
 
+
+// ======================================================
+// PROTECTION -> WARNINGS BRIDGE
+// ======================================================
+async function handleProtectionWarning(guildId, userId, reason) {
+    const guild = client.guilds.cache.get(guildId);
+    if (!guild) return 0;
+
+    const count = addWarning(guildId, userId);
+    const action = getWarningAction(count);
+    let actionText = "⚠️ تم تسجيل التحذير فقط.";
+
+    try {
+        const member = await guild.members.fetch(userId).catch(() => null);
+
+        if (!member) {
+            return count;
+        }
+
+        if (action?.type === "timeout") {
+            await member.timeout(
+                action.durationMs,
+                `W BOT • حماية تلقائية: ${reason}`
+            );
+            actionText = "🔇 وصل العضو إلى **تحذيرين** وتم كتمه لمدة **6 ساعات**.";
+        } else if (action?.type === "temporaryBan") {
+            await guild.members.ban(userId, {
+                reason: "W BOT • حماية تلقائية: وصل إلى 4 تحذيرات"
+            });
+            await scheduleTemporaryWarningBan(
+                guild,
+                userId,
+                action.durationMs,
+                "W BOT • حماية تلقائية: وصل إلى 4 تحذيرات"
+            );
+            actionText = "🔨 وصل العضو إلى **4 تحذيرات** وتم حظره لمدة **12 ساعة**.";
+        } else if (action?.type === "permanentBan") {
+            await guild.members.ban(userId, {
+                reason: "W BOT • حماية تلقائية: وصل إلى 5 تحذيرات"
+            });
+            actionText = "⛔ وصل العضو إلى **5 تحذيرات** وتم حظره **فورًا**.";
+        }
+    } catch (error) {
+        console.error("Protection Warning Action Error:", error);
+        actionText = "⚠️ تم تسجيل التحذير، لكن تعذر تنفيذ العقوبة التلقائية.";
+    }
+
+    await sendSecurityLog(
+        guild,
+        "🛡️ تحذير تلقائي من نظام الحماية",
+        `👤 العضو: <@${userId}>\n` +
+        `⚠️ عدد التحذيرات: **${count}**\n` +
+        `📝 السبب: ${reason}\n` +
+        `🔨 الإجراء: ${actionText}`,
+        COLORS.RED
+    );
+
+    return count;
+}
+
+// ======================================================
+// PROTECTION -> BOT ADD BRIDGE
+// ======================================================
+async function handleProtectionBotAdd(member) {
+    if (!SECURITY.enabled || !SECURITY.antiBot) return;
+    if (!member.user.bot) return;
+    if (isWhitelisted(member.guild, member.id)) return;
+
+    try {
+        await member.ban({
+            reason: "W BOT Security • Bot Protection"
+        });
+
+        await sendSecurityLog(
+            member.guild,
+            "🤖 تم منع بوت",
+            `🤖 البوت: <@${member.id}>\n` +
+            `🔨 الإجراء: حظر تلقائي\n` +
+            `📝 السبب: إضافة بوت غير مصرح به`,
+            COLORS.RED
+        );
+    } catch (error) {
+        console.error("Anti Bot Error:", error);
+    }
+}
+
+// تسجيل نظام الحماية مرة واحدة فقط.
+protection.register(client, {
+    onWarn: handleProtectionWarning,
+    onBotAdd: handleProtectionBotAdd
+});
 
 // ======================================================
 // أوامر البوت
@@ -1002,20 +1103,6 @@ const rawCommands = [
         ),
 
     // --------------------------------------------------
-    // PROTECTION
-    // --------------------------------------------------
-
-    new SlashCommandBuilder()
-        .setName("protection")
-        .setDescription(
-            "عرض حالة نظام الحماية"
-        )
-        .setDefaultMemberPermissions(
-            PermissionFlagsBits.Administrator
-        ),
-
-
-    // --------------------------------------------------
     // LOCKDOWN
     // --------------------------------------------------
 
@@ -1093,11 +1180,14 @@ new SlashCommandBuilder()
 
     ...general.commands,
 
+    ...protection.commands,
+
     // GAMES
     // ==================================================
 
     ...games.commands,
     ...tickets.commands
+    
 
 ].map(command =>
     typeof command?.toJSON === "function"
@@ -1275,60 +1365,17 @@ client.once(
 
 
 // ======================================================
-// BOT JOIN
+// MEMBER JOIN -> PROTECTION (single event)
 // ======================================================
-
 client.on(
     "guildMemberAdd",
     async member => {
-
-        if (!SECURITY.enabled) {
-            return;
-        }
-
-        if (!SECURITY.antiBot) {
-            return;
-        }
-
-        if (!member.user.bot) {
-            return;
-        }
-
-        if (
-            isWhitelisted(
-                member.guild,
-                member.id
-            )
-        ) {
-            return;
-        }
-
-        try {
-
-            await member.ban({
-                reason:
-                    "W BOT Security • Bot Protection"
-            });
-
-            await sendSecurityLog(
-                member.guild,
-                "🤖 تم منع بوت",
-                `🤖 البوت: <@${member.id}>\n` +
-                `🔨 الإجراء: حظر تلقائي\n` +
-                `📝 السبب: إضافة بوت غير مصرح به`,
-                COLORS.RED
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Anti Bot Error:",
-                error
-            );
-        }
+        await protection.handleMemberAdd(member, {
+            onWarn: handleProtectionWarning,
+            onBotAdd: handleProtectionBotAdd
+        });
     }
 );
-
 
 // ======================================================
 // CHANNEL DELETE
@@ -1828,171 +1875,6 @@ client.on(
 
 
 // ======================================================
-// MESSAGE SECURITY
-// ======================================================
-
-const spamTracker = new Map();
-
-
-client.on(
-    "messageCreate",
-    async message => {
-
-        if (
-            !message.guild ||
-            message.author.bot
-        ) {
-            return;
-        }
-
-        const guildData =
-            getGuildData(
-                message.guild.id
-            );
-
-        if (
-            !SECURITY.enabled ||
-            !guildData.enabled
-        ) {
-            return;
-        }
-
-
-        // ------------------------------------------------
-        // MASS MENTION
-        // ------------------------------------------------
-
-        if (
-            SECURITY.antiMassMention &&
-            (
-                message.mentions.users.size >= 5 ||
-                message.mentions.roles.size >= 3 ||
-                message.mentions.everyone
-            )
-        ) {
-
-            try {
-                await message.delete();
-            } catch {}
-
-            try {
-
-                await message.member.timeout(
-                    SECURITY.spamTimeout,
-                    "W BOT Security • Mass Mention"
-                );
-
-            } catch {}
-
-            await sendSecurityLog(
-                message.guild,
-                "🚨 منشن جماعي",
-                `👤 العضو: <@${message.author.id}>\n` +
-                `📁 الروم: <#${message.channel.id}>\n` +
-                `🔨 الإجراء: حذف الرسالة + تايم أوت`,
-                COLORS.RED
-            );
-
-            return;
-        }
-
-
-        // ------------------------------------------------
-        // INVITE LINKS
-        // ------------------------------------------------
-
-        if (
-            SECURITY.antiInvites &&
-            /discord\.gg\/|discord\.com\/invite\//i
-                .test(message.content)
-        ) {
-
-            // السماح للإدارة
-            if (
-                !message.member.permissions.has(
-                    PermissionFlagsBits.ManageGuild
-                )
-            ) {
-
-                try {
-                    await message.delete();
-                } catch {}
-
-                await sendSecurityLog(
-                    message.guild,
-                    "🔗 تم حذف رابط دعوة",
-                    `👤 العضو: <@${message.author.id}>\n` +
-                    `📁 الروم: <#${message.channel.id}>\n` +
-                    `🔨 الإجراء: حذف الرسالة`,
-                    COLORS.RED
-                );
-
-                return;
-            }
-        }
-
-
-        // ------------------------------------------------
-        // SPAM
-        // ------------------------------------------------
-
-        if (SECURITY.antiSpam) {
-
-            const key =
-                `${message.guild.id}:${message.author.id}`;
-
-            const now = Date.now();
-
-            if (!spamTracker.has(key)) {
-                spamTracker.set(key, []);
-            }
-
-            const messages =
-                spamTracker.get(key);
-
-            const recent =
-                messages.filter(
-                    time =>
-                        now - time <
-                        5000
-                );
-
-            recent.push(now);
-
-            spamTracker.set(
-                key,
-                recent
-            );
-
-            if (
-                recent.length >=
-                SECURITY.spamMessageLimit
-            ) {
-
-                spamTracker.delete(key);
-
-                try {
-                    await message.member.timeout(
-                        SECURITY.spamTimeout,
-                        "W BOT Security • Spam"
-                    );
-                } catch {}
-
-                await sendSecurityLog(
-                    message.guild,
-                    "🚨 تم اكتشاف Spam",
-                    `👤 العضو: <@${message.author.id}>\n` +
-                    `📁 الروم: <#${message.channel.id}>\n` +
-                    `🔨 الإجراء: تايم أوت لمدة 10 دقائق`,
-                    COLORS.RED
-                );
-            }
-        }
-    }
-);
-
-
-// ======================================================
 // INTERACTIONS
 // ======================================================
 
@@ -2071,6 +1953,15 @@ client.on(
             return;
         }
 
+
+        // ==================================================
+        // PROTECTION
+        // ==================================================
+        const handledByProtection =
+            await protection.handleInteraction(interaction);
+        if (handledByProtection) {
+            return;
+        }
 
         // ==================================================
         // GAMES
@@ -3328,113 +3219,6 @@ client.on(
         }
 
         // ==================================================
-        // PROTECTION
-        // ==================================================
-
-        if (
-            interaction.commandName ===
-            "protection"
-        ) {
-
-            const data =
-                getGuildData(
-                    interaction.guild.id
-                );
-
-            const status =
-                data.enabled
-                    ? "🟢 مفعلة"
-                    : "🔴 متوقفة";
-
-            const embed =
-                new EmbedBuilder()
-
-                    .setTitle(
-                        "🛡️ W BOT | Protection"
-                    )
-
-                    .setDescription(
-                        "حالة نظام حماية السيرفر"
-                    )
-
-                    .setColor(
-                        COLORS.BLUE
-                    )
-
-                    .addFields(
-
-                        {
-                            name: "🛡️ الحماية العامة",
-                            value: status,
-                            inline: true
-                        },
-
-                        {
-                            name: "🤖 Anti Bot",
-                            value:
-                                SECURITY.antiBot
-                                    ? "🟢"
-                                    : "🔴",
-                            inline: true
-                        },
-
-                        {
-                            name: "🚨 Anti Nuke",
-                            value:
-                                SECURITY.antiChannelDelete &&
-                                SECURITY.antiRoleDelete &&
-                                SECURITY.antiMassBan &&
-                                SECURITY.antiMassKick
-                                    ? "🟢"
-                                    : "🔴",
-                            inline: true
-                        },
-
-                        {
-                            name: "🚫 Anti Spam",
-                            value:
-                                SECURITY.antiSpam
-                                    ? "🟢"
-                                    : "🔴",
-                            inline: true
-                        },
-
-                        {
-                            name: "🔗 Anti Invite",
-                            value:
-                                SECURITY.antiInvites
-                                    ? "🟢"
-                                    : "🔴",
-                            inline: true
-                        },
-
-                        {
-                            name: "📢 Anti Mention",
-                            value:
-                                SECURITY.antiMassMention
-                                    ? "🟢"
-                                    : "🔴",
-                            inline: true
-                        }
-
-                    )
-
-                    .setFooter({
-                        text:
-                            "W BOT • Security System"
-                    })
-
-                    .setTimestamp();
-
-            await interaction.reply({
-                embeds: [embed]
-            });
-
-            return;
-        }
-
-
-        // ==================================================
         // SET SECURITY LOG
         // ==================================================
 
@@ -3634,7 +3418,6 @@ client.on(
         );
     }
 );
-
 
 // ======================================================
 // LOGIN

@@ -2,7 +2,7 @@
     "1551431706731479199": {
         "prefix": "!",
         "logChannelId": null,
-        "welcomeEnabled": true,
+        "welcomeEnabled": false,
         "welcomeChannelId": "1551433761852235978",
         "ticketsEnabled": true
     }
