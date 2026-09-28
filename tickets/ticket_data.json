@@ -1,5 +1,5 @@
 {
-    "lastTicketNumber": 8,
+    "lastTicketNumber": 11,
     "tickets": {
         "1552727716862754878": {
             "ticketNumber": 12345,
@@ -198,6 +198,60 @@
             "ratedAt": null,
             "deletedBy": null,
             "deletedAt": null
+        },
+        "1553687618326233131": {
+            "ticketNumber": 9,
+            "guildId": "1551431706731479199",
+            "channelId": "1553687618326233131",
+            "type": "support",
+            "ownerId": "1487388575329681570",
+            "createdAt": 1790498394303,
+            "claimedBy": null,
+            "claimedAt": null,
+            "closerId": "1487388575329681570",
+            "closedAt": 1790498409354,
+            "closeReason": "hkhk",
+            "durationMs": null,
+            "rating": 5,
+            "ratedAt": 1790498437658,
+            "deletedBy": "1487388575329681570",
+            "deletedAt": 1790498413630
+        },
+        "1553695525344120924": {
+            "channelId": "1553695525344120924",
+            "ticketNumber": 10,
+            "type": "verification",
+            "ownerId": "1487388575329681570",
+            "ownerTag": "xjn_1",
+            "createdAt": 1790500278529,
+            "claimedAt": 1790500292264,
+            "claimedBy": "1487388575329681570",
+            "closedAt": 1790555272794,
+            "closerId": "1487388575329681570",
+            "closeReason": "un",
+            "durationMs": 54980530,
+            "deletedAt": 1790555290198,
+            "deletedBy": "1487388575329681570",
+            "rating": null,
+            "ratedAt": null
+        },
+        "1553927250968051762": {
+            "channelId": "1553927250968051762",
+            "ticketNumber": 11,
+            "type": "report",
+            "ownerId": "1487388575329681570",
+            "ownerTag": "xjn_1",
+            "createdAt": 1790555526644,
+            "claimedAt": 1790555604669,
+            "claimedBy": "1487388575329681570",
+            "closedAt": 1790555594942,
+            "closerId": "1487388575329681570",
+            "closeReason": "on",
+            "durationMs": 68298,
+            "deletedAt": null,
+            "deletedBy": null,
+            "rating": 5,
+            "ratedAt": 1790600138697
         }
     },
     "version": 2

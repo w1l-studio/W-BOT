@@ -168,7 +168,7 @@ async function handleUserInfo(interaction) {
             { name: "🏷️ الرتب", value: roleList(member), inline: false },
             { name: "🤖 بوت؟", value: user.bot ? "نعم" : "لا", inline: true }
         )
-        .setFooter({ text: `${interaction.guild.name} • W BOT` })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
@@ -203,7 +203,7 @@ async function handleServerInfo(interaction) {
             { name: "📅 تاريخ الإنشاء", value: formatDate(created), inline: false },
             { name: "🆔 Server ID", value: `\`${guild.id}\``, inline: false }
         )
-        .setFooter({ text: "W BOT • Server Information" })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
@@ -231,7 +231,7 @@ async function handleAvatar(interaction) {
         .setDescription(`**الرابط المباشر بجودة عالية:**\n${avatar}`)
         .setImage(avatar)
         .setColor(0x5865F2)
-        .setFooter({ text: "W BOT • Avatar" })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -264,7 +264,7 @@ async function handlePoll(interaction) {
         .setTitle("📊 استطلاع رأي")
         .setDescription(`**${question}**\n\n👍 **نعم**\n👎 **لا**`)
         .setColor(0x5865F2)
-        .setFooter({ text: `W BOT • بواسطة ${interaction.user.tag}` })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
 
     const message = await interaction.channel.send({ embeds: [embed] });
@@ -325,7 +325,7 @@ async function handleEmbed(interaction) {
         .setTitle(title)
         .setDescription(description)
         .setColor(color)
-        .setFooter({ text: `W BOT • ${interaction.user.tag}` })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
 
     if (image) {
@@ -411,7 +411,7 @@ async function handleRole(interaction) {
                         .setTitle("✅ تم إعطاء الرتبة")
                         .setDescription(`تم إعطاء ${role} إلى ${member}.`)
                         .setColor(0x57F287)
-                        .setFooter({ text: `بواسطة ${interaction.user.tag}` })
+                        .setFooter({ text: "W BOT" })
                         .setTimestamp()
                 ]
             });
@@ -427,7 +427,7 @@ async function handleRole(interaction) {
                         .setTitle("🗑️ تم سحب الرتبة")
                         .setDescription(`تم سحب ${role} من ${member}.`)
                         .setColor(0xED4245)
-                        .setFooter({ text: `بواسطة ${interaction.user.tag}` })
+                        .setFooter({ text: "W BOT" })
                         .setTimestamp()
                 ]
             });
@@ -695,10 +695,7 @@ async function handlePermBan(interaction) {
                     0xED4245
                 )
 
-                .setFooter({
-                    text:
-                        "W BOT • Permanent Ban"
-                })
+                .setFooter({ text: "W BOT" })
 
                 .setTimestamp();
 
@@ -756,7 +753,7 @@ async function handlePrefix(interaction) {
                 .setTitle("⚙️ تم تغيير Prefix")
                 .setDescription(`البادئة الجديدة للسيرفر هي **${config.prefix}**`)
                 .setColor(0x5865F2)
-                .setFooter({ text: "W BOT • Bot Setup" })
+                .setFooter({ text: "W BOT" })
                 .setTimestamp()
         ],
         flags: MessageFlags.Ephemeral
@@ -837,7 +834,7 @@ function configEmbed(guild, config) {
             { name: "👋 الترحيب", value: config.welcomeEnabled ? `🟢 مفعل • ${config.welcomeChannelId ? `<#${config.welcomeChannelId}>` : "بدون روم"}` : "🔴 متوقف", inline: true },
             { name: "🎫 التذاكر", value: config.ticketsEnabled ? "🟢 مفعلة" : "🔴 متوقفة", inline: true }
         )
-        .setFooter({ text: `${guild.name} • W BOT` })
+        .setFooter({ text: "W BOT" })
         .setTimestamp();
 }
 
@@ -909,7 +906,7 @@ function registerClient(client) {
                 { name: "👤 العضو", value: `${member}`, inline: true },
                 { name: "👥 عدد الأعضاء", value: `**${member.guild.memberCount}**`, inline: true }
             )
-            .setFooter({ text: "W BOT • Welcome System" })
+            .setFooter({ text: "W BOT" })
             .setTimestamp();
         await channel.send({
             embeds: [embed],
@@ -954,7 +951,7 @@ function registerClient(client) {
                     { name: "📥 الانضمام", value: formatDate(member?.joinedTimestamp), inline: true },
                     { name: "🏷️ الرتب", value: roleList(member), inline: false }
                 )
-                .setFooter({ text: `${message.guild.name} • W BOT` })
+                .setFooter({ text: "W BOT" })
                 .setTimestamp();
             await message.reply({ embeds: [embed] }).catch(() => {});
             return;
@@ -974,7 +971,7 @@ function registerClient(client) {
                     { name: "👑 المالك", value: owner ? `${owner}` : `\`${message.guild.ownerId}\``, inline: false },
                     { name: "📅 الإنشاء", value: formatDate(message.guild.createdTimestamp), inline: false }
                 )
-                .setFooter({ text: "W BOT • Server Information" })
+                .setFooter({ text: "W BOT" })
                 .setTimestamp();
             await message.reply({ embeds: [embed] }).catch(() => {});
             return;
@@ -1018,7 +1015,7 @@ function registerClient(client) {
                 .setTitle("📊 استطلاع رأي")
                 .setDescription(`**${argText}**\n\n👍 **نعم**\n👎 **لا**`)
                 .setColor(0x5865F2)
-                .setFooter({ text: `W BOT • بواسطة ${message.author.tag}` })
+                .setFooter({ text: "W BOT" })
                 .setTimestamp();
             const pollMessage = await message.channel.send({ embeds: [embed] }).catch(() => null);
             if (pollMessage) {

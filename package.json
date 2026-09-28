@@ -10,11 +10,13 @@
   "type": "commonjs",
   "dependencies": {
     "@discordjs/rest": "^2.6.3",
+    "axios": "^1.20.0",
     "canvas": "^3.2.3",
     "discord.js": "^14.27.0",
     "dotenv": "^18.0.3",
     "gif-encoder-2": "^1.0.5",
-    "gif-frames": "^1.0.1"
+    "gif-frames": "^1.0.1",
+    "node-fetch": "^3.3.2"
   },
   "allowScripts": {
     "canvas@3.2.3": true
