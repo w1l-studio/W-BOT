@@ -17,7 +17,13 @@
       "Naruto Uzumaki",
       "Naruto",
       "NarutoUzumaki"
-    ]
+    ],
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b17-phjcWCkRuIhu.png",
+    "image_source": "AniList",
+    "image_anilist_id": 17,
+    "image_matched_name": "Naruto Uzumaki",
+    "image_source_url": "https://anilist.co/character/17",
+    "image_status": "found"
   },
   {
     "name": "Sasuke Uchiha",

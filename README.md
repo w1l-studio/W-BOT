@@ -1,2 +1,2 @@
-# W BOT
+# Trivia BOT
 

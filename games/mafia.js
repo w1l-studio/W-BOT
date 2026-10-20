@@ -48,7 +48,7 @@ function createEmbed(title, description, color = COLORS.BLUE) {
         .setTitle(title)
         .setDescription(description)
         .setColor(color)
-        .setFooter({ text: "W BOT • Mafia Game" })
+        .setFooter({ text: "Trivia BOT • Mafia Game" })
         .setTimestamp();
 }
 

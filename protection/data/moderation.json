@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "nextCaseId": 4,
+  "nextWarningId": 2,
+  "warnings": {
+    "1551431706731479199": {
+      "1518361849387684092": []
+    }
+  },
+  "cases": {
+    "1551431706731479199": [
+      {
+        "id": 1,
+        "guildId": "1551431706731479199",
+        "createdAt": "2026-10-13T23:30:13.140Z",
+        "type": "warn",
+        "targetId": "1518361849387684092",
+        "moderatorId": "1487388575329681570",
+        "reason": "1.2",
+        "warningId": 1,
+        "warningLevel": 1,
+        "durationMs": null
+      },
+      {
+        "id": 2,
+        "guildId": "1551431706731479199",
+        "createdAt": "2026-10-13T23:39:43.758Z",
+        "type": "clear-warnings",
+        "targetId": "1518361849387684092",
+        "moderatorId": "1487388575329681570",
+        "reason": "مسح 1 تحذير"
+      },
+      {
+        "id": 3,
+        "guildId": "1551431706731479199",
+        "createdAt": "2026-10-15T06:01:27.744Z",
+        "type": "clear",
+        "targetId": null,
+        "moderatorId": "1487388575329681570",
+        "reason": "حذف 94 رسالة من القناة 1552283128112881714"
+      }
+    ]
+  }
+}

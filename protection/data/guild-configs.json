@@ -1,0 +1,96 @@
+{
+  "1551431706731479199": {
+    "enabled": true,
+    "operatingMode": "monitor",
+    "logChannelId": null,
+    "dashboardRoleIds": [],
+    "whitelistUserIds": [],
+    "whitelistRoleIds": [],
+    "whitelistChannelIds": [],
+    "antiNuke": {
+      "enabled": true,
+      "windowMs": 12000,
+      "maxActions": 4,
+      "cooldownMs": 60000,
+      "actions": [
+        "ChannelDelete",
+        "ChannelCreate",
+        "ChannelUpdate",
+        "RoleDelete",
+        "RoleCreate",
+        "RoleUpdate",
+        "Ban",
+        "Kick",
+        "WebhookCreate",
+        "WebhookDelete",
+        "WebhookUpdate",
+        "BotAdd"
+      ],
+      "response": "log",
+      "timeoutMs": 600000,
+      "exemptOwner": true
+    },
+    "antiSpam": {
+      "enabled": true,
+      "windowMs": 6000,
+      "maxMessages": 6,
+      "duplicateWindowMs": 12000,
+      "maxDuplicates": 3,
+      "response": "delete",
+      "timeoutMs": 60000,
+      "alertCooldownMs": 15000,
+      "ignoreBots": true,
+      "ignoreAttachments": false
+    },
+    "antiRaid": {
+      "enabled": false,
+      "windowMs": 15000,
+      "maxJoins": 8,
+      "alertCooldownMs": 30000,
+      "response": "alert",
+      "lockdownDurationMs": 300000
+    },
+    "antiLink": {
+      "enabled": true,
+      "allowLinks": [],
+      "blockInvites": true,
+      "blockAllLinks": false,
+      "response": "delete",
+      "alertCooldownMs": 10000
+    },
+    "antiRole": {
+      "enabled": true,
+      "protectAdministrator": true,
+      "protectMentionEveryone": true,
+      "protectedPermissions": [
+        "Administrator",
+        "ManageGuild",
+        "ManageRoles",
+        "ManageChannels",
+        "ManageWebhooks",
+        "BanMembers",
+        "KickMembers",
+        "MentionEveryone"
+      ]
+    },
+    "antiChannel": {
+      "enabled": true,
+      "alertOnDelete": true,
+      "alertOnCreate": false
+    },
+    "antiWebhook": {
+      "enabled": false,
+      "alertOnCreate": true,
+      "alertOnDelete": true,
+      "alertOnUpdate": true
+    },
+    "emergency": {
+      "enabled": false,
+      "activatedAt": null,
+      "activatedBy": null,
+      "autoExpiresAt": null,
+      "snapshot": [],
+      "failedChannelIds": []
+    }
+  }
+}

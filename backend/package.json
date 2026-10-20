@@ -1,7 +1,7 @@
 {
   "name": "w-bot-dashboard-backend",
   "version": "1.0.0",
-  "description": "Secure Backend API for W BOT Discord Control Dashboard",
+  "description": "Secure Backend API for Trivia BOT Discord Control Dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,7 +13,7 @@
     "dashboard",
     "api"
   ],
-  "author": "W BOT Team",
+  "author": "Trivia BOT Team",
   "license": "ISC",
   "dependencies": {
     "@discordjs/rest": "^2.6.3",

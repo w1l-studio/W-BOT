@@ -1,0 +1,43 @@
+Folder PATH listing
+Volume serial number is 92B1-F43B
+C:\USERS\TOTA\DESKTOP\TRIVIA BOT\GAMES
+|   characters.backup-1790644586707.json
+|   characters.backup-1790644819381.json
+|   characters.backup-1790644923253.json
+|   characters.json
+|   flags.js
+|   index.js
+|   index.js.backup
+|   mafia.js
+|   update-images.js
+|   whoami.js
+|   
++---data
+|       animeCharacters.js
+|       celebrities.js
+|       countries.js
+|       
++---number-guess
+|       index.js
+|       logic.js
+|       
++---quiz
+|       index.js
+|       questions.js
+|       
++---riddles
+|       index.js
+|       riddles.js
+|       
++---shared
+|       mcqEngine.js
+|       ui.js
+|       
++---tic-tac-toe
+|       index.js
+|       logic.js
+|       
+\---word-scramble
+        index.js
+        words.js
+        

@@ -1,0 +1,1785 @@
+
+'use strict';
+
+const {
+    SlashCommandBuilder,
+    PermissionFlagsBits,
+    MessageFlags,
+} = require('discord.js');
+
+const ADMIN = PermissionFlagsBits.Administrator;
+const MAX_WARNINGS = 4;
+const MAX_TIMEOUT_HOURS = 28 * 24;
+const MAX_TEMPBAN_HOURS = 28 * 24;
+const MAX_TIMER_DELAY = 2_147_000_000;
+
+function isAdmin(interaction) {
+    return Boolean(
+        interaction.memberPermissions?.has(ADMIN)
+    );
+}
+
+function safeReason(reason) {
+    return String(reason || 'لم يُذكر سبب')
+        .trim()
+        .slice(0, 500);
+}
+
+function baseCommand(name, description) {
+    return new SlashCommandBuilder()
+        .setName(name)
+        .setDescription(description)
+        .setDefaultMemberPermissions(ADMIN);
+}
+
+function userOption(option) {
+    return option
+        .setName('target')
+        .setDescription('العضو المستهدف')
+        .setRequired(true);
+}
+
+function reasonOption(option) {
+    return option
+        .setName('reason')
+        .setDescription('سبب الإجراء')
+        .setRequired(true);
+}
+
+function isUnknownBan(error) {
+    return Number(error?.code) === 10026 ||
+        Number(error?.rawError?.code) === 10026;
+}
+
+function createModerationCommands(manager, service) {
+    const commands = [];
+    const client = manager.client;
+    const tempBanTimers = new Map();
+
+    async function logSafely(guild, title, description) {
+        try {
+            await manager.log(guild, title, description);
+        } catch (error) {
+            manager.logger.warn(
+                'Could not write moderation log.',
+                error
+            );
+        }
+    }
+
+    async function record(guildId, entry) {
+        return service.recordCase(guildId, entry);
+    }
+
+    function cancelTempBanTimer(guildId, userId) {
+        const key = `${guildId}:${userId}`;
+        const timer = tempBanTimers.get(key);
+
+        if (timer) {
+            clearTimeout(timer);
+            tempBanTimers.delete(key);
+        }
+    }
+
+    function scheduleTempBan(guildId, userId, expiresAt) {
+        const key = `${guildId}:${userId}`;
+        cancelTempBanTimer(guildId, userId);
+
+        const expiry = new Date(expiresAt).getTime();
+
+        if (!Number.isFinite(expiry)) {
+            manager.logger.warn(
+                `Invalid tempban expiry for ${key}.`
+            );
+            return;
+        }
+
+        const delay = Math.max(0, expiry - Date.now());
+
+        const timer = setTimeout(async () => {
+            tempBanTimers.delete(key);
+
+            // Node.js timer limits require long waits to be split.
+            if (Date.now() < expiry) {
+                scheduleTempBan(guildId, userId, expiry);
+                return;
+            }
+
+            const guild = client.guilds.cache.get(guildId)
+                || await client.guilds.fetch(guildId).catch(() => null);
+
+            if (!guild) {
+                scheduleRetry(guildId, userId, expiry);
+                return;
+            }
+
+            try {
+                await guild.bans.remove(
+                    userId,
+                    'Temporary ban expired'
+                );
+            } catch (error) {
+                if (!isUnknownBan(error)) {
+                    manager.logger.warn(
+                        `Temporary unban failed for ${key}.`,
+                        error
+                    );
+
+                    scheduleRetry(guildId, userId, expiry);
+                    return;
+                }
+            }
+
+            try {
+                await record(guildId, {
+                    type: 'tempban-expired',
+                    targetId: userId,
+                    moderatorId: client.user?.id || null,
+                    reason: 'انتهت مدة الباند المؤقت',
+                    expiresAt: new Date(expiry).toISOString(),
+                });
+
+                await logSafely(
+                    guild,
+                    'انتهاء الباند المؤقت',
+                    `العضو: <@${userId}>\nانتهت مدة الباند المؤقت تلقائيًا.`
+                );
+            } catch (error) {
+                manager.logger.error(
+                    'Could not save temporary unban result.',
+                    error
+                );
+            }
+        }, Math.min(delay, MAX_TIMER_DELAY));
+
+        timer.unref?.();
+        tempBanTimers.set(key, timer);
+    }
+
+    function scheduleRetry(guildId, userId, expiry) {
+        const key = `${guildId}:${userId}`;
+        cancelTempBanTimer(guildId, userId);
+
+        const timer = setTimeout(() => {
+            tempBanTimers.delete(key);
+            scheduleTempBan(guildId, userId, expiry);
+        }, 60_000);
+
+        timer.unref?.();
+        tempBanTimers.set(key, timer);
+    }
+
+    async function restoreTempBans() {
+        await service.load();
+
+        const latest = new Map();
+        const cases = Object.values(service.data.cases || {})
+            .flat()
+            .sort((a, b) => Number(a.id) - Number(b.id));
+
+        const relevantTypes = new Set([
+            'tempban',
+            'tempban-expired',
+            'tempban-failed',
+            'unban',
+            'ban',
+        ]);
+
+        for (const entry of cases) {
+            if (
+                !entry.targetId ||
+                !relevantTypes.has(entry.type)
+            ) {
+                continue;
+            }
+
+            const key = `${entry.guildId}:${entry.targetId}`;
+            latest.set(key, entry);
+        }
+
+        for (const entry of latest.values()) {
+            if (entry.type !== 'tempban' || !entry.expiresAt) {
+                continue;
+            }
+
+            scheduleTempBan(
+                entry.guildId,
+                entry.targetId,
+                entry.expiresAt
+            );
+        }
+    }
+
+    if (client.isReady?.()) {
+        restoreTempBans().catch(error => {
+            manager.logger.error(
+                'Could not restore temporary bans.',
+                error
+            );
+        });
+    } else {
+        client.once('ready', () => {
+            restoreTempBans().catch(error => {
+                manager.logger.error(
+                    'Could not restore temporary bans.',
+                    error
+                );
+            });
+        });
+    }
+
+    async function executeAdmin(interaction, action) {
+        if (!interaction.inGuild()) {
+            return interaction.reply({
+                content: 'هذا الأمر متاح داخل السيرفر فقط.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+
+        if (!isAdmin(interaction)) {
+            return interaction.reply({
+                content: 'هذا الأمر مخصص للإداريين فقط.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+
+        await interaction.deferReply({
+            flags: MessageFlags.Ephemeral,
+        });
+
+        try {
+            const message = await action();
+            return interaction.editReply(message);
+        } catch (error) {
+            manager.logger.error(
+                `Moderation command failed: ${interaction.commandName}`,
+                error
+            );
+
+            return interaction.editReply(
+                'تعذّر تنفيذ الإجراء. تحقق من صلاحيات البوت وترتيب الرتب، وراجع سجل البوت.'
+            );
+        }
+    }
+
+    // /warn
+    commands.push({
+        data: baseCommand(
+            'warn',
+            'تسجيل تحذير وتطبيق العقوبة حسب مستوى التحذير'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (user.id === interaction.user.id || user.bot) {
+                    throw new Error(
+                        'Cannot warn yourself or a bot.'
+                    );
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) {
+                    return 'العضو غير موجود في هذا السيرفر.';
+                }
+
+                const result = await service.warn(
+                    interaction,
+                    member,
+                    reason
+                );
+
+                if (!result.ok) {
+                    return result.message;
+                }
+
+                return [
+                    `${result.rule.emoji} تم تسجيل التحذير.`,
+                    `العضو: ${user.tag}`,
+                    `المستوى: ${result.level}/${MAX_WARNINGS}`,
+                    `الإجراء: ${result.rule.label}`,
+                    `رقم التحذير: #${result.warning.id}`,
+                    `رقم القضية: #${result.caseEntry.id}`,
+                ].join('\n');
+            });
+        },
+    });
+
+    // /warnings
+    commands.push({
+        data: baseCommand(
+            'warnings',
+            'عرض تحذيرات عضو'
+        ).addUserOption(userOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const warnings = await service.getWarnings(
+                    interaction.guild.id,
+                    user.id
+                );
+
+                if (!warnings.length) {
+                    return `لا توجد تحذيرات مسجلة للعضو ${user.tag}.`;
+                }
+
+                const lines = warnings.map(warning => {
+                    const timestamp = Math.floor(
+                        new Date(warning.createdAt).getTime() / 1000
+                    );
+
+                    return [
+                        `#${warning.id} — المستوى ${warning.level}/${MAX_WARNINGS}`,
+                        `السبب: ${warning.reason}`,
+                        `المشرف: <@${warning.moderatorId}>`,
+                        `التاريخ: <t:${timestamp}:f>`,
+                    ].join('\n');
+                });
+
+                return [
+                    `سجل تحذيرات ${user.tag}`,
+                    '',
+                    ...lines,
+                ].join('\n\n').slice(0, 1900);
+            });
+        },
+    });
+
+    // /unwarn
+    commands.push({
+        data: baseCommand(
+            'unwarn',
+            'إزالة تحذير من عضو'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('warning_id')
+                    .setDescription('رقم التحذير')
+                    .setRequired(true)
+                    .setMinValue(1)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const warningId = interaction.options.getInteger('warning_id');
+
+                const result = await service.removeWarning(
+                    interaction.guild.id,
+                    user.id,
+                    warningId,
+                    interaction.user.id
+                );
+
+                if (!result) {
+                    return 'لم يتم العثور على هذا التحذير للعضو.';
+                }
+
+                await logSafely(
+                    interaction.guild,
+                    'إزالة تحذير',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالتحذير: #${result.warning.id}\nالقضية: #${result.caseEntry.id}`
+                );
+
+                return `تمت إزالة التحذير #${result.warning.id} من ${user.tag}.`;
+            });
+        },
+    });
+
+    // /timeout
+    commands.push({
+        data: baseCommand(
+            'timeout',
+            'إعطاء عضو تايم أوت'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('hours')
+                    .setDescription('المدة بالساعات، من 1 إلى 672')
+                    .setMinValue(1)
+                    .setMaxValue(MAX_TIMEOUT_HOURS)
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const hours = interaction.options.getInteger('hours');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.moderatable) {
+                    return 'لا أستطيع إعطاء هذا العضو تايم أوت. تحقق من صلاحيات البوت وترتيب الرتب.';
+                }
+
+                const durationMs = hours * 60 * 60 * 1000;
+                await member.timeout(durationMs, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'timeout',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                    durationMs,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'تطبيق تايم أوت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالمدة: ${hours} ساعة\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم إعطاء ${user.tag} تايم أوت لمدة ${hours} ساعة.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /untimeout
+    commands.push({
+        data: baseCommand(
+            'untimeout',
+            'إزالة التايم أوت عن عضو'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.moderatable) {
+                    return 'لا أستطيع تعديل حالة هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                await member.timeout(null, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'untimeout',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'إزالة تايم أوت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تمت إزالة التايم أوت عن ${user.tag}.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /ban
+    commands.push({
+        data: baseCommand(
+            'ban',
+            'حظر عضو بشكل دائم'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('delete_days')
+                    .setDescription('عدد أيام حذف الرسائل السابقة، من 0 إلى 7')
+                    .setMinValue(0)
+                    .setMaxValue(7)
+                    .setRequired(false)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+                const deleteDays =
+                    interaction.options.getInteger('delete_days') || 0;
+
+                if (user.id === interaction.user.id) {
+                    return 'لا يمكنك حظر نفسك.';
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (member && !member.bannable) {
+                    return 'لا أستطيع حظر هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                await interaction.guild.members.ban(user.id, {
+                    reason,
+                    deleteMessageSeconds: deleteDays * 86400,
+                });
+
+                cancelTempBanTimer(interaction.guild.id, user.id);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'ban',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'حظر دائم',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم حظر ${user.tag} بشكل دائم.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /tempban
+    commands.push({
+        data: baseCommand(
+            'tempban',
+            'حظر عضو لمدة محددة'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('hours')
+                    .setDescription('المدة بالساعات، من 1 إلى 672')
+                    .setMinValue(1)
+                    .setMaxValue(MAX_TEMPBAN_HOURS)
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const guild = interaction.guild;
+                const user = interaction.options.getUser('target');
+                const hours = interaction.options.getInteger('hours');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (user.id === interaction.user.id) {
+                    return 'لا يمكنك حظر نفسك.';
+                }
+
+                const member = await guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (member && !member.bannable) {
+                    return 'لا أستطيع حظر هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                const expiresAt = new Date(
+                    Date.now() + hours * 60 * 60 * 1000
+                ).toISOString();
+
+                // Record first, so the expiry can be recovered after restart.
+                const entry = await record(guild.id, {
+                    type: 'tempban',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                    durationMs: hours * 60 * 60 * 1000,
+                    expiresAt,
+                });
+
+                try {
+                    await guild.members.ban(user.id, {
+                        reason: `باند مؤقت: ${reason}`,
+                    });
+                } catch (error) {
+                    await record(guild.id, {
+                        type: 'tempban-failed',
+                        targetId: user.id,
+                        moderatorId: interaction.user.id,
+                        reason: 'فشل تطبيق الباند المؤقت',
+                        failedCaseId: entry.id,
+                    });
+
+                    throw error;
+                }
+
+                scheduleTempBan(guild.id, user.id, expiresAt);
+
+                await logSafely(
+                    guild,
+                    'باند مؤقت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالمدة: ${hours} ساعة\nالسبب: ${reason}\nينتهي: <t:${Math.floor(new Date(expiresAt).getTime() / 1000)}:f>\nالقضية: #${entry.id}`
+                );
+
+                return `تم حظر ${user.tag} لمدة ${hours} ساعة.\nينتهي: <t:${Math.floor(new Date(expiresAt).getTime() / 1000)}:f>\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /unban
+    commands.push({
+        data: baseCommand(
+            'unban',
+            'فك حظر مستخدم'
+        )
+            .addStringOption(option =>
+                option
+                    .setName('user_id')
+                    .setDescription('معرّف المستخدم المحظور')
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const guild = interaction.guild;
+                const userId = interaction.options.getString('user_id').trim();
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (!/^\d{17,20}$/.test(userId)) {
+                    return 'معرّف المستخدم غير صحيح.';
+                }
+
+                await guild.bans.remove(userId, reason);
+                cancelTempBanTimer(guild.id, userId);
+
+                const entry = await record(guild.id, {
+                    type: 'unban',
+                    targetId: userId,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    guild,
+                    'فك حظر',
+                    `المستخدم: <@${userId}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم فك الحظر عن المستخدم \`${userId}\`.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+
+    
+    // /kick
+    commands.push({
+        data: baseCommand('kick', 'طرد عضو من السيرفر')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (user.id === interaction.user.id || user.bot) {
+                    return 'لا يمكنك استخدام هذا الأمر على نفسك أو على بوت.';
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.kickable) {
+                    return 'لا أستطيع طرد هذا العضو. تحقق من ترتيب الرتب والصلاحيات.';
+                }
+
+                await member.kick(reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'kick',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(interaction.guild, 'طرد عضو',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`);
+
+                return `تم طرد ${user.tag} بنجاح.\nالقضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /softban
+    commands.push({
+        data: baseCommand('softban', 'حظر عضو ثم فك حظره لحذف رسائله')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption)
+            .addIntegerOption(option =>
+                option.setName('delete_days')
+                    .setDescription('عدد أيام حذف الرسائل من 0 إلى 7')
+                    .setMinValue(0)
+                    .setMaxValue(7)
+                    .setRequired(false)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const guild = interaction.guild;
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(interaction.options.getString('reason'));
+                const days = interaction.options.getInteger('delete_days') ?? 1;
+
+                if (user.id === interaction.user.id || user.bot) {
+                    return 'لا يمكنك استخدام هذا الأمر على نفسك أو على بوت.';
+                }
+
+                const member = await guild.members.fetch(user.id).catch(() => null);
+
+                if (member && !member.bannable) {
+                    return 'لا أستطيع حظر هذا العضو بسبب ترتيب الرتب أو الصلاحيات.';
+                }
+
+                await guild.members.ban(user.id, {
+                    reason: `Softban: ${reason}`,
+                    deleteMessageSeconds: days * 86400,
+                });
+
+                try {
+                    await guild.bans.remove(user.id, `Softban completed: ${reason}`);
+                } catch (error) {
+                    await record(guild.id, {
+                        type: 'softban-partial',
+                        targetId: user.id,
+                        moderatorId: interaction.user.id,
+                        reason: `تعذّر فك الحظر بعد تنفيذه: ${reason}`,
+                    });
+                    throw error;
+                }
+
+                const entry = await record(guild.id, {
+                    type: 'softban',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                    deleteDays: days,
+                });
+
+                await logSafely(guild, 'Softban',
+                    `المستخدم: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nحذف الرسائل: ${days} يوم\nالسبب: ${reason}\nالقضية: #${entry.id}`);
+
+                return `تم تنفيذ Softban على ${user.tag}.\nالقضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /purge-user
+    commands.push({
+        data: baseCommand('purge-user', 'حذف رسائل عضو من القناة الحالية')
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option.setName('amount')
+                    .setDescription('عدد الرسائل المطلوب حذفها (1–100)')
+                    .setMinValue(1)
+                    .setMaxValue(100)
+                    .setRequired(true)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const user = interaction.options.getUser('target');
+                const amount = interaction.options.getInteger('amount');
+
+                if (!channel?.isTextBased?.() || !channel.messages) {
+                    return 'استخدم هذا الأمر في قناة نصية تدعم الرسائل.';
+                }
+
+                const fetched = await channel.messages.fetch({ limit: 100 });
+                const selected = fetched
+                    .filter(message => message.author.id === user.id)
+                    .first(amount);
+
+                if (!selected.length) {
+                    return 'لم أجد رسائل حديثة لهذا العضو في القناة الحالية.';
+                }
+
+                const deleted = await channel.bulkDelete(selected, true);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'purge-user',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason: `حذف ${deleted.size} رسالة من ${channel.id}`,
+                });
+
+                await logSafely(interaction.guild, 'حذف رسائل عضو',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالقناة: <#${channel.id}>\nالرسائل المحذوفة: ${deleted.size}\nالقضية: #${entry.id}`);
+
+                return `تم حذف ${deleted.size} رسالة من ${user.tag} في القناة الحالية.`;
+            });
+        },
+    });
+
+    // /userinfo
+    commands.push({
+        data: baseCommand('userinfo', 'عرض معلومات مستخدم')
+            .addUserOption(option =>
+                option.setName('target')
+                    .setDescription('المستخدم المطلوب')
+                    .setRequired(false)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target')
+                    || interaction.user;
+
+                const member = await interaction.guild.members
+                    .fetch(user.id).catch(() => null);
+
+                const roles = member
+                    ? member.roles.cache
+                        .filter(role => role.id !== interaction.guild.id)
+                        .sort((a, b) => b.position - a.position)
+                        .map(role => role.toString())
+                        .slice(0, 15)
+                        .join(', ')
+                    : 'ليس عضوًا حاليًا في السيرفر';
+
+                const created = Math.floor(user.createdTimestamp / 1000);
+                const joined = member?.joinedTimestamp
+                    ? Math.floor(member.joinedTimestamp / 1000)
+                    : null;
+
+                return [
+                    `**معلومات المستخدم: ${user.tag}**`,
+                    `المعرّف: \`${user.id}\``,
+                    `الحساب أُنشئ: <t:${created}:F>`,
+                    `انضم للسيرفر: ${joined ? `<t:${joined}:F>` : 'غير متوفر'}`,
+                    `الاسم المستعار: ${member?.nickname || 'لا يوجد'}`,
+                    `الرتب: ${roles || 'لا توجد رتب إضافية'}`,
+                ].join('\n').slice(0, 1900);
+            });
+        },
+    });
+
+    // /nickname
+    commands.push({
+        data: baseCommand('nickname', 'تغيير أو إزالة الاسم المستعار لعضو')
+            .addUserOption(userOption)
+            .addStringOption(option =>
+                option.setName('nickname')
+                    .setDescription('الاسم الجديد؛ اتركه فارغًا لإزالة الاسم الحالي')
+                    .setRequired(false)
+                    .setMaxLength(32)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const nickname = interaction.options.getString('nickname');
+
+                const member = await interaction.guild.members
+                    .fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.manageable) {
+                    return 'لا أستطيع تعديل اسم هذا العضو بسبب ترتيب الرتب.';
+                }
+
+                await member.setNickname(nickname, `Changed by ${interaction.user.id}`);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'nickname',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason: nickname
+                        ? `تغيير الاسم المستعار إلى ${nickname}`
+                        : 'إزالة الاسم المستعار',
+                });
+
+                return `تم تحديث الاسم المستعار للعضو ${user.tag}.\nالقضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /role-add
+    commands.push({
+        data: baseCommand('role-add', 'إعطاء رتبة لعضو')
+            .addUserOption(userOption)
+            .addRoleOption(option =>
+                option.setName('role')
+                    .setDescription('الرتبة المطلوب إعطاؤها')
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const role = interaction.options.getRole('role');
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (role.id === interaction.guild.id || role.managed || !role.editable) {
+                    return 'لا يمكن للبوت إدارة هذه الرتبة بسبب نوعها أو ترتيب الرتب.';
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.manageable) {
+                    return 'لا أستطيع إدارة رتب هذا العضو بسبب ترتيب الرتب.';
+                }
+
+                await member.roles.add(role, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'role-add',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason: `${role.name}: ${reason}`,
+                });
+
+                await logSafely(interaction.guild, 'إضافة رتبة',
+                    `العضو: <@${user.id}>\nالرتبة: <@&${role.id}>\nالمشرف: <@${interaction.user.id}>\nالقضية: #${entry.id}`);
+
+                return `تم إعطاء رتبة ${role.name} للعضو ${user.tag}.`;
+            });
+        },
+    });
+
+    // /role-remove
+    commands.push({
+        data: baseCommand('role-remove', 'إزالة رتبة من عضو')
+            .addUserOption(userOption)
+            .addRoleOption(option =>
+                option.setName('role')
+                    .setDescription('الرتبة المطلوب إزالتها')
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const role = interaction.options.getRole('role');
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (role.id === interaction.guild.id || role.managed || !role.editable) {
+                    return 'لا يمكن للبوت إدارة هذه الرتبة بسبب نوعها أو ترتيب الرتب.';
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.manageable) {
+                    return 'لا أستطيع إدارة رتب هذا العضو بسبب ترتيب الرتب.';
+                }
+
+                await member.roles.remove(role, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'role-remove',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason: `${role.name}: ${reason}`,
+                });
+
+                await logSafely(interaction.guild, 'إزالة رتبة',
+                    `العضو: <@${user.id}>\nالرتبة: <@&${role.id}>\nالمشرف: <@${interaction.user.id}>\nالقضية: #${entry.id}`);
+
+                return `تمت إزالة رتبة ${role.name} من العضو ${user.tag}.`;
+            });
+        },
+    });
+
+
+
+    // /voice-mute
+    commands.push({
+        data: baseCommand('voice-mute', 'كتم عضو في القناة الصوتية')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(interaction.options.getString('reason'));
+                const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.voice.channel) return 'العضو ليس في قناة صوتية.';
+
+                await member.voice.setMute(true, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'voice-mute',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(interaction.guild, 'كتم صوتي',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`);
+
+                return `تم كتم صوت ${user.tag}. القضية #${entry.id}`;
+            });
+        },
+    });
+
+    // /voice-unmute
+    commands.push({
+        data: baseCommand('voice-unmute', 'إلغاء الكتم الصوتي لعضو')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(interaction.options.getString('reason'));
+                const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.voice.channel) return 'العضو ليس في قناة صوتية.';
+
+                await member.voice.setMute(false, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'voice-unmute',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(interaction.guild, 'إلغاء الكتم الصوتي',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالقضية: #${entry.id}`);
+
+                return `تم إلغاء الكتم الصوتي عن ${user.tag}.`;
+            });
+        },
+    });
+
+    // /deafen
+    commands.push({
+        data: baseCommand('deafen', 'منع عضو من سماع القناة الصوتية')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(interaction.options.getString('reason'));
+                const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.voice.channel) return 'العضو ليس في قناة صوتية.';
+
+                await member.voice.setDeaf(true, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'deafen',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                return `تم منع ${user.tag} من سماع القناة الصوتية. القضية #${entry.id}`;
+            });
+        },
+    });
+
+    // /undeafen
+    commands.push({
+        data: baseCommand('undeafen', 'إعادة تمكين السماع لعضو')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(interaction.options.getString('reason'));
+                const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.voice.channel) return 'العضو ليس في قناة صوتية.';
+
+                await member.voice.setDeaf(false, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'undeafen',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                return `تمت إعادة السماع إلى ${user.tag}. القضية #${entry.id}`;
+            });
+        },
+    });
+
+    // /clear
+    commands.push({
+        data: baseCommand('clear', 'حذف رسائل من القناة الحالية')
+            .addIntegerOption(option =>
+                option.setName('amount')
+                    .setDescription('عدد الرسائل (1–100)')
+                    .setMinValue(1)
+                    .setMaxValue(100)
+                    .setRequired(true)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const amount = interaction.options.getInteger('amount');
+
+                if (!channel?.isTextBased?.() || !channel.messages) {
+                    return 'هذه القناة لا تدعم حذف الرسائل بهذه الطريقة.';
+                }
+
+                const fetched = await channel.messages.fetch({ limit: amount });
+                const recent = fetched.filter(
+                    message => Date.now() - message.createdTimestamp < 14 * 24 * 60 * 60 * 1000
+                );
+
+                if (!recent.size) return 'لم أجد رسائل حديثة قابلة للحذف.';
+
+                if (recent.size === 1) {
+                    await recent.first().delete();
+                } else {
+                    await channel.bulkDelete(recent, true);
+                }
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'clear',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason: `حذف ${recent.size} رسالة من القناة ${channel.id}`,
+                });
+
+                await logSafely(interaction.guild, 'حذف رسائل',
+                    `المشرف: <@${interaction.user.id}>\nالقناة: <#${channel.id}>\nالعدد: ${recent.size}\nالقضية: #${entry.id}`);
+
+                return `تم حذف ${recent.size} رسالة. القضية #${entry.id}`;
+            });
+        },
+    });
+
+    // /slowmode
+    commands.push({
+        data: baseCommand('slowmode', 'تغيير وضع الإبطاء للقناة')
+            .addIntegerOption(option =>
+                option.setName('seconds')
+                    .setDescription('عدد الثواني (0–21600)')
+                    .setMinValue(0)
+                    .setMaxValue(21600)
+                    .setRequired(true)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const seconds = interaction.options.getInteger('seconds');
+
+                if (typeof channel?.setRateLimitPerUser !== 'function') {
+                    return 'هذه القناة لا تدعم وضع الإبطاء.';
+                }
+
+                await channel.setRateLimitPerUser(
+                    seconds,
+                    `Changed by ${interaction.user.id}`
+                );
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'slowmode',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason: `وضع الإبطاء: ${seconds} ثانية`,
+                });
+
+                await logSafely(interaction.guild, 'تغيير وضع الإبطاء',
+                    `القناة: <#${channel.id}>\nالثواني: ${seconds}\nالمشرف: <@${interaction.user.id}>\nالقضية: #${entry.id}`);
+
+                return seconds === 0
+                    ? 'تم إيقاف وضع الإبطاء.'
+                    : `تم ضبط وضع الإبطاء على ${seconds} ثانية.`;
+            });
+        },
+    });
+
+    // /lock
+    commands.push({
+        data: baseCommand('lock', 'قفل الكتابة في القناة الحالية')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (!channel?.permissionOverwrites?.edit) {
+                    return 'لا يمكن تعديل صلاحيات هذه القناة.';
+                }
+
+                await channel.permissionOverwrites.edit(
+                    interaction.guild.roles.everyone,
+                    { SendMessages: false },
+                    { reason }
+                );
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'lock',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(interaction.guild, 'قفل قناة',
+                    `القناة: <#${channel.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`);
+
+                return `تم قفل الكتابة في <#${channel.id}>.`;
+            });
+        },
+    });
+
+    // /unlock
+    commands.push({
+        data: baseCommand('unlock', 'فتح الكتابة في القناة الحالية')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (!channel?.permissionOverwrites?.edit) {
+                    return 'لا يمكن تعديل صلاحيات هذه القناة.';
+                }
+
+                await channel.permissionOverwrites.edit(
+                    interaction.guild.roles.everyone,
+                    { SendMessages: null },
+                    { reason }
+                );
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'unlock',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(interaction.guild, 'فتح قناة',
+                    `القناة: <#${channel.id}>\nالمشرف: <@${interaction.user.id}>\nالقضية: #${entry.id}`);
+
+                return `تم فتح الكتابة في <#${channel.id}>.`;
+            });
+        },
+    });
+
+    // /lockall
+    commands.push({
+        data: baseCommand('lockall', 'قفل الكتابة في جميع القنوات النصية')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const reason = safeReason(interaction.options.getString('reason'));
+                const channels = interaction.guild.channels.cache.filter(
+                    channel => [0, 5].includes(channel.type) && channel.permissionOverwrites?.edit
+                );
+
+                let succeeded = 0;
+                let failed = 0;
+
+                for (const channel of channels.values()) {
+                    try {
+                        await channel.permissionOverwrites.edit(
+                            interaction.guild.roles.everyone,
+                            { SendMessages: false },
+                            { reason }
+                        );
+                        succeeded++;
+                    } catch (error) {
+                        failed++;
+                        manager.logger.warn(`Could not lock channel ${channel.id}`, error);
+                    }
+                }
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'lockall',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason: `نجح: ${succeeded}، فشل: ${failed} — ${reason}`,
+                });
+
+                await logSafely(interaction.guild, 'قفل جميع القنوات',
+                    `المشرف: <@${interaction.user.id}>\nنجح: ${succeeded}\nفشل: ${failed}\nالقضية: #${entry.id}`);
+
+                return `اكتمل قفل القنوات.\nنجح: ${succeeded}\nفشل: ${failed}`;
+            });
+        },
+    });
+
+    // /unlockall
+    commands.push({
+        data: baseCommand('unlockall', 'فتح الكتابة في جميع القنوات النصية')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const reason = safeReason(interaction.options.getString('reason'));
+                const channels = interaction.guild.channels.cache.filter(
+                    channel => [0, 5].includes(channel.type) && channel.permissionOverwrites?.edit
+                );
+
+                let succeeded = 0;
+                let failed = 0;
+
+                for (const channel of channels.values()) {
+                    try {
+                        await channel.permissionOverwrites.edit(
+                            interaction.guild.roles.everyone,
+                            { SendMessages: null },
+                            { reason }
+                        );
+                        succeeded++;
+                    } catch (error) {
+                        failed++;
+                        manager.logger.warn(`Could not unlock channel ${channel.id}`, error);
+                    }
+                }
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'unlockall',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason: `نجح: ${succeeded}، فشل: ${failed} — ${reason}`,
+                });
+
+                await logSafely(interaction.guild, 'فتح جميع القنوات',
+                    `المشرف: <@${interaction.user.id}>\nنجح: ${succeeded}\nفشل: ${failed}\nالقضية: #${entry.id}`);
+
+                return `اكتمل فتح القنوات.\nنجح: ${succeeded}\nفشل: ${failed}`;
+            });
+        },
+    });
+
+    // /hide
+    commands.push({
+        data: baseCommand('hide', 'إخفاء القناة عن الجميع')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (!channel?.permissionOverwrites?.edit) {
+                    return 'لا يمكن تعديل صلاحيات هذه القناة.';
+                }
+
+                await channel.permissionOverwrites.edit(
+                    interaction.guild.roles.everyone,
+                    { ViewChannel: false },
+                    { reason }
+                );
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'hide',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                return `تم إخفاء <#${channel.id}> عن @everyone. القضية #${entry.id}`;
+            });
+        },
+    });
+
+    // /unhide
+    commands.push({
+        data: baseCommand('unhide', 'إظهار القناة مجددًا')
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.channel;
+                const reason = safeReason(interaction.options.getString('reason'));
+
+                if (!channel?.permissionOverwrites?.edit) {
+                    return 'لا يمكن تعديل صلاحيات هذه القناة.';
+                }
+
+                await channel.permissionOverwrites.edit(
+                    interaction.guild.roles.everyone,
+                    { ViewChannel: null },
+                    { reason }
+                );
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'unhide',
+                    targetId: null,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                return `تمت إعادة إظهار <#${channel.id}>. القضية #${entry.id}`;
+            });
+        },
+    });
+
+
+    
+    // /announce
+    commands.push({
+        data: baseCommand('announce', 'إرسال إعلان إلى قناة')
+            .addChannelOption(option =>
+                option.setName('channel')
+                    .setDescription('القناة التي سيُنشر فيها الإعلان')
+                    .setRequired(true)
+            )
+            .addStringOption(option =>
+                option.setName('message')
+                    .setDescription('نص الإعلان')
+                    .setRequired(true)
+                    .setMaxLength(2000)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.options.getChannel('channel');
+                const message = interaction.options.getString('message');
+
+                if (!channel?.isTextBased?.() || !channel.send) {
+                    return 'القناة المحددة لا تدعم إرسال الرسائل.';
+                }
+
+                await channel.send({
+                    content: message,
+                    allowedMentions: { parse: [] },
+                });
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'announce',
+                    targetId: channel.id,
+                    moderatorId: interaction.user.id,
+                    reason: 'إرسال إعلان',
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'إرسال إعلان',
+                    `المشرف: <@${interaction.user.id}>\nالقناة: <#${channel.id}>\nالقضية: #${entry.id}`
+                );
+
+                return `تم إرسال الإعلان إلى <#${channel.id}>.`;
+            });
+        },
+    });
+
+    // /embed
+    commands.push({
+        data: baseCommand('embed', 'إرسال رسالة بتنسيق Embed')
+            .addChannelOption(option =>
+                option.setName('channel')
+                    .setDescription('قناة إرسال الرسالة')
+                    .setRequired(true)
+            )
+            .addStringOption(option =>
+                option.setName('title')
+                    .setDescription('عنوان الرسالة')
+                    .setRequired(true)
+                    .setMaxLength(256)
+            )
+            .addStringOption(option =>
+                option.setName('description')
+                    .setDescription('محتوى الرسالة')
+                    .setRequired(true)
+                    .setMaxLength(4000)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.options.getChannel('channel');
+                const title = interaction.options.getString('title');
+                const description = interaction.options.getString('description');
+
+                if (!channel?.isTextBased?.() || !channel.send) {
+                    return 'القناة المحددة لا تدعم إرسال الرسائل.';
+                }
+
+                await channel.send({
+                    embeds: [{
+                        color: 0x2B2D42,
+                        title,
+                        description,
+                        timestamp: new Date().toISOString(),
+                    }],
+                    allowedMentions: { parse: [] },
+                });
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'embed',
+                    targetId: channel.id,
+                    moderatorId: interaction.user.id,
+                    reason: `إرسال Embed: ${title}`,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'إرسال Embed',
+                    `المشرف: <@${interaction.user.id}>\nالقناة: <#${channel.id}>\nالقضية: #${entry.id}`
+                );
+
+                return `تم إرسال الرسالة المنسقة إلى <#${channel.id}>.`;
+            });
+        },
+    });
+
+    // /case
+    commands.push({
+        data: baseCommand('case', 'عرض تفاصيل قضية إدارية')
+            .addIntegerOption(option =>
+                option.setName('id')
+                    .setDescription('رقم القضية')
+                    .setMinValue(1)
+                    .setRequired(true)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const id = interaction.options.getInteger('id');
+                const entry = await service.getCase(
+                    interaction.guild.id,
+                    id
+                );
+
+                if (!entry) {
+                    return 'لم يتم العثور على هذه القضية.';
+                }
+
+                const timestamp = Math.floor(
+                    new Date(entry.createdAt).getTime() / 1000
+                );
+
+                return [
+                    `**القضية #${entry.id}**`,
+                    `النوع: ${entry.type}`,
+                    `العضو: ${entry.targetId ? `<@${entry.targetId}>` : 'غير محدد'}`,
+                    `المشرف: ${entry.moderatorId ? `<@${entry.moderatorId}>` : 'غير محدد'}`,
+                    `السبب: ${entry.reason || 'لم يُذكر سبب'}`,
+                    `التاريخ: <t:${timestamp}:F>`,
+                ].join('\n');
+            });
+        },
+    });
+
+    // /modlogs
+    commands.push({
+        data: baseCommand('modlogs', 'عرض سجل القضايا الإدارية')
+            .addUserOption(option =>
+                option.setName('target')
+                    .setDescription('تصفية السجل حسب عضو')
+                    .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option.setName('limit')
+                    .setDescription('عدد القضايا المعروضة من 1 إلى 10')
+                    .setMinValue(1)
+                    .setMaxValue(10)
+                    .setRequired(false)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const limit = interaction.options.getInteger('limit') || 10;
+
+                const cases = await service.getCases(
+                    interaction.guild.id,
+                    user?.id || null,
+                    limit
+                );
+
+                if (!cases.length) {
+                    return 'لا توجد قضايا مسجلة حسب التصفية المحددة.';
+                }
+
+                const lines = cases.map(entry => {
+                    const timestamp = Math.floor(
+                        new Date(entry.createdAt).getTime() / 1000
+                    );
+
+                    return [
+                        `**#${entry.id} — ${entry.type}**`,
+                        `العضو: ${entry.targetId ? `<@${entry.targetId}>` : 'غير محدد'}`,
+                        `السبب: ${entry.reason || 'لم يُذكر سبب'}`,
+                        `التاريخ: <t:${timestamp}:R>`,
+                    ].join('\n');
+                });
+
+                return [
+                    '**سجل القضايا الإدارية**',
+                    '',
+                    ...lines,
+                ].join('\n\n').slice(0, 1900);
+            });
+        },
+    });
+
+    // /clear-warnings
+    commands.push({
+        data: baseCommand('clear-warnings', 'مسح جميع تحذيرات عضو')
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                const count = await service.clearWarnings(
+                    interaction.guild.id,
+                    user.id,
+                    interaction.user.id
+                );
+
+                if (!count) {
+                    return 'هذا العضو ليس لديه تحذيرات مسجلة.';
+                }
+
+                await logSafely(
+                    interaction.guild,
+                    'مسح تحذيرات عضو',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالعدد: ${count}\nالسبب: ${reason}`
+                );
+
+                return `تم مسح ${count} تحذير للعضو ${user.tag}.`;
+            });
+        },
+    });
+
+    // /staff-list
+    commands.push({
+        data: baseCommand('staff-list', 'عرض أعضاء الإدارة والإشراف'),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                let members = interaction.guild.members.cache;
+
+                try {
+                    members = await interaction.guild.members.fetch();
+                } catch (error) {
+                    manager.logger.warn(
+                        'Could not fetch the complete staff list.',
+                        error
+                    );
+                }
+
+                const staff = members
+                    .filter(member =>
+                        !member.user.bot &&
+                        (
+                            member.permissions.has(PermissionFlagsBits.Administrator) ||
+                            member.permissions.has(PermissionFlagsBits.ManageGuild) ||
+                            member.permissions.has(PermissionFlagsBits.ManageMessages) ||
+                            member.permissions.has(PermissionFlagsBits.ModerateMembers)
+                        )
+                    )
+                    .map(member => {
+                        const roles = member.roles.cache
+                            .filter(role => role.id !== interaction.guild.id)
+                            .filter(role => role.permissions.has(PermissionFlagsBits.Administrator) ||
+                                role.permissions.has(PermissionFlagsBits.ManageGuild) ||
+                                role.permissions.has(PermissionFlagsBits.ManageMessages) ||
+                                role.permissions.has(PermissionFlagsBits.ModerateMembers))
+                            .map(role => role.name)
+                            .slice(0, 3);
+
+                        return `• ${member.user.tag}${roles.length ? ` — ${roles.join('، ')}` : ''}`;
+                    });
+
+                if (!staff.length) {
+                    return 'لم يتم العثور على أعضاء إدارة في الأعضاء المتاحين للبوت.';
+                }
+
+                return [
+                    `**أعضاء الإدارة والإشراف (${staff.length})**`,
+                    '',
+                    ...staff.slice(0, 60),
+                    ...(staff.length > 60 ? [`و ${staff.length - 60} عضوًا آخر.`] : []),
+                ].join('\n').slice(0, 1900);
+            });
+        },
+    });
+
+    // /setsecuritylog
+    commands.push({
+        data: baseCommand('setsecuritylog', 'تحديد قناة سجل الحماية')
+            .addChannelOption(option =>
+                option.setName('channel')
+                    .setDescription('قناة سجل الحماية')
+                    .setRequired(true)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const channel = interaction.options.getChannel('channel');
+
+                if (!channel?.isTextBased?.() || !channel.send) {
+                    return 'القناة المحددة لا تدعم إرسال الرسائل.';
+                }
+
+                await manager.setLogChannel(
+                    interaction.guild.id,
+                    channel.id
+                );
+
+                await logSafely(
+                    interaction.guild,
+                    'تغيير قناة سجل الحماية',
+                    `المشرف: <@${interaction.user.id}>\nالقناة الجديدة: <#${channel.id}>`
+                );
+
+                return `تم تحديد <#${channel.id}> قناةً لسجل الحماية.`;
+            });
+        },
+    });
+
+
+
+    return commands;
+}
+
+module.exports = {
+    createModerationCommands,
+};

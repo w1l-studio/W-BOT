@@ -1,0 +1,512 @@
+{
+  "1551431706731479199": [
+    {
+      "id": "1792436891998-cj2q4i",
+      "timestamp": "2026-10-19T19:08:11.998Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1792436883496-4ev1ab",
+      "timestamp": "2026-10-19T19:08:03.496Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مكافحة التخريب الإداري.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiNuke",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792436880455-tdord7",
+      "timestamp": "2026-10-19T19:08:00.455Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة التخريب الإداري.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiNuke",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1792333948055-vchr8z",
+      "timestamp": "2026-10-18T14:32:28.055Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة الهجمات الجماعية.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRaid",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1792333939420-n5hryk",
+      "timestamp": "2026-10-18T14:32:19.420Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مكافحة التخريب الإداري.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiNuke",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792333937060-vt12gk",
+      "timestamp": "2026-10-18T14:32:17.060Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل حماية الرتب والصلاحيات.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRole",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792333934965-dcxcdy",
+      "timestamp": "2026-10-18T14:32:14.965Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مكافحة السبام.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiSpam",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792333932594-ypig4w",
+      "timestamp": "2026-10-18T14:32:12.594Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل حماية الروابط.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiLink",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792333929880-a0v6la",
+      "timestamp": "2026-10-18T14:32:09.880Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف حماية الروابط.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiLink",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1792327238454-mxv8mv",
+      "timestamp": "2026-10-18T12:40:38.454Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مكافحة الهجمات الجماعية.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRaid",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792327234357-8w9vhu",
+      "timestamp": "2026-10-18T12:40:34.357Z",
+      "severity": "medium",
+      "type": "CONFIG_SYSTEM",
+      "description": "تم تشغيل نظام الحماية بالكامل.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1792327202017-hpgnrt",
+      "timestamp": "2026-10-18T12:40:02.017Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل حماية الروابط.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiLink",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1791933114029-cl73sv",
+      "timestamp": "2026-10-13T23:11:54.029Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1791933100763-5amsxv",
+      "timestamp": "2026-10-13T23:11:40.763Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791933092937-qht1y6",
+      "timestamp": "2026-10-13T23:11:32.937Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1791933089657-yra3sa",
+      "timestamp": "2026-10-13T23:11:29.657Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791933038954-zp2hh1",
+      "timestamp": "2026-10-13T23:10:38.954Z",
+      "severity": "low",
+      "type": "CONFIG_MODE",
+      "description": "تم تغيير وضع الحماية إلى monitor.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "mode": "monitor"
+      }
+    },
+    {
+      "id": "1791932880348-t1zr6n",
+      "timestamp": "2026-10-13T23:08:00.348Z",
+      "severity": "low",
+      "type": "CONFIG_MODE",
+      "description": "تم تغيير وضع الحماية إلى monitor.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "mode": "monitor"
+      }
+    },
+    {
+      "id": "1791932784160-g5631z",
+      "timestamp": "2026-10-13T23:06:24.160Z",
+      "severity": "low",
+      "type": "CONFIG_MODE",
+      "description": "تم تغيير وضع الحماية إلى monitor.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "mode": "monitor"
+      }
+    },
+    {
+      "id": "1791932651484-m670sp",
+      "timestamp": "2026-10-13T23:04:11.484Z",
+      "severity": "low",
+      "type": "CONFIG_MODE",
+      "description": "تم تغيير وضع الحماية إلى monitor.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "mode": "monitor"
+      }
+    },
+    {
+      "id": "1791932133083-cgrfgo",
+      "timestamp": "2026-10-13T22:55:33.083Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مراقبة Webhooks.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiWebhook",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1791932131086-iy5hst",
+      "timestamp": "2026-10-13T22:55:31.086Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم تفعيل مراقبة القنوات.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiChannel",
+        "enabled": true
+      }
+    },
+    {
+      "id": "1791932099039-n3yy4u",
+      "timestamp": "2026-10-13T22:54:59.039Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف حماية الرتب والصلاحيات.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRole",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791932093541-9xdrhp",
+      "timestamp": "2026-10-13T22:54:53.541Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة التخريب الإداري.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiNuke",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791932091507-zer230",
+      "timestamp": "2026-10-13T22:54:51.507Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة السبام.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiSpam",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791932089010-rux0au",
+      "timestamp": "2026-10-13T22:54:49.010Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة الهجمات الجماعية.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRaid",
+        "enabled": false
+      }
+    },
+    {
+      "id": "1791932088994-zy4vo3",
+      "timestamp": "2026-10-13T22:54:48.994Z",
+      "severity": "low",
+      "type": "CONFIG_FEATURE",
+      "description": "تم إيقاف مكافحة الهجمات الجماعية.",
+      "fields": [
+        {
+          "name": "بواسطة",
+          "value": "<@1487388575329681570>",
+          "inline": true
+        }
+      ],
+      "metadata": {
+        "actorId": "1487388575329681570",
+        "feature": "antiRaid",
+        "enabled": false
+      }
+    }
+  ]
+}

@@ -45,16 +45,16 @@ const botClient = new Client({
 let botStartTime = Date.now();
 
 botClient.once("ready", () => {
-    console.log(`[W BOT Backend] Discord Bot logged in as ${botClient.user.tag}`);
+    console.log(`[Trivia BOT Backend] Discord Bot logged in as ${botClient.user.tag}`);
     botStartTime = Date.now();
 });
 
 if (process.env.TOKEN) {
     botClient.login(process.env.TOKEN).catch(err => {
-        console.error("[W BOT Backend] Failed to login Discord Bot:", err.message);
+        console.error("[Trivia BOT Backend] Failed to login Discord Bot:", err.message);
     });
 } else {
-    console.warn("[W BOT Backend] WARNING: TOKEN environment variable is missing!");
+    console.warn("[Trivia BOT Backend] WARNING: TOKEN environment variable is missing!");
 }
 
 // ======================================================
@@ -212,7 +212,7 @@ app.get("/auth/callback", async (req, res) => {
             <html lang="ar" dir="rtl">
             <head>
                 <meta charset="UTF-8">
-                <title>W BOT • تسجيل الدخول ناجح</title>
+                <title>Trivia BOT • تسجيل الدخول ناجح</title>
                 <style>
                     body { background: #0F1015; color: #FFF; font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
                     .card { background: #1A1C24; padding: 2rem; border-radius: 16px; border: 1px solid #5865F2; max-width: 400px; width: 90%; }
@@ -224,7 +224,7 @@ app.get("/auth/callback", async (req, res) => {
                 <div class="card">
                     <h2>✅ تم تسجيل الدخول بنجاح!</h2>
                     <p>مرحبًا ${discordUser.global_name || discordUser.username}</p>
-                    <p>عد إلى تطبيق W BOT Dashboard للجوال لإكمال الاستخدام.</p>
+                    <p>عد إلى تطبيق Trivia BOT Dashboard للجوال لإكمال الاستخدام.</p>
                     <code>${token}</code>
                 </div>
             </body>
@@ -752,7 +752,7 @@ app.post("/api/guilds/:guildId/tickets/:channelId/delete", authenticateJWT, chec
 
     if (channel) {
         try {
-            await channel.delete("W BOT Dashboard • Ticket Deleted");
+            await channel.delete("Trivia BOT Dashboard • Ticket Deleted");
         } catch (err) {
             console.error("Error deleting channel on Discord:", err.message);
         }
@@ -829,7 +829,7 @@ app.get("/api/guilds/:guildId/stats", authenticateJWT, checkGuildPermission, (re
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`==================================================`);
-    console.log(`🚀 W BOT Secure Backend API running on port ${PORT}`);
+    console.log(`🚀 Trivia BOT Secure Backend API running on port ${PORT}`);
     console.log(`http://localhost:${PORT}`);
     console.log(`==================================================`);
 });

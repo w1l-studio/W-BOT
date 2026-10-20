@@ -33,13 +33,13 @@ async function handleInteraction(interaction) {
 
         const embed =
             new EmbedBuilder()
-                .setTitle("🎮 W BOT | الألعاب")
+                .setTitle("🎮 Trivia BOT | الألعاب")
                 .setDescription(
                     "اختر اللعبة التي تريد لعبها من القائمة بالأسفل."
                 )
                 .setColor(0x0000FF)
                 .setFooter({
-                    text: "W BOT • Games"
+                    text: "Trivia BOT • Games"
                 })
                 .setTimestamp();
 

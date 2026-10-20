@@ -1,10 +1,10 @@
 {
-  "name": "w-bot",
+  "name": "trivia-bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ai/tests/triggerDetector.test.js && node ai/tests/context.test.js && node ai/tests/channels.test.js && node ai/tests/promptBuilder.test.js"
   },
   "keywords": [],
   "type": "commonjs",
@@ -16,7 +16,9 @@
     "dotenv": "^18.0.3",
     "gif-encoder-2": "^1.0.5",
     "gif-frames": "^1.0.1",
-    "node-fetch": "^3.3.2"
+    "groq-sdk": "^1.6.0",
+    "node-fetch": "^3.3.2",
+    "rss-parser": "^3.13.0"
   },
   "allowScripts": {
     "canvas@3.2.3": true

@@ -12,7 +12,7 @@ const {
 } = require("discord.js");
 
 // ======================================================
-// W BOT • GENERAL COMMANDS / CONFIG
+// Trivia BOT • GENERAL COMMANDS / CONFIG
 // ======================================================
 
 const CONFIG_FILE = path.join(__dirname, "bot_config.json");
@@ -168,7 +168,7 @@ async function handleUserInfo(interaction) {
             { name: "🏷️ الرتب", value: roleList(member), inline: false },
             { name: "🤖 بوت؟", value: user.bot ? "نعم" : "لا", inline: true }
         )
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
@@ -203,7 +203,7 @@ async function handleServerInfo(interaction) {
             { name: "📅 تاريخ الإنشاء", value: formatDate(created), inline: false },
             { name: "🆔 Server ID", value: `\`${guild.id}\``, inline: false }
         )
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
@@ -231,7 +231,7 @@ async function handleAvatar(interaction) {
         .setDescription(`**الرابط المباشر بجودة عالية:**\n${avatar}`)
         .setImage(avatar)
         .setColor(0x5865F2)
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -264,7 +264,7 @@ async function handlePoll(interaction) {
         .setTitle("📊 استطلاع رأي")
         .setDescription(`**${question}**\n\n👍 **نعم**\n👎 **لا**`)
         .setColor(0x5865F2)
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
 
     const message = await interaction.channel.send({ embeds: [embed] });
@@ -325,7 +325,7 @@ async function handleEmbed(interaction) {
         .setTitle(title)
         .setDescription(description)
         .setColor(color)
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
 
     if (image) {
@@ -404,14 +404,14 @@ async function handleRole(interaction) {
                 await interaction.reply(adminReply("ℹ️ العضو يملك هذه الرتبة بالفعل."));
                 return;
             }
-            await member.roles.add(role, `W BOT • /role add • ${interaction.user.tag}`);
+            await member.roles.add(role, `Trivia BOT • /role add • ${interaction.user.tag}`);
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("✅ تم إعطاء الرتبة")
                         .setDescription(`تم إعطاء ${role} إلى ${member}.`)
                         .setColor(0x57F287)
-                        .setFooter({ text: "W BOT" })
+                        .setFooter({ text: "Trivia BOT" })
                         .setTimestamp()
                 ]
             });
@@ -420,14 +420,14 @@ async function handleRole(interaction) {
                 await interaction.reply(adminReply("ℹ️ العضو لا يملك هذه الرتبة."));
                 return;
             }
-            await member.roles.remove(role, `W BOT • /role remove • ${interaction.user.tag}`);
+            await member.roles.remove(role, `Trivia BOT • /role remove • ${interaction.user.tag}`);
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("🗑️ تم سحب الرتبة")
                         .setDescription(`تم سحب ${role} من ${member}.`)
                         .setColor(0xED4245)
-                        .setFooter({ text: "W BOT" })
+                        .setFooter({ text: "Trivia BOT" })
                         .setTimestamp()
                 ]
             });
@@ -638,7 +638,7 @@ async function handlePermBan(interaction) {
             user.id,
             {
                 reason:
-                    `W BOT • حظر دائم • بواسطة ${interaction.user.tag} • السبب: ${reason}`,
+                    `Trivia BOT • حظر دائم • بواسطة ${interaction.user.tag} • السبب: ${reason}`,
 
                 deleteMessageSeconds: 0
             }
@@ -695,7 +695,7 @@ async function handlePermBan(interaction) {
                     0xED4245
                 )
 
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
 
                 .setTimestamp();
 
@@ -753,7 +753,7 @@ async function handlePrefix(interaction) {
                 .setTitle("⚙️ تم تغيير Prefix")
                 .setDescription(`البادئة الجديدة للسيرفر هي **${config.prefix}**`)
                 .setColor(0x5865F2)
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
                 .setTimestamp()
         ],
         flags: MessageFlags.Ephemeral
@@ -825,7 +825,7 @@ function setupCommand(name) {
 
 function configEmbed(guild, config) {
     return new EmbedBuilder()
-        .setTitle("⚙️ W BOT • إعدادات النظام")
+        .setTitle("⚙️ Trivia BOT • إعدادات النظام")
         .setDescription("الإعدادات الحالية لهذا السيرفر")
         .setColor(0x5865F2)
         .addFields(
@@ -834,7 +834,7 @@ function configEmbed(guild, config) {
             { name: "👋 الترحيب", value: config.welcomeEnabled ? `🟢 مفعل • ${config.welcomeChannelId ? `<#${config.welcomeChannelId}>` : "بدون روم"}` : "🔴 متوقف", inline: true },
             { name: "🎫 التذاكر", value: config.ticketsEnabled ? "🟢 مفعلة" : "🔴 متوقفة", inline: true }
         )
-        .setFooter({ text: "W BOT" })
+        .setFooter({ text: "Trivia BOT" })
         .setTimestamp();
 }
 
@@ -906,7 +906,7 @@ function registerClient(client) {
                 { name: "👤 العضو", value: `${member}`, inline: true },
                 { name: "👥 عدد الأعضاء", value: `**${member.guild.memberCount}**`, inline: true }
             )
-            .setFooter({ text: "W BOT" })
+            .setFooter({ text: "Trivia BOT" })
             .setTimestamp();
         await channel.send({
             embeds: [embed],
@@ -951,7 +951,7 @@ function registerClient(client) {
                     { name: "📥 الانضمام", value: formatDate(member?.joinedTimestamp), inline: true },
                     { name: "🏷️ الرتب", value: roleList(member), inline: false }
                 )
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
                 .setTimestamp();
             await message.reply({ embeds: [embed] }).catch(() => {});
             return;
@@ -971,7 +971,7 @@ function registerClient(client) {
                     { name: "👑 المالك", value: owner ? `${owner}` : `\`${message.guild.ownerId}\``, inline: false },
                     { name: "📅 الإنشاء", value: formatDate(message.guild.createdTimestamp), inline: false }
                 )
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
                 .setTimestamp();
             await message.reply({ embeds: [embed] }).catch(() => {});
             return;
@@ -992,14 +992,14 @@ function registerClient(client) {
 
         if (command === "help") {
             const embed = new EmbedBuilder()
-                .setTitle("🤖 W BOT • Prefix Help")
+                .setTitle("🤖 Trivia BOT • Prefix Help")
                 .setDescription(`البادئة الحالية: **${prefix}**`)
                 .setColor(0x5865F2)
                 .addFields(
                     { name: "🌐 عامة", value: `${prefix}ping\n${prefix}user [@member]\n${prefix}server\n${prefix}avatar [@member]`, inline: false },
                     { name: "🛡️ إدارة", value: `${prefix}poll <question>\n${prefix}say #channel <message>\n${prefix}role add/remove @user @role`, inline: false }
                 )
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
                 .setTimestamp();
             await message.reply({ embeds: [embed] }).catch(() => {});
             return;
@@ -1015,7 +1015,7 @@ function registerClient(client) {
                 .setTitle("📊 استطلاع رأي")
                 .setDescription(`**${argText}**\n\n👍 **نعم**\n👎 **لا**`)
                 .setColor(0x5865F2)
-                .setFooter({ text: "W BOT" })
+                .setFooter({ text: "Trivia BOT" })
                 .setTimestamp();
             const pollMessage = await message.channel.send({ embeds: [embed] }).catch(() => null);
             if (pollMessage) {

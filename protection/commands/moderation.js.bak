@@ -1,0 +1,697 @@
+
+'use strict';
+
+const {
+    SlashCommandBuilder,
+    PermissionFlagsBits,
+    MessageFlags,
+} = require('discord.js');
+
+const ADMIN = PermissionFlagsBits.Administrator;
+const MAX_WARNINGS = 4;
+const MAX_TIMEOUT_HOURS = 28 * 24;
+const MAX_TEMPBAN_HOURS = 28 * 24;
+const MAX_TIMER_DELAY = 2_147_000_000;
+
+function isAdmin(interaction) {
+    return Boolean(
+        interaction.memberPermissions?.has(ADMIN)
+    );
+}
+
+function safeReason(reason) {
+    return String(reason || 'لم يُذكر سبب')
+        .trim()
+        .slice(0, 500);
+}
+
+function baseCommand(name, description) {
+    return new SlashCommandBuilder()
+        .setName(name)
+        .setDescription(description)
+        .setDefaultMemberPermissions(ADMIN);
+}
+
+function userOption(option) {
+    return option
+        .setName('target')
+        .setDescription('العضو المستهدف')
+        .setRequired(true);
+}
+
+function reasonOption(option) {
+    return option
+        .setName('reason')
+        .setDescription('سبب الإجراء')
+        .setRequired(true);
+}
+
+function isUnknownBan(error) {
+    return Number(error?.code) === 10026 ||
+        Number(error?.rawError?.code) === 10026;
+}
+
+function createModerationCommands(manager, service) {
+    const commands = [];
+    const client = manager.client;
+    const tempBanTimers = new Map();
+
+    async function logSafely(guild, title, description) {
+        try {
+            await manager.log(guild, title, description);
+        } catch (error) {
+            manager.logger.warn(
+                'Could not write moderation log.',
+                error
+            );
+        }
+    }
+
+    async function record(guildId, entry) {
+        return service.recordCase(guildId, entry);
+    }
+
+    function cancelTempBanTimer(guildId, userId) {
+        const key = `${guildId}:${userId}`;
+        const timer = tempBanTimers.get(key);
+
+        if (timer) {
+            clearTimeout(timer);
+            tempBanTimers.delete(key);
+        }
+    }
+
+    function scheduleTempBan(guildId, userId, expiresAt) {
+        const key = `${guildId}:${userId}`;
+        cancelTempBanTimer(guildId, userId);
+
+        const expiry = new Date(expiresAt).getTime();
+
+        if (!Number.isFinite(expiry)) {
+            manager.logger.warn(
+                `Invalid tempban expiry for ${key}.`
+            );
+            return;
+        }
+
+        const delay = Math.max(0, expiry - Date.now());
+
+        const timer = setTimeout(async () => {
+            tempBanTimers.delete(key);
+
+            // Node.js timer limits require long waits to be split.
+            if (Date.now() < expiry) {
+                scheduleTempBan(guildId, userId, expiry);
+                return;
+            }
+
+            const guild = client.guilds.cache.get(guildId)
+                || await client.guilds.fetch(guildId).catch(() => null);
+
+            if (!guild) {
+                scheduleRetry(guildId, userId, expiry);
+                return;
+            }
+
+            try {
+                await guild.bans.remove(
+                    userId,
+                    'Temporary ban expired'
+                );
+            } catch (error) {
+                if (!isUnknownBan(error)) {
+                    manager.logger.warn(
+                        `Temporary unban failed for ${key}.`,
+                        error
+                    );
+
+                    scheduleRetry(guildId, userId, expiry);
+                    return;
+                }
+            }
+
+            try {
+                await record(guildId, {
+                    type: 'tempban-expired',
+                    targetId: userId,
+                    moderatorId: client.user?.id || null,
+                    reason: 'انتهت مدة الباند المؤقت',
+                    expiresAt: new Date(expiry).toISOString(),
+                });
+
+                await logSafely(
+                    guild,
+                    'انتهاء الباند المؤقت',
+                    `العضو: <@${userId}>\nانتهت مدة الباند المؤقت تلقائيًا.`
+                );
+            } catch (error) {
+                manager.logger.error(
+                    'Could not save temporary unban result.',
+                    error
+                );
+            }
+        }, Math.min(delay, MAX_TIMER_DELAY));
+
+        timer.unref?.();
+        tempBanTimers.set(key, timer);
+    }
+
+    function scheduleRetry(guildId, userId, expiry) {
+        const key = `${guildId}:${userId}`;
+        cancelTempBanTimer(guildId, userId);
+
+        const timer = setTimeout(() => {
+            tempBanTimers.delete(key);
+            scheduleTempBan(guildId, userId, expiry);
+        }, 60_000);
+
+        timer.unref?.();
+        tempBanTimers.set(key, timer);
+    }
+
+    async function restoreTempBans() {
+        await service.load();
+
+        const latest = new Map();
+        const cases = Object.values(service.data.cases || {})
+            .flat()
+            .sort((a, b) => Number(a.id) - Number(b.id));
+
+        const relevantTypes = new Set([
+            'tempban',
+            'tempban-expired',
+            'tempban-failed',
+            'unban',
+            'ban',
+        ]);
+
+        for (const entry of cases) {
+            if (
+                !entry.targetId ||
+                !relevantTypes.has(entry.type)
+            ) {
+                continue;
+            }
+
+            const key = `${entry.guildId}:${entry.targetId}`;
+            latest.set(key, entry);
+        }
+
+        for (const entry of latest.values()) {
+            if (entry.type !== 'tempban' || !entry.expiresAt) {
+                continue;
+            }
+
+            scheduleTempBan(
+                entry.guildId,
+                entry.targetId,
+                entry.expiresAt
+            );
+        }
+    }
+
+    if (client.isReady?.()) {
+        restoreTempBans().catch(error => {
+            manager.logger.error(
+                'Could not restore temporary bans.',
+                error
+            );
+        });
+    } else {
+        client.once('ready', () => {
+            restoreTempBans().catch(error => {
+                manager.logger.error(
+                    'Could not restore temporary bans.',
+                    error
+                );
+            });
+        });
+    }
+
+    async function executeAdmin(interaction, action) {
+        if (!interaction.inGuild()) {
+            return interaction.reply({
+                content: 'هذا الأمر متاح داخل السيرفر فقط.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+
+        if (!isAdmin(interaction)) {
+            return interaction.reply({
+                content: 'هذا الأمر مخصص للإداريين فقط.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
+
+        await interaction.deferReply({
+            flags: MessageFlags.Ephemeral,
+        });
+
+        try {
+            const message = await action();
+            return interaction.editReply(message);
+        } catch (error) {
+            manager.logger.error(
+                `Moderation command failed: ${interaction.commandName}`,
+                error
+            );
+
+            return interaction.editReply(
+                'تعذّر تنفيذ الإجراء. تحقق من صلاحيات البوت وترتيب الرتب، وراجع سجل البوت.'
+            );
+        }
+    }
+
+    // /warn
+    commands.push({
+        data: baseCommand(
+            'warn',
+            'تسجيل تحذير وتطبيق العقوبة حسب مستوى التحذير'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (user.id === interaction.user.id || user.bot) {
+                    throw new Error(
+                        'Cannot warn yourself or a bot.'
+                    );
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) {
+                    return 'العضو غير موجود في هذا السيرفر.';
+                }
+
+                const result = await service.warn(
+                    interaction,
+                    member,
+                    reason
+                );
+
+                if (!result.ok) {
+                    return result.message;
+                }
+
+                return [
+                    `${result.rule.emoji} تم تسجيل التحذير.`,
+                    `العضو: ${user.tag}`,
+                    `المستوى: ${result.level}/${MAX_WARNINGS}`,
+                    `الإجراء: ${result.rule.label}`,
+                    `رقم التحذير: #${result.warning.id}`,
+                    `رقم القضية: #${result.caseEntry.id}`,
+                ].join('\n');
+            });
+        },
+    });
+
+    // /warnings
+    commands.push({
+        data: baseCommand(
+            'warnings',
+            'عرض تحذيرات عضو'
+        ).addUserOption(userOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const warnings = await service.getWarnings(
+                    interaction.guild.id,
+                    user.id
+                );
+
+                if (!warnings.length) {
+                    return `لا توجد تحذيرات مسجلة للعضو ${user.tag}.`;
+                }
+
+                const lines = warnings.map(warning => {
+                    const timestamp = Math.floor(
+                        new Date(warning.createdAt).getTime() / 1000
+                    );
+
+                    return [
+                        `#${warning.id} — المستوى ${warning.level}/${MAX_WARNINGS}`,
+                        `السبب: ${warning.reason}`,
+                        `المشرف: <@${warning.moderatorId}>`,
+                        `التاريخ: <t:${timestamp}:f>`,
+                    ].join('\n');
+                });
+
+                return [
+                    `سجل تحذيرات ${user.tag}`,
+                    '',
+                    ...lines,
+                ].join('\n\n').slice(0, 1900);
+            });
+        },
+    });
+
+    // /unwarn
+    commands.push({
+        data: baseCommand(
+            'unwarn',
+            'إزالة تحذير من عضو'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('warning_id')
+                    .setDescription('رقم التحذير')
+                    .setRequired(true)
+                    .setMinValue(1)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const warningId = interaction.options.getInteger('warning_id');
+
+                const result = await service.removeWarning(
+                    interaction.guild.id,
+                    user.id,
+                    warningId,
+                    interaction.user.id
+                );
+
+                if (!result) {
+                    return 'لم يتم العثور على هذا التحذير للعضو.';
+                }
+
+                await logSafely(
+                    interaction.guild,
+                    'إزالة تحذير',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالتحذير: #${result.warning.id}\nالقضية: #${result.caseEntry.id}`
+                );
+
+                return `تمت إزالة التحذير #${result.warning.id} من ${user.tag}.`;
+            });
+        },
+    });
+
+    // /timeout
+    commands.push({
+        data: baseCommand(
+            'timeout',
+            'إعطاء عضو تايم أوت'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('hours')
+                    .setDescription('المدة بالساعات، من 1 إلى 672')
+                    .setMinValue(1)
+                    .setMaxValue(MAX_TIMEOUT_HOURS)
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const hours = interaction.options.getInteger('hours');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.moderatable) {
+                    return 'لا أستطيع إعطاء هذا العضو تايم أوت. تحقق من صلاحيات البوت وترتيب الرتب.';
+                }
+
+                const durationMs = hours * 60 * 60 * 1000;
+                await member.timeout(durationMs, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'timeout',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                    durationMs,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'تطبيق تايم أوت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالمدة: ${hours} ساعة\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم إعطاء ${user.tag} تايم أوت لمدة ${hours} ساعة.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /untimeout
+    commands.push({
+        data: baseCommand(
+            'untimeout',
+            'إزالة التايم أوت عن عضو'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (!member) return 'العضو غير موجود في السيرفر.';
+                if (!member.moderatable) {
+                    return 'لا أستطيع تعديل حالة هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                await member.timeout(null, reason);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'untimeout',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'إزالة تايم أوت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تمت إزالة التايم أوت عن ${user.tag}.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /ban
+    commands.push({
+        data: baseCommand(
+            'ban',
+            'حظر عضو بشكل دائم'
+        )
+            .addUserOption(userOption)
+            .addStringOption(reasonOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('delete_days')
+                    .setDescription('عدد أيام حذف الرسائل السابقة، من 0 إلى 7')
+                    .setMinValue(0)
+                    .setMaxValue(7)
+                    .setRequired(false)
+            ),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const user = interaction.options.getUser('target');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+                const deleteDays =
+                    interaction.options.getInteger('delete_days') || 0;
+
+                if (user.id === interaction.user.id) {
+                    return 'لا يمكنك حظر نفسك.';
+                }
+
+                const member = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (member && !member.bannable) {
+                    return 'لا أستطيع حظر هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                await interaction.guild.members.ban(user.id, {
+                    reason,
+                    deleteMessageSeconds: deleteDays * 86400,
+                });
+
+                cancelTempBanTimer(interaction.guild.id, user.id);
+
+                const entry = await record(interaction.guild.id, {
+                    type: 'ban',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    interaction.guild,
+                    'حظر دائم',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم حظر ${user.tag} بشكل دائم.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /tempban
+    commands.push({
+        data: baseCommand(
+            'tempban',
+            'حظر عضو لمدة محددة'
+        )
+            .addUserOption(userOption)
+            .addIntegerOption(option =>
+                option
+                    .setName('hours')
+                    .setDescription('المدة بالساعات، من 1 إلى 672')
+                    .setMinValue(1)
+                    .setMaxValue(MAX_TEMPBAN_HOURS)
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const guild = interaction.guild;
+                const user = interaction.options.getUser('target');
+                const hours = interaction.options.getInteger('hours');
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (user.id === interaction.user.id) {
+                    return 'لا يمكنك حظر نفسك.';
+                }
+
+                const member = await guild.members
+                    .fetch(user.id)
+                    .catch(() => null);
+
+                if (member && !member.bannable) {
+                    return 'لا أستطيع حظر هذا العضو بسبب الصلاحيات أو ترتيب الرتب.';
+                }
+
+                const expiresAt = new Date(
+                    Date.now() + hours * 60 * 60 * 1000
+                ).toISOString();
+
+                // Record first, so the expiry can be recovered after restart.
+                const entry = await record(guild.id, {
+                    type: 'tempban',
+                    targetId: user.id,
+                    moderatorId: interaction.user.id,
+                    reason,
+                    durationMs: hours * 60 * 60 * 1000,
+                    expiresAt,
+                });
+
+                try {
+                    await guild.members.ban(user.id, {
+                        reason: `باند مؤقت: ${reason}`,
+                    });
+                } catch (error) {
+                    await record(guild.id, {
+                        type: 'tempban-failed',
+                        targetId: user.id,
+                        moderatorId: interaction.user.id,
+                        reason: 'فشل تطبيق الباند المؤقت',
+                        failedCaseId: entry.id,
+                    });
+
+                    throw error;
+                }
+
+                scheduleTempBan(guild.id, user.id, expiresAt);
+
+                await logSafely(
+                    guild,
+                    'باند مؤقت',
+                    `العضو: <@${user.id}>\nالمشرف: <@${interaction.user.id}>\nالمدة: ${hours} ساعة\nالسبب: ${reason}\nينتهي: <t:${Math.floor(new Date(expiresAt).getTime() / 1000)}:f>\nالقضية: #${entry.id}`
+                );
+
+                return `تم حظر ${user.tag} لمدة ${hours} ساعة.\nينتهي: <t:${Math.floor(new Date(expiresAt).getTime() / 1000)}:f>\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    // /unban
+    commands.push({
+        data: baseCommand(
+            'unban',
+            'فك حظر مستخدم'
+        )
+            .addStringOption(option =>
+                option
+                    .setName('user_id')
+                    .setDescription('معرّف المستخدم المحظور')
+                    .setRequired(true)
+            )
+            .addStringOption(reasonOption),
+
+        async execute(interaction) {
+            return executeAdmin(interaction, async () => {
+                const guild = interaction.guild;
+                const userId = interaction.options.getString('user_id').trim();
+                const reason = safeReason(
+                    interaction.options.getString('reason')
+                );
+
+                if (!/^\d{17,20}$/.test(userId)) {
+                    return 'معرّف المستخدم غير صحيح.';
+                }
+
+                await guild.bans.remove(userId, reason);
+                cancelTempBanTimer(guild.id, userId);
+
+                const entry = await record(guild.id, {
+                    type: 'unban',
+                    targetId: userId,
+                    moderatorId: interaction.user.id,
+                    reason,
+                });
+
+                await logSafely(
+                    guild,
+                    'فك حظر',
+                    `المستخدم: <@${userId}>\nالمشرف: <@${interaction.user.id}>\nالسبب: ${reason}\nالقضية: #${entry.id}`
+                );
+
+                return `تم فك الحظر عن المستخدم \`${userId}\`.\nرقم القضية: #${entry.id}`;
+            });
+        },
+    });
+
+    return commands;
+}
+
+module.exports = {
+    createModerationCommands,
+};

@@ -36,27 +36,44 @@ const tickets = require("./tickets");
 
 const general = require("./commands");
 
+const news = require("./news");
+
+const { setupProtection } = require("./protection/index.js");
+
+const economy = require("./systems/economy");
+
+const statsSystem = require("./systems/stats");
+const statsCommand = require("./systems/stats/commands/stats");
+const statsAdminCommand = require("./systems/stats/commands/stats-admin");
+const { handleAiMessage } = require("./ai");
+
+
+const {
+    buildGameRolesPanel,
+    handleGameRoles
+} = require("./systems/gameRoles");
+
+
+
 const OWNER_ID = "1487388575329681570";
 
 const PUBLIC_COMMANDS = [
-
-"play",
-
-"help",
-
-"userinfo",
-
-"user",
-
-"serverinfo",
-
-"server",
-
-"avatar"
-
+    "play",
+    "help",
+    "userinfo",
+    "user",
+    "serverinfo",
+    "server",
+    "avatar",
+    "daily",
+    "balance",
+    "leaderboard",
+    "pay",
+    "shares",
+    "stats",
 ];
-
 const ADMIN_COMMANDS = new Set(general.ADMIN_COMMANDS);
+ADMIN_COMMANDS.add("roles");
 
 // ======================================================
 // خرائط توجيه ثابتة (تُحسب مرة واحدة عند تشغيل البوت فقط)
@@ -67,8 +84,8 @@ const ADMIN_COMMANDS = new Set(general.ADMIN_COMMANDS);
 // أوامر تُعالج بالكامل داخل index.js نفسه (لا تحتاج أي module خارجي)
 const DIRECT_HANDLED_COMMANDS = new Set([
     "ban", "unban", "kick", "timeout", "untimeout",
-    "warn", "unwarn", "clear", "protection",
-    "setsecuritylog", "lockdown", "unlockdown"
+    "warn", "unwarn", "clear", 
+    "setsecuritylog", "lockdown", "unlockdown", "roles"
 ]);
 
 // أوامر يعالجها general.js حصرًا
@@ -101,6 +118,10 @@ intents: [
 
 });
 
+const protectionSystem = setupProtection(client, {
+    handleCommands: false
+});
+
 // ===============================
 
 // GENERAL SYSTEM
@@ -118,6 +139,8 @@ general.registerClient(client);
 // نظام الترحيب GIF المستقل
 
 welcome.registerWelcome(client);
+
+statsSystem.registerStatsSystem(client);
 
 // ======================================================
 
@@ -629,7 +652,7 @@ const timer = setTimeout(
 
                 userId,
 
-                "W BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
+                "Trivia BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
 
             );
 
@@ -711,7 +734,7 @@ for (const [key, data] of Object.entries(temporaryBansData)) {
 
                 data.userId,
 
-                "W BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
+                "Trivia BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
 
             );
 
@@ -773,7 +796,7 @@ for (const [key, data] of Object.entries(temporaryBansData)) {
 
                     data.userId,
 
-                    "W BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
+                    "Trivia BOT • انتهاء باند التحذيرات لمدة 12 ساعة"
 
                 );
 
@@ -923,7 +946,7 @@ return new EmbedBuilder()
 
     .setFooter({
 
-        text: "W BOT • نظام الحماية"
+        text: "Trivia BOT • نظام الحماية"
 
     })
 
@@ -1291,7 +1314,7 @@ try {
 
         reason:
 
-            `W BOT Security: ${reason}`
+            `Trivia BOT Security: ${reason}`
 
     });
 
@@ -1345,19 +1368,25 @@ try {
 
 // ======================================================
 
+const rolesCommand =
+    new SlashCommandBuilder()
+        .setName("roles")
+        .setDescription("إرسال لوحة رولات الألعاب")
+        .setDefaultMemberPermissions(
+            PermissionFlagsBits.ManageRoles
+        );
+
 const rawCommands = [
+    statsCommand.data,
+    statsAdminCommand.data,
 
-// --------------------------------------------------
+    // بقية أوامر البوت الموجودة عندك
 
-// PING
+    rolesCommand,
+    ...economy.commands,
 
-// --------------------------------------------------
-
-
-
-new SlashCommandBuilder()
-
-    .setName("ping")
+    new SlashCommandBuilder()
+        .setName("ping")
 
     .setDescription(
 
@@ -1861,21 +1890,6 @@ new SlashCommandBuilder()
 
 
 
-new SlashCommandBuilder()
-
-    .setName("protection")
-
-    .setDescription(
-
-        "عرض حالة نظام الحماية"
-
-    )
-
-    .setDefaultMemberPermissions(
-
-        PermissionFlagsBits.Administrator
-
-    ),
 
 
 
@@ -2027,10 +2041,13 @@ new SlashCommandBuilder()
 
 
 
+...general.commands,
+
 ...games.commands,
 
-...tickets.commands
+...tickets.commands,
 
+...protectionSystem.commands.map(command => command.data)
 ].map(command =>
 
 typeof command?.toJSON === "function"
@@ -2287,7 +2304,10 @@ async () => {
 
         `✅ البوت اشتغل: ${client.user.tag}`
 
+
     );
+
+    news.registerNews(client);
 
 
 
@@ -2315,16 +2335,17 @@ async () => {
 
 
 
-        console.log(
-
+               console.log(
             "✅ تم تسجيل جميع الأوامر"
-
         );
-
-
-
         await restoreTemporaryWarningBans();
 
+        // ✅ تذاكر: استئناف مؤقتات عدم النشاط
+        try {
+            tickets.resumeIdleOnStartup(client);
+        } catch (error) {
+            console.error("Ticket Idle Resume Error:", error);
+        }
 
 
     } catch (error) {
@@ -2409,7 +2430,7 @@ async member => {
 
             reason:
 
-                "W BOT Security • Bot Protection"
+                "Trivia BOT Security • Bot Protection"
 
         });
 
@@ -2709,7 +2730,7 @@ async channel => {
 
             await channel.delete(
 
-                "W BOT Security • Mass Channel Create"
+                "Trivia BOT Security • Mass Channel Create"
 
             );
 
@@ -2977,7 +2998,7 @@ async role => {
 
             await role.delete(
 
-                "W BOT Security • Mass Role Create"
+                "Trivia BOT Security • Mass Role Create"
 
             );
 
@@ -3450,29 +3471,23 @@ async message => {
     // ==================================================
 
     try {
-
         const handledByWhoAmI =
-
             await games.handleMessage(message);
-
-
-
         if (handledByWhoAmI) {
-
             return;
-
         }
-
     } catch (error) {
-
         console.error(
-
             "Who Am I Message Error:",
-
             error
-
         );
+    }
 
+    // ✅ تذاكر: تحديث مؤقت عدم النشاط
+    try {
+        await tickets.handleMessage(message);
+    } catch (error) {
+        console.error("Ticket Message Handler Error:", error);
     }
 
 
@@ -3535,7 +3550,7 @@ async message => {
 
                 SECURITY.spamTimeout,
 
-                "W BOT Security • Mass Mention"
+                "Trivia BOT Security • Mass Mention"
 
             );
 
@@ -3725,7 +3740,7 @@ async message => {
 
                     SECURITY.spamTimeout,
 
-                    "W BOT Security • Spam"
+                    "Trivia BOT Security • Spam"
 
                 );
 
@@ -3753,6 +3768,15 @@ async message => {
 
     }
 
+    // ==================================================
+    // AI SYSTEM — يرد فقط عند منشن البوت
+    // ==================================================
+    try {
+        await handleAiMessage(message, client);
+    } catch (error) {
+        console.error("[AI] Message Handler Error:", error);
+    }
+
 }
 
 );
@@ -3764,66 +3788,63 @@ async message => {
 // ======================================================
 
 client.on(
+    "interactionCreate",
+    async interaction => {
 
-"interactionCreate",
-
-async interaction => {
-
-            if (
-
-        interaction.isChatInputCommand() &&
-
-        interaction.user.id !== OWNER_ID &&
-
-        !PUBLIC_COMMANDS.includes(interaction.commandName)
-
-    ) {
-
-        const isNewAdminCommand =
-
-            ADMIN_COMMANDS.has(interaction.commandName);
-
-
-
-        if (isNewAdminCommand) {
-
-            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
-
-                await interaction.reply({
-
-                    content: "❌ هذا الأمر مخصص للإداريين فقط.",
-
-                    flags: MessageFlags.Ephemeral
-
-                });
-
-                return;
-
-            }
-
-        } else {
-
-            await interaction.reply({
-
-                content: "❌ هذا الأمر خاص بمالك البوت.",
-
-                flags: MessageFlags.Ephemeral
-
-            });
-
+        if (
+            interaction.isChatInputCommand() &&
+            interaction.user.id !== OWNER_ID &&
+            !PUBLIC_COMMANDS.includes(interaction.commandName) &&
+            interaction.commandName !== "stats-admin"
+        ) {
+            // خلِّ كود المنع الأصلي الموجود عندك هنا
             return;
-
         }
 
+// نظام الاقتصاد الجديد مستقل؛ لا يمرّر أوامره إلى نظام daily القديم.
+const ECONOMY_COMMANDS = new Set([
+    "daily", "balance", "leaderboard", "pay", "shares", "daily-admin"
+]);
+
+if (interaction.isChatInputCommand() && ECONOMY_COMMANDS.has(interaction.commandName)) {
+    try {
+        await economy.handleInteraction(interaction, OWNER_ID);
+    } catch (error) {
+        console.error("Economy Command Error:", error);
+        const payload = {
+            content: "❌ صار خطأ أثناء تنفيذ الأمر. جرّب مرة ثانية.",
+            flags: MessageFlags.Ephemeral
+        };
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp(payload).catch(() => {});
+        } else {
+            await interaction.reply(payload).catch(() => {});
+        }
     }
+    return;
+}
+
+        // بقية كود interactionCreate الأصلي يبقى هنا
 
 
+        const isNewAdminCommand =
+            ADMIN_COMMANDS.has(interaction.commandName);
 
-    // ==================================================
+        if (isNewAdminCommand) {
+            if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+                await interaction.reply({
+                    content: "❌ هذا الأمر مخصص للإداريين فقط.",
+                    flags: MessageFlags.Ephemeral
+                });
+                return;
+            }
+        }
 
-    // MAINTENANCE
+        // إذا الأمر مو إداري، يكمل الكود تنفيذه بشكل طبيعي
 
-    // ==================================================
+        // ==================================================
+        // MAINTENANCE
+        // ==================================================
 
 
 
@@ -3891,7 +3912,7 @@ async interaction => {
 
 
 
-    if (MAINTENANCE) {
+    if (MAINTENANCE && interaction.user.id !== OWNER_ID) {
 
 
 
@@ -3913,6 +3934,108 @@ async interaction => {
 
 
 
+    // PROTECTION SYSTEM COMMAND DISPATCH
+if (interaction.isChatInputCommand()) {
+    const protectionCommand = protectionSystem.commands.find(
+        command => command.data.name === interaction.commandName
+    );
+
+    const INLINE_PROTECTION_COMMANDS = new Set([
+        "ban",
+        "unban",
+        "kick",
+        "timeout",
+        "untimeout",
+        "warn",
+        "unwarn",
+        "clear",
+        "setsecuritylog",
+        "lockdown",
+        "unlockdown",
+        "roles"
+    ]);
+
+    if (
+        protectionCommand &&
+        !INLINE_PROTECTION_COMMANDS.has(interaction.commandName)
+    ) {
+        await protectionCommand.execute(interaction);
+        return;
+    }
+}
+
+
+
+    // STATS SYSTEM COMMAND DISPATCH
+if (
+    interaction.isChatInputCommand() &&
+    (
+        interaction.commandName === "stats" ||
+        interaction.commandName === "stats-admin"
+    )
+) {
+    const selectedStatsCommand =
+        interaction.commandName === "stats"
+            ? statsCommand
+            : statsAdminCommand;
+
+    try {
+        await selectedStatsCommand.execute(interaction);
+    } catch (error) {
+        console.error(
+            `[STATS] ${interaction.commandName} failed:`,
+            error
+        );
+
+        const payload = {
+            content: "حدث خطأ أثناء فتح لوحة الإحصائيات. راجع سجل البوت وحاول مرة أخرى.",
+            ephemeral: true
+        };
+
+        if (interaction.deferred || interaction.replied) {
+            await interaction.followUp(payload).catch(() => {});
+        } else {
+            await interaction.reply(payload).catch(() => {});
+        }
+    }
+
+    return;
+}
+
+
+    // ==================================================
+    // GAME ROLES COMMAND
+    // ==================================================
+
+    if (
+        interaction.isChatInputCommand() &&
+        interaction.commandName === "roles"
+    ) {
+
+        await interaction.channel.send(
+            buildGameRolesPanel()
+        );
+
+        await interaction.reply({
+            content: "✅ تم إرسال لوحة رولات الألعاب.",
+            flags: MessageFlags.Ephemeral
+        });
+
+        return;
+    }
+
+
+    // ==================================================
+    // GAME ROLES SELECT MENU
+    // ==================================================
+
+    if (
+        interaction.isStringSelectMenu() &&
+        interaction.customId === "game_roles_select"
+    ) {
+        await handleGameRoles(interaction);
+        return;
+    }
 
     // ==================================================
 
@@ -3934,7 +4057,7 @@ async interaction => {
 
             createEmbed(
 
-                "🏓 W BOT | Pong",
+                "🏓 Trivia BOT | Pong",
 
                 `سرعة استجابة البوت:\n\n` +
 
@@ -3964,10 +4087,9 @@ async interaction => {
 
     // ==================================================
 
-    // HELP  (محسّن + منظم حسب المطلوب)
+    // HELP
 
     // ==================================================
-
 
 
     if (
@@ -3976,124 +4098,63 @@ async interaction => {
 
     ) {
 
-
-
-        const embed = new EmbedBuilder()
-
-            .setTitle("🤖 W BOT • قائمة الأوامر")
-
-            .setDescription(
-
-                "مرحباً بك في **W BOT**\n" +
-
-                "اختر الأمر المناسب من الأقسام بالأسفل."
-
-            )
-
-            .setColor(0x5865F2)
-
-            .addFields(
-
-                {
-
-                    name: "🌐 العامة",
-
-                    value:
-
-                        "`/ping` — سرعة استجابة البوت\n" +
-
-                        "`/help` — عرض قائمة الأوامر\n" +
-
-                        "`/userinfo` أو `/user` — معلومات العضو\n" +
-
-                        "`/serverinfo` أو `/server` — معلومات السيرفر\n" +
-
-                        "`/avatar` — عرض الصورة الشخصية بجودة عالية",
-
-                    inline: false
-
-                },
-
-                {
-
-                    name: "🎮 الألعاب",
-
-                    value:
-
-                        "`/play` — أوامر الألعاب المتاحة",
-
-                    inline: false
-
-                },
-
-                {
-
-                    name: "🎫 التذاكر",
-
-                    value:
-
-                        "`/ticket` — إرسال لوحة نظام التذاكر",
-
-                    inline: false
-
-                },
-
-                {
-
-                    name: "🛡️ الإدارة",
-
-                    value:
-
-                        "`/ban` — حظر عضو\n" +
-
-                        "`/unban` — فك الحظر\n" +
-
-                        "`/kick` — طرد عضو\n" +
-
-                        "`/timeout` — كتم عضو\n" +
-
-                        "`/untimeout` — إلغاء الكتم\n" +
-
-                        "`/warn` — تحذير عضو\n" +
-
-                        "`/unwarn` — إزالة تحذير\n" +
-
-                        "`/clear` — حذف رسائل\n" +
-
-                        "`/poll` — إنشاء استطلاع رأي\n" +
-
-                        "`/embed` — إرسال رسالة Embed\n" +
-
-                        "`/role` — إدارة الرتب\n" +
-
-                        "`/say` — إرسال رسالة باسم البوت\n" +
-
-                        "`/setup` أو `/config` — إعداد الأنظمة\n" +
-
-                        "`/prefix` — تغيير البادئة\n" +
-
-                        "`/protection` — حالة نظام الحماية\n" +
-
-                        "`/lockdown` — تفعيل الإغلاق الأمني\n" +
-
-                        "`/unlockdown` — إلغاء الإغلاق الأمني\n" +
-
-                        "`/setsecuritylog` — تحديد روم سجلات الحماية",
-
-                    inline: false
-
-                }
-
-            )
-
-            .setFooter({
-
-                text: `${interaction.guild?.name || "W BOT"} • W BOT`
-
-            })
-
-            .setTimestamp();
-
+const embed = new EmbedBuilder()
+    .setTitle("🤖・𝗧𝗥𝗜𝗩𝗜𝗔 𝗕𝗢𝗧 | 𝗖𝗢𝗠𝗠𝗔𝗡𝗗𝗦")
+    .setDescription(
+        "===============================\n\n" +
+        "مرحب بيك في Trivia BOT 👋🇸🇩\n" +
+        "هنا بتلقى الأوامر مرتبة عشان تصل للدايرو سريع.\n" +
+       "                                           "
+    )
+    .setColor(0x5865F2)
+    .addFields(
+        {
+            name: "🌐・𝗚𝗘𝗡𝗘𝗥𝗔𝗟",
+            value:
+                "> /ping ── بقيس ليك سرعة استجابة البوت\n" +
+                "> /help ── بجيب ليك قائمة الأوامر\n" +
+                "> /server أو /serverinfo ── بجيب ليك معلومات السيرفر\n" +
+                "> /user أو /userinfo ── بجيب ليك معلومات العضو\n" +
+                "> /avatar ── بجيب ليك صورة البروفايل",
+            inline: false
+        },
+        {
+            name: "🎮・𝗚𝗔𝗠𝗘𝗦",
+            value:
+                "> /play ── بفتح ليك قائمة الألعاب المتاحة\n" +
+                "> 🎯 العب مع أصحابك واختبر معلوماتك ومهاراتك!",
+            inline: false
+        },
+        {
+            name: "💰・𝗘𝗖𝗢𝗡𝗢𝗠𝗬",
+            value:
+                "> /daily ── استلم مكافأتك اليومية واجمع الكوينز لمدة تصل لـ30 يوم\n" +
+                "> /balance ── اعرف رصيدك وشوف إحصاءاتك\n" +
+                "> /leaderboard ── شوف ترتيبك وسط أغنى الأعضاء\n" +
+                "> /pay ── حوّل كوينز لزول تاني\n" +
+                "> /shares ── جرّب حظك في السوق؛ ممكن تكسب الدبل وممكن تخسر جزء من المبلغ\n" +
+                "> ⏳ عندك فترة تهدئة نص ساعة بين محاولات السوق\n" +
+                "> /daily-admin ── أمر إداري لإدارة مكافآت اليومي",
+            inline: false
+        },
+        {
+            name: "🧠・𝗔𝗜 𝗔𝗦𝗦𝗜𝗦𝗧𝗔𝗡𝗧",
+            value:
+                "> @Trivia BOT ── منشن البوت واكتب سؤالك\n" +
+                "> .سؤالك ── اسأل البوت بالطريقة دي لو كانت مفعّلة\n" +
+                "> 🤖 اتونس مع البوت واسألو عن الحاجات الداير تعرفها!",
+            inline: false
+        },
+        {
+            name: "🎫・𝗦𝗨𝗣𝗣𝗢𝗥𝗧",
+            value:
+                "> لو عندك مشكلة أو محتاج مساعدة، استخدم نظام التذاكر لو متاح في السيرفر.",
+            inline: false
+        }
+    )
+    .setFooter({
+        text: "🤖 Trivia BOT • معاك وين ما تمشي 🇸🇩"
+    });
 
 
         await interaction.reply({
@@ -4103,11 +4164,9 @@ async interaction => {
         });
 
 
-
         return;
 
     }
-
 
 
 
@@ -4607,7 +4666,7 @@ async interaction => {
 
                         text:
 
-                            "W BOT • نظام الإدارة"
+                            "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -4879,7 +4938,7 @@ async interaction => {
 
                         text:
 
-                            "W BOT • نظام الإدارة"
+                            "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -5155,7 +5214,7 @@ async interaction => {
 
                         text:
 
-                            "W BOT • نظام الإدارة"
+                            "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -5529,7 +5588,7 @@ async interaction => {
 
                         text:
 
-                            "W BOT • نظام الإدارة"
+                            "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -5717,7 +5776,7 @@ async interaction => {
 
                     .setFooter({
 
-                        text: "W BOT • نظام الإدارة"
+                        text: "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -5907,7 +5966,7 @@ async interaction => {
 
                         action.durationMs,
 
-                        "W BOT • وصل إلى تحذيرين"
+                        "Trivia BOT • وصل إلى تحذيرين"
 
                     );
 
@@ -5943,7 +6002,7 @@ async interaction => {
 
                             reason:
 
-                                "W BOT • وصل إلى 4 تحذيرات"
+                                "Trivia BOT • وصل إلى 4 تحذيرات"
 
                         }
 
@@ -5959,7 +6018,7 @@ async interaction => {
 
                         action.durationMs,
 
-                        "W BOT • وصل إلى 4 تحذيرات"
+                        "Trivia BOT • وصل إلى 4 تحذيرات"
 
                     );
 
@@ -5995,7 +6054,7 @@ async interaction => {
 
                             reason:
 
-                                "W BOT • وصل إلى 5 تحذيرات"
+                                "Trivia BOT • وصل إلى 5 تحذيرات"
 
                         }
 
@@ -6087,7 +6146,7 @@ async interaction => {
 
                     .setFooter({
 
-                        text: "W BOT • نظام الإدارة"
+                        text: "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -6295,7 +6354,7 @@ async interaction => {
 
                 .setFooter({
 
-                    text: "W BOT • نظام الإدارة"
+                    text: "Trivia BOT • نظام الإدارة"
 
                 })
 
@@ -6421,7 +6480,7 @@ async interaction => {
 
                     .setFooter({
 
-                        text: "W BOT • نظام الإدارة"
+                        text: "Trivia BOT • نظام الإدارة"
 
                     })
 
@@ -6541,7 +6600,7 @@ async interaction => {
 
                 .setTitle(
 
-                    "🛡️ W BOT | Protection"
+                    "🛡️ Trivia BOT | Protection"
 
                 )
 
@@ -6683,7 +6742,7 @@ async interaction => {
 
                     text:
 
-                        "W BOT • Security System"
+                        "Trivia BOT • Security System"
 
                 })
 
@@ -6855,7 +6914,7 @@ async interaction => {
 
                         reason:
 
-                            "W BOT Security • Lockdown"
+                            "Trivia BOT Security • Lockdown"
 
                     }
 
@@ -6987,7 +7046,7 @@ async interaction => {
 
                         reason:
 
-                            "W BOT Security • Unlockdown"
+                            "Trivia BOT Security • Unlockdown"
 
                     }
 

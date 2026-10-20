@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "users": {
+    "1487388575329681570": {
+      "balance": 1000660,
+      "totalEarned": 660,
+      "streak": 2,
+      "lastDaily": 1792410903030,
+      "lastDailyDate": "2026-10-19",
+      "lastStock": 1792268837731,
+      "createdAt": 1792268621261,
+      "sharesPlayed": 0,
+      "sharesWins": 0,
+      "sharesLosses": 0,
+      "sharesProfit": 0
+    },
+    "1351869283981852755": {
+      "balance": 0,
+      "totalEarned": 0,
+      "streak": 0,
+      "lastDaily": 0,
+      "lastDailyDate": "",
+      "lastStock": 0,
+      "createdAt": 1792269225720,
+      "sharesPlayed": 0,
+      "sharesWins": 0,
+      "sharesLosses": 0,
+      "sharesProfit": 0
+    }
+  },
+  "stockCooldowns": {},
+  "transactions": [
+    {
+      "id": "1792268621265-817bs7",
+      "type": "admin_set",
+      "from": "1487388575329681570",
+      "to": "1487388575329681570",
+      "amount": 1000000,
+      "note": "previous:0",
+      "at": 1792268621265
+    },
+    {
+      "id": "1792268663067-rulgss",
+      "type": "daily",
+      "from": null,
+      "to": "1487388575329681570",
+      "amount": 25,
+      "note": "streak:1",
+      "at": 1792268663067
+    },
+    {
+      "id": "1792268837731-s99ns9",
+      "type": "stock",
+      "from": "1487388575329681570",
+      "to": null,
+      "amount": 600,
+      "note": "win",
+      "at": 1792268837731
+    },
+    {
+      "id": "1792410903030-pldevz",
+      "type": "daily",
+      "from": null,
+      "to": "1487388575329681570",
+      "amount": 35,
+      "note": "streak:2",
+      "at": 1792410903030
+    }
+  ]
+}

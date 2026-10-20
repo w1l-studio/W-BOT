@@ -1,0 +1,3501 @@
+﻿TRIVIA BOT - GAMES AUDIT
+========================
+
+=== ALL FILES AND SIZES ===
+characters.backup-1790644586707.json  [1223619 bytes]
+characters.backup-1790644819381.json  [1223619 bytes]
+characters.backup-1790644923253.json  [1223901 bytes]
+characters.json  [1223901 bytes]
+data\animeCharacters.js  [0 bytes]
+data\celebrities.js  [0 bytes]
+data\countries.js  [21999 bytes]
+flags.js  [11381 bytes]
+index.js  [4114 bytes]
+index.js.backup  [4330 bytes]
+mafia.js  [34823 bytes]
+number-guess\index.js  [1699 bytes]
+number-guess\logic.js  [2031 bytes]
+quiz\index.js  [335 bytes]
+quiz\questions.js  [3701 bytes]
+riddles\index.js  [322 bytes]
+riddles\riddles.js  [2652 bytes]
+shared\mcqEngine.js  [6977 bytes]
+shared\ui.js  [2122 bytes]
+tic-tac-toe\index.js  [2313 bytes]
+tic-tac-toe\logic.js  [2560 bytes]
+update-images.js  [14101 bytes]
+whoami.js  [13129 bytes]
+word-scramble\index.js  [341 bytes]
+word-scramble\words.js  [850 bytes]
+
+=== JAVASCRIPT SOURCE FILES ===
+
+========== FILE: data\animeCharacters.js ==========
+
+
+========== FILE: data\celebrities.js ==========
+
+
+========== FILE: data\countries.js ==========
+// ======================================================
+// COUNTRIES DATA
+// ======================================================
+// بيانات ثابتة فقط — لا يوجد أي منطق Discord هنا.
+// القائمة: 193 دولة عضو في الأمم المتحدة + فلسطين + الفاتيكان = 194 دولة.
+//
+// كل دولة تحتوي على:
+// - name_ar: الاسم بالعربي
+// - name_en: الاسم بالإنجليزي
+// - flag: Emoji Flag
+// - aliases: أسماء/كتابات بديلة شائعة (عربي/إنجليزي)
+// ======================================================
+
+const countries = [
+    { name_ar: "أفغانستان", name_en: "Afghanistan", flag: "🇦🇫", aliases: ["Afghanistan"] },
+    { name_ar: "ألبانيا", name_en: "Albania", flag: "🇦🇱", aliases: ["Albania"] },
+    { name_ar: "الجزائر", name_en: "Algeria", flag: "🇩🇿", aliases: ["Algeria"] },
+    { name_ar: "أندورا", name_en: "Andorra", flag: "🇦🇩", aliases: ["Andorra"] },
+    { name_ar: "أنغولا", name_en: "Angola", flag: "🇦🇴", aliases: ["Angola"] },
+    { name_ar: "أنتيغوا وباربودا", name_en: "Antigua and Barbuda", flag: "🇦🇬", aliases: ["Antigua", "Antigua and Barbuda", "Barbuda"] },
+    { name_ar: "الأرجنتين", name_en: "Argentina", flag: "🇦🇷", aliases: ["Argentina"] },
+    { name_ar: "أرمينيا", name_en: "Armenia", flag: "🇦🇲", aliases: ["Armenia"] },
+    { name_ar: "أستراليا", name_en: "Australia", flag: "🇦🇺", aliases: ["Australia"] },
+    { name_ar: "النمسا", name_en: "Austria", flag: "🇦🇹", aliases: ["Austria"] },
+    { name_ar: "أذربيجان", name_en: "Azerbaijan", flag: "🇦🇿", aliases: ["Azerbaijan"] },
+    { name_ar: "الباهاما", name_en: "Bahamas", flag: "🇧🇸", aliases: ["Bahamas", "The Bahamas"] },
+    { name_ar: "البحرين", name_en: "Bahrain", flag: "🇧🇭", aliases: ["Bahrain"] },
+    { name_ar: "بنغلاديش", name_en: "Bangladesh", flag: "🇧🇩", aliases: ["Bangladesh"] },
+    { name_ar: "باربادوس", name_en: "Barbados", flag: "🇧🇧", aliases: ["Barbados"] },
+    { name_ar: "بيلاروسيا", name_en: "Belarus", flag: "🇧🇾", aliases: ["Belarus", "بيلاروس"] },
+    { name_ar: "بلجيكا", name_en: "Belgium", flag: "🇧🇪", aliases: ["Belgium"] },
+    { name_ar: "بليز", name_en: "Belize", flag: "🇧🇿", aliases: ["Belize"] },
+    { name_ar: "بنين", name_en: "Benin", flag: "🇧🇯", aliases: ["Benin"] },
+    { name_ar: "بوتان", name_en: "Bhutan", flag: "🇧🇹", aliases: ["Bhutan"] },
+    { name_ar: "بوليفيا", name_en: "Bolivia", flag: "🇧🇴", aliases: ["Bolivia"] },
+    { name_ar: "البوسنة والهرسك", name_en: "Bosnia and Herzegovina", flag: "🇧🇦", aliases: ["Bosnia", "Bosnia and Herzegovina", "البوسنة"] },
+    { name_ar: "بوتسوانا", name_en: "Botswana", flag: "🇧🇼", aliases: ["Botswana"] },
+    { name_ar: "البرازيل", name_en: "Brazil", flag: "🇧🇷", aliases: ["Brazil"] },
+    { name_ar: "بروناي", name_en: "Brunei", flag: "🇧🇳", aliases: ["Brunei"] },
+    { name_ar: "بلغاريا", name_en: "Bulgaria", flag: "🇧🇬", aliases: ["Bulgaria"] },
+    { name_ar: "بوركينا فاسو", name_en: "Burkina Faso", flag: "🇧🇫", aliases: ["Burkina Faso"] },
+    { name_ar: "بوروندي", name_en: "Burundi", flag: "🇧🇮", aliases: ["Burundi"] },
+    { name_ar: "كابو فيردي", name_en: "Cabo Verde", flag: "🇨🇻", aliases: ["Cabo Verde", "Cape Verde", "الرأس الأخضر"] },
+    { name_ar: "كمبوديا", name_en: "Cambodia", flag: "🇰🇭", aliases: ["Cambodia"] },
+    { name_ar: "الكاميرون", name_en: "Cameroon", flag: "🇨🇲", aliases: ["Cameroon"] },
+    { name_ar: "كندا", name_en: "Canada", flag: "🇨🇦", aliases: ["Canada"] },
+    { name_ar: "جمهورية أفريقيا الوسطى", name_en: "Central African Republic", flag: "🇨🇫", aliases: ["Central African Republic", "افريقيا الوسطى"] },
+    { name_ar: "تشاد", name_en: "Chad", flag: "🇹🇩", aliases: ["Chad"] },
+    { name_ar: "تشيلي", name_en: "Chile", flag: "🇨🇱", aliases: ["Chile"] },
+    { name_ar: "الصين", name_en: "China", flag: "🇨🇳", aliases: ["China"] },
+    { name_ar: "كولومبيا", name_en: "Colombia", flag: "🇨🇴", aliases: ["Colombia"] },
+    { name_ar: "جزر القمر", name_en: "Comoros", flag: "🇰🇲", aliases: ["Comoros"] },
+    { name_ar: "الكونغو", name_en: "Congo", flag: "🇨🇬", aliases: ["Congo", "Republic of the Congo", "كونغو"] },
+    { name_ar: "جمهورية الكونغو الديمقراطية", name_en: "Democratic Republic of the Congo", flag: "🇨🇩", aliases: ["DR Congo", "DRC", "Congo Kinshasa", "الكونغو الديمقراطية"] },
+    { name_ar: "كوستاريكا", name_en: "Costa Rica", flag: "🇨🇷", aliases: ["Costa Rica"] },
+    { name_ar: "كوت ديفوار", name_en: "Cote d'Ivoire", flag: "🇨🇮", aliases: ["Ivory Coast", "Cote d'Ivoire", "ساحل العاج"] },
+    { name_ar: "كرواتيا", name_en: "Croatia", flag: "🇭🇷", aliases: ["Croatia"] },
+    { name_ar: "كوبا", name_en: "Cuba", flag: "🇨🇺", aliases: ["Cuba"] },
+    { name_ar: "قبرص", name_en: "Cyprus", flag: "🇨🇾", aliases: ["Cyprus"] },
+    { name_ar: "التشيك", name_en: "Czechia", flag: "🇨🇿", aliases: ["Czechia", "Czech Republic", "جمهورية التشيك"] },
+    { name_ar: "الدنمارك", name_en: "Denmark", flag: "🇩🇰", aliases: ["Denmark"] },
+    { name_ar: "جيبوتي", name_en: "Djibouti", flag: "🇩🇯", aliases: ["Djibouti"] },
+    { name_ar: "دومينيكا", name_en: "Dominica", flag: "🇩🇲", aliases: ["Dominica"] },
+    { name_ar: "جمهورية الدومينيكان", name_en: "Dominican Republic", flag: "🇩🇴", aliases: ["Dominican Republic", "الدومينيكان"] },
+    { name_ar: "الإكوادور", name_en: "Ecuador", flag: "🇪🇨", aliases: ["Ecuador"] },
+    { name_ar: "مصر", name_en: "Egypt", flag: "🇪🇬", aliases: ["Egypt"] },
+    { name_ar: "السلفادور", name_en: "El Salvador", flag: "🇸🇻", aliases: ["El Salvador", "Salvador"] },
+    { name_ar: "غينيا الاستوائية", name_en: "Equatorial Guinea", flag: "🇬🇶", aliases: ["Equatorial Guinea"] },
+    { name_ar: "إريتريا", name_en: "Eritrea", flag: "🇪🇷", aliases: ["Eritrea"] },
+    { name_ar: "إستونيا", name_en: "Estonia", flag: "🇪🇪", aliases: ["Estonia"] },
+    { name_ar: "إسواتيني", name_en: "Eswatini", flag: "🇸🇿", aliases: ["Eswatini", "Swaziland", "سوازيلاند"] },
+    { name_ar: "إثيوبيا", name_en: "Ethiopia", flag: "🇪🇹", aliases: ["Ethiopia"] },
+    { name_ar: "فيجي", name_en: "Fiji", flag: "🇫🇯", aliases: ["Fiji"] },
+    { name_ar: "فنلندا", name_en: "Finland", flag: "🇫🇮", aliases: ["Finland"] },
+    { name_ar: "فرنسا", name_en: "France", flag: "🇫🇷", aliases: ["France"] },
+    { name_ar: "الغابون", name_en: "Gabon", flag: "🇬🇦", aliases: ["Gabon"] },
+    { name_ar: "غامبيا", name_en: "Gambia", flag: "🇬🇲", aliases: ["Gambia", "The Gambia"] },
+    { name_ar: "جورجيا", name_en: "Georgia", flag: "🇬🇪", aliases: ["Georgia"] },
+    { name_ar: "ألمانيا", name_en: "Germany", flag: "🇩🇪", aliases: ["Germany"] },
+    { name_ar: "غانا", name_en: "Ghana", flag: "🇬🇭", aliases: ["Ghana"] },
+    { name_ar: "اليونان", name_en: "Greece", flag: "🇬🇷", aliases: ["Greece"] },
+    { name_ar: "غرينادا", name_en: "Grenada", flag: "🇬🇩", aliases: ["Grenada"] },
+    { name_ar: "غواتيمالا", name_en: "Guatemala", flag: "🇬🇹", aliases: ["Guatemala"] },
+    { name_ar: "غينيا", name_en: "Guinea", flag: "🇬🇳", aliases: ["Guinea"] },
+    { name_ar: "غينيا بيساو", name_en: "Guinea-Bissau", flag: "🇬🇼", aliases: ["Guinea-Bissau", "Guinea Bissau"] },
+    { name_ar: "غيانا", name_en: "Guyana", flag: "🇬🇾", aliases: ["Guyana"] },
+    { name_ar: "هايتي", name_en: "Haiti", flag: "🇭🇹", aliases: ["Haiti"] },
+    { name_ar: "هندوراس", name_en: "Honduras", flag: "🇭🇳", aliases: ["Honduras"] },
+    { name_ar: "المجر", name_en: "Hungary", flag: "🇭🇺", aliases: ["Hungary"] },
+    { name_ar: "آيسلندا", name_en: "Iceland", flag: "🇮🇸", aliases: ["Iceland"] },
+    { name_ar: "الهند", name_en: "India", flag: "🇮🇳", aliases: ["India"] },
+    { name_ar: "إندونيسيا", name_en: "Indonesia", flag: "🇮🇩", aliases: ["Indonesia"] },
+    { name_ar: "إيران", name_en: "Iran", flag: "🇮🇷", aliases: ["Iran"] },
+    { name_ar: "العراق", name_en: "Iraq", flag: "🇮🇶", aliases: ["Iraq"] },
+    { name_ar: "أيرلندا", name_en: "Ireland", flag: "🇮🇪", aliases: ["Ireland"] },
+    { name_ar: "إسرائيل", name_en: "Israel", flag: "🇮🇱", aliases: ["Israel"] },
+    { name_ar: "إيطاليا", name_en: "Italy", flag: "🇮🇹", aliases: ["Italy"] },
+    { name_ar: "جامايكا", name_en: "Jamaica", flag: "🇯🇲", aliases: ["Jamaica"] },
+    { name_ar: "اليابان", name_en: "Japan", flag: "🇯🇵", aliases: ["Japan"] },
+    { name_ar: "الأردن", name_en: "Jordan", flag: "🇯🇴", aliases: ["Jordan"] },
+    { name_ar: "كازاخستان", name_en: "Kazakhstan", flag: "🇰🇿", aliases: ["Kazakhstan"] },
+    { name_ar: "كينيا", name_en: "Kenya", flag: "🇰🇪", aliases: ["Kenya"] },
+    { name_ar: "كيريباتي", name_en: "Kiribati", flag: "🇰🇮", aliases: ["Kiribati"] },
+    { name_ar: "الكويت", name_en: "Kuwait", flag: "🇰🇼", aliases: ["Kuwait"] },
+    { name_ar: "قيرغيزستان", name_en: "Kyrgyzstan", flag: "🇰🇬", aliases: ["Kyrgyzstan"] },
+    { name_ar: "لاوس", name_en: "Laos", flag: "🇱🇦", aliases: ["Laos"] },
+    { name_ar: "لاتفيا", name_en: "Latvia", flag: "🇱🇻", aliases: ["Latvia"] },
+    { name_ar: "لبنان", name_en: "Lebanon", flag: "🇱🇧", aliases: ["Lebanon"] },
+    { name_ar: "ليسوتو", name_en: "Lesotho", flag: "🇱🇸", aliases: ["Lesotho"] },
+    { name_ar: "ليبيريا", name_en: "Liberia", flag: "🇱🇷", aliases: ["Liberia"] },
+    { name_ar: "ليبيا", name_en: "Libya", flag: "🇱🇾", aliases: ["Libya"] },
+    { name_ar: "ليختنشتاين", name_en: "Liechtenstein", flag: "🇱🇮", aliases: ["Liechtenstein"] },
+    { name_ar: "ليتوانيا", name_en: "Lithuania", flag: "🇱🇹", aliases: ["Lithuania"] },
+    { name_ar: "لوكسمبورغ", name_en: "Luxembourg", flag: "🇱🇺", aliases: ["Luxembourg"] },
+    { name_ar: "مدغشقر", name_en: "Madagascar", flag: "🇲🇬", aliases: ["Madagascar"] },
+    { name_ar: "مالاوي", name_en: "Malawi", flag: "🇲🇼", aliases: ["Malawi"] },
+    { name_ar: "ماليزيا", name_en: "Malaysia", flag: "🇲🇾", aliases: ["Malaysia"] },
+    { name_ar: "المالديف", name_en: "Maldives", flag: "🇲🇻", aliases: ["Maldives"] },
+    { name_ar: "مالي", name_en: "Mali", flag: "🇲🇱", aliases: ["Mali"] },
+    { name_ar: "مالطا", name_en: "Malta", flag: "🇲🇹", aliases: ["Malta"] },
+    { name_ar: "جزر مارشال", name_en: "Marshall Islands", flag: "🇲🇭", aliases: ["Marshall Islands"] },
+    { name_ar: "موريتانيا", name_en: "Mauritania", flag: "🇲🇷", aliases: ["Mauritania"] },
+    { name_ar: "موريشيوس", name_en: "Mauritius", flag: "🇲🇺", aliases: ["Mauritius"] },
+    { name_ar: "المكسيك", name_en: "Mexico", flag: "🇲🇽", aliases: ["Mexico"] },
+    { name_ar: "ميكرونيزيا", name_en: "Micronesia", flag: "🇫🇲", aliases: ["Micronesia"] },
+    { name_ar: "مولدوفا", name_en: "Moldova", flag: "🇲🇩", aliases: ["Moldova"] },
+    { name_ar: "موناكو", name_en: "Monaco", flag: "🇲🇨", aliases: ["Monaco"] },
+    { name_ar: "منغوليا", name_en: "Mongolia", flag: "🇲🇳", aliases: ["Mongolia"] },
+    { name_ar: "الجبل الأسود", name_en: "Montenegro", flag: "🇲🇪", aliases: ["Montenegro"] },
+    { name_ar: "المغرب", name_en: "Morocco", flag: "🇲🇦", aliases: ["Morocco"] },
+    { name_ar: "موزمبيق", name_en: "Mozambique", flag: "🇲🇿", aliases: ["Mozambique"] },
+    { name_ar: "ميانمار", name_en: "Myanmar", flag: "🇲🇲", aliases: ["Myanmar", "Burma", "بورما"] },
+    { name_ar: "ناميبيا", name_en: "Namibia", flag: "🇳🇦", aliases: ["Namibia"] },
+    { name_ar: "ناورو", name_en: "Nauru", flag: "🇳🇷", aliases: ["Nauru"] },
+    { name_ar: "نيبال", name_en: "Nepal", flag: "🇳🇵", aliases: ["Nepal"] },
+    { name_ar: "هولندا", name_en: "Netherlands", flag: "🇳🇱", aliases: ["Netherlands", "Holland"] },
+    { name_ar: "نيوزيلندا", name_en: "New Zealand", flag: "🇳🇿", aliases: ["New Zealand"] },
+    { name_ar: "نيكاراغوا", name_en: "Nicaragua", flag: "🇳🇮", aliases: ["Nicaragua"] },
+    { name_ar: "النيجر", name_en: "Niger", flag: "🇳🇪", aliases: ["Niger"] },
+    { name_ar: "نيجيريا", name_en: "Nigeria", flag: "🇳🇬", aliases: ["Nigeria"] },
+    { name_ar: "كوريا الشمالية", name_en: "North Korea", flag: "🇰🇵", aliases: ["North Korea"] },
+    { name_ar: "مقدونيا الشمالية", name_en: "North Macedonia", flag: "🇲🇰", aliases: ["North Macedonia", "Macedonia", "مقدونيا"] },
+    { name_ar: "النرويج", name_en: "Norway", flag: "🇳🇴", aliases: ["Norway"] },
+    { name_ar: "عُمان", name_en: "Oman", flag: "🇴🇲", aliases: ["Oman"] },
+    { name_ar: "باكستان", name_en: "Pakistan", flag: "🇵🇰", aliases: ["Pakistan"] },
+    { name_ar: "بالاو", name_en: "Palau", flag: "🇵🇼", aliases: ["Palau"] },
+    { name_ar: "فلسطين", name_en: "Palestine", flag: "🇵🇸", aliases: ["Palestine", "State of Palestine"] },
+    { name_ar: "بنما", name_en: "Panama", flag: "🇵🇦", aliases: ["Panama"] },
+    { name_ar: "بابوا غينيا الجديدة", name_en: "Papua New Guinea", flag: "🇵🇬", aliases: ["Papua New Guinea"] },
+    { name_ar: "باراغواي", name_en: "Paraguay", flag: "🇵🇾", aliases: ["Paraguay"] },
+    { name_ar: "بيرو", name_en: "Peru", flag: "🇵🇪", aliases: ["Peru"] },
+    { name_ar: "الفلبين", name_en: "Philippines", flag: "🇵🇭", aliases: ["Philippines"] },
+    { name_ar: "بولندا", name_en: "Poland", flag: "🇵🇱", aliases: ["Poland"] },
+    { name_ar: "البرتغال", name_en: "Portugal", flag: "🇵🇹", aliases: ["Portugal"] },
+    { name_ar: "قطر", name_en: "Qatar", flag: "🇶🇦", aliases: ["Qatar"] },
+    { name_ar: "رومانيا", name_en: "Romania", flag: "🇷🇴", aliases: ["Romania"] },
+    { name_ar: "روسيا", name_en: "Russia", flag: "🇷🇺", aliases: ["Russia"] },
+    { name_ar: "رواندا", name_en: "Rwanda", flag: "🇷🇼", aliases: ["Rwanda"] },
+    { name_ar: "سانت كيتس ونيفيس", name_en: "Saint Kitts and Nevis", flag: "🇰🇳", aliases: ["Saint Kitts and Nevis", "Saint Kitts"] },
+    { name_ar: "سانت لوسيا", name_en: "Saint Lucia", flag: "🇱🇨", aliases: ["Saint Lucia"] },
+    { name_ar: "سانت فينسنت والغرينادين", name_en: "Saint Vincent and the Grenadines", flag: "🇻🇨", aliases: ["Saint Vincent and the Grenadines", "Saint Vincent"] },
+    { name_ar: "ساموا", name_en: "Samoa", flag: "🇼🇸", aliases: ["Samoa"] },
+    { name_ar: "سان مارينو", name_en: "San Marino", flag: "🇸🇲", aliases: ["San Marino"] },
+    { name_ar: "ساو تومي وبرينسيب", name_en: "Sao Tome and Principe", flag: "🇸🇹", aliases: ["Sao Tome and Principe", "Sao Tome"] },
+    { name_ar: "السعودية", name_en: "Saudi Arabia", flag: "🇸🇦", aliases: ["Saudi Arabia", "KSA", "السعوديه"] },
+    { name_ar: "السنغال", name_en: "Senegal", flag: "🇸🇳", aliases: ["Senegal"] },
+    { name_ar: "صربيا", name_en: "Serbia", flag: "🇷🇸", aliases: ["Serbia"] },
+    { name_ar: "سيشل", name_en: "Seychelles", flag: "🇸🇨", aliases: ["Seychelles"] },
+    { name_ar: "سيراليون", name_en: "Sierra Leone", flag: "🇸🇱", aliases: ["Sierra Leone"] },
+    { name_ar: "سنغافورة", name_en: "Singapore", flag: "🇸🇬", aliases: ["Singapore"] },
+    { name_ar: "سلوفاكيا", name_en: "Slovakia", flag: "🇸🇰", aliases: ["Slovakia"] },
+    { name_ar: "سلوفينيا", name_en: "Slovenia", flag: "🇸🇮", aliases: ["Slovenia"] },
+    { name_ar: "جزر سليمان", name_en: "Solomon Islands", flag: "🇸🇧", aliases: ["Solomon Islands"] },
+    { name_ar: "الصومال", name_en: "Somalia", flag: "🇸🇴", aliases: ["Somalia"] },
+    { name_ar: "جنوب أفريقيا", name_en: "South Africa", flag: "🇿🇦", aliases: ["South Africa"] },
+    { name_ar: "كوريا الجنوبية", name_en: "South Korea", flag: "🇰🇷", aliases: ["South Korea", "Korea"] },
+    { name_ar: "جنوب السودان", name_en: "South Sudan", flag: "🇸🇸", aliases: ["South Sudan"] },
+    { name_ar: "إسبانيا", name_en: "Spain", flag: "🇪🇸", aliases: ["Spain"] },
+    { name_ar: "سريلانكا", name_en: "Sri Lanka", flag: "🇱🇰", aliases: ["Sri Lanka"] },
+    { name_ar: "السودان", name_en: "Sudan", flag: "🇸🇩", aliases: ["Sudan"] },
+    { name_ar: "سورينام", name_en: "Suriname", flag: "🇸🇷", aliases: ["Suriname"] },
+    { name_ar: "السويد", name_en: "Sweden", flag: "🇸🇪", aliases: ["Sweden"] },
+    { name_ar: "سويسرا", name_en: "Switzerland", flag: "🇨🇭", aliases: ["Switzerland"] },
+    { name_ar: "سوريا", name_en: "Syria", flag: "🇸🇾", aliases: ["Syria"] },
+    { name_ar: "طاجيكستان", name_en: "Tajikistan", flag: "🇹🇯", aliases: ["Tajikistan"] },
+    { name_ar: "تنزانيا", name_en: "Tanzania", flag: "🇹🇿", aliases: ["Tanzania"] },
+    { name_ar: "تايلاند", name_en: "Thailand", flag: "🇹🇭", aliases: ["Thailand"] },
+    { name_ar: "تيمور الشرقية", name_en: "Timor-Leste", flag: "🇹🇱", aliases: ["Timor-Leste", "East Timor"] },
+    { name_ar: "توغو", name_en: "Togo", flag: "🇹🇬", aliases: ["Togo"] },
+    { name_ar: "تونغا", name_en: "Tonga", flag: "🇹🇴", aliases: ["Tonga"] },
+    { name_ar: "ترينيداد وتوباغو", name_en: "Trinidad and Tobago", flag: "🇹🇹", aliases: ["Trinidad and Tobago", "Trinidad"] },
+    { name_ar: "تونس", name_en: "Tunisia", flag: "🇹🇳", aliases: ["Tunisia"] },
+    { name_ar: "تركيا", name_en: "Turkiye", flag: "🇹🇷", aliases: ["Turkey", "Turkiye"] },
+    { name_ar: "تركمانستان", name_en: "Turkmenistan", flag: "🇹🇲", aliases: ["Turkmenistan"] },
+    { name_ar: "توفالو", name_en: "Tuvalu", flag: "🇹🇻", aliases: ["Tuvalu"] },
+    { name_ar: "أوغندا", name_en: "Uganda", flag: "🇺🇬", aliases: ["Uganda"] },
+    { name_ar: "أوكرانيا", name_en: "Ukraine", flag: "🇺🇦", aliases: ["Ukraine"] },
+    { name_ar: "الإمارات", name_en: "United Arab Emirates", flag: "🇦🇪", aliases: ["UAE", "United Arab Emirates", "الامارات", "الإمارات العربية المتحدة"] },
+    { name_ar: "المملكة المتحدة", name_en: "United Kingdom", flag: "🇬🇧", aliases: ["UK", "United Kingdom", "Britain", "بريطانيا", "انجلترا"] },
+    { name_ar: "الولايات المتحدة", name_en: "United States", flag: "🇺🇸", aliases: ["USA", "US", "United States", "America", "امريكا", "أمريكا"] },
+    { name_ar: "أوروغواي", name_en: "Uruguay", flag: "🇺🇾", aliases: ["Uruguay"] },
+    { name_ar: "أوزبكستان", name_en: "Uzbekistan", flag: "🇺🇿", aliases: ["Uzbekistan"] },
+    { name_ar: "فانواتو", name_en: "Vanuatu", flag: "🇻🇺", aliases: ["Vanuatu"] },
+    { name_ar: "الفاتيكان", name_en: "Vatican City", flag: "🇻🇦", aliases: ["Vatican", "Vatican City", "Holy See"] },
+    { name_ar: "فنزويلا", name_en: "Venezuela", flag: "🇻🇪", aliases: ["Venezuela"] },
+    { name_ar: "فيتنام", name_en: "Vietnam", flag: "🇻🇳", aliases: ["Vietnam"] },
+    { name_ar: "اليمن", name_en: "Yemen", flag: "🇾🇪", aliases: ["Yemen"] },
+    { name_ar: "زامبيا", name_en: "Zambia", flag: "🇿🇲", aliases: ["Zambia"] },
+    { name_ar: "زيمبابوي", name_en: "Zimbabwe", flag: "🇿🇼", aliases: ["Zimbabwe"] }
+];
+
+// ======================================================
+// ISO2 DERIVATION
+// ======================================================
+// Each `flag` value is a real Unicode flag emoji made of two Regional
+// Indicator Symbols, which directly encode the ISO 3166-1 alpha-2 code
+// (e.g. 🇸🇦 = "SA"). We derive `iso2` from it here instead of hand-typing
+// a code per line, so the two can never drift out of sync.
+function deriveIso2(flagEmoji) {
+    const codePoints = [...flagEmoji];
+    const letters = codePoints.map(cp => {
+        const codePoint = cp.codePointAt(0);
+        // Regional Indicator Symbols run from U+1F1E6 (A) to U+1F1FF (Z).
+        return String.fromCharCode(codePoint - 0x1F1E6 + 65);
+    });
+    return letters.join("").toLowerCase();
+}
+
+for (const country of countries) {
+    country.iso2 = deriveIso2(country.flag);
+}
+
+module.exports = countries;
+
+
+========== FILE: flags.js ==========
+const { EmbedBuilder } = require("discord.js");
+const countries = require("./data/countries.js");
+
+// ======================================================
+// STATE
+// ======================================================
+// Keyed by channelId — the game is scoped to the channel it started in.
+const activeGames = new Map();
+
+const COLORS = {
+    BLUE: 0x2B6CB0,
+    GREEN: 0x00C853,
+    GOLD: 0xF5A623,
+    RED: 0xE53E3E
+};
+
+const ROUND_TIME = 60 * 1000; // 60 ثانية لكل علم
+
+// Real flag images via flagcdn.com — free, no API key, stable HTTPS URLs
+// keyed by ISO 3166-1 alpha-2 code. `w320` gives a large, clear image.
+function flagImageUrl(iso2) {
+    return `https://flagcdn.com/w320/${iso2}.png`;
+}
+
+// ======================================================
+// HELPERS
+// ======================================================
+
+function createEmbed(title, description, color = COLORS.BLUE) {
+    return new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setColor(color)
+        .setFooter({ text: "Trivia BOT • Flags Game" })
+        .setTimestamp();
+}
+
+function isChannelBusy(channelId) {
+    return activeGames.has(channelId);
+}
+
+// Normalizes text for comparison: lowercases, strips diacritics/tatweel,
+// removes "ال" prefix, unifies alef/ta marbuta variants, strips punctuation
+// and all whitespace. This lets "Saudi Arabia", "SaudiArabia", "السعودية"
+// and "سعوديه" all match the same country without accepting unrelated names.
+function normalize(text) {
+    if (!text) return "";
+
+    return text
+        .toString()
+        .trim()
+        .toLowerCase()
+        // Arabic diacritics
+        .replace(/[\u064B-\u0652\u0670\u0640]/g, "")
+        // Unify alef forms
+        .replace(/[إأآا]/g, "ا")
+        // Unify ta marbuta / ha
+        .replace(/ة/g, "ه")
+        // Unify ya forms
+        .replace(/ى/g, "ي")
+        // Drop leading "ال" (definite article) once
+        .replace(/^ال/, "")
+        // Strip punctuation/symbols (keep letters/numbers/arabic/spaces)
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        // Collapse all whitespace
+        .replace(/\s+/g, "");
+}
+
+// Builds a lookup map once: normalized string -> country object.
+function buildLookup() {
+    const map = new Map();
+
+    for (const country of countries) {
+        const candidates = [
+            country.name_ar,
+            country.name_en,
+            ...(country.aliases || [])
+        ];
+
+        for (const candidate of candidates) {
+            const key = normalize(candidate);
+            if (key && !map.has(key)) {
+                map.set(key, country);
+            }
+        }
+    }
+
+    return map;
+}
+
+const answerLookup = buildLookup();
+
+function matchCountry(rawInput) {
+    const key = normalize(rawInput);
+    if (!key) return null;
+    return answerLookup.get(key) || null;
+}
+
+function isSkipCommand(rawInput) {
+    const key = normalize(rawInput);
+    return key === "skip" || key === "سكب";
+}
+
+function isStopCommand(rawInput) {
+    const key = normalize(rawInput);
+    return key === "stop" || key === "ايقاف" || key === "إيقاف";
+}
+
+// Picks a random country, avoiding immediate repeats within the session
+// and avoiding the just-skipped/just-shown flag directly.
+function pickRandomCountry(game) {
+    let pool = countries.filter(c => c.name_en !== game.lastFlag);
+
+    // If the session has shown almost everything, allow repeats again
+    // (excluding only the immediate last one) to keep the game going.
+    if (pool.length === 0) {
+        pool = countries.filter(c => c.name_en !== game.lastFlag) || countries;
+    }
+
+    const country = pool[Math.floor(Math.random() * pool.length)];
+    game.lastFlag = country.name_en;
+    return country;
+}
+
+// ======================================================
+// CLEANUP
+// ======================================================
+
+function cleanupGame(channelId) {
+    const game = activeGames.get(channelId);
+    if (!game) return;
+
+    if (game.timer) {
+        clearTimeout(game.timer);
+        game.timer = null;
+    }
+
+    if (game.collector) {
+        game.collector.stop();
+        game.collector = null;
+    }
+
+    activeGames.delete(channelId);
+}
+
+// ======================================================
+// ROUND FLOW
+// ======================================================
+
+async function sendFlag(game) {
+    // Guard: if the game was stopped/cleaned up right before this call
+    // (e.g. a stop command raced with a timeout/skip), do nothing.
+    if (!activeGames.has(game.channel.id)) return;
+
+    const country = pickRandomCountry(game);
+
+    game.currentCountry = country;
+    game.roundActive = true;
+    game.startedAt = Date.now();
+
+    const embed = createEmbed(
+        "🏳️ خمن الدولة!",
+        "**اكتب اسم الدولة في الشات**\n\n" +
+        "⏭️ **تخطي:** `skip` أو `سكب`\n" +
+        `⏱️ **الوقت:** ${ROUND_TIME / 1000} ثانية`,
+        COLORS.BLUE
+    ).setImage(flagImageUrl(country.iso2));
+
+    await game.channel.send({ embeds: [embed] });
+
+    // Reset the round timer — guarantees only one timer per round ever runs.
+    if (game.timer) clearTimeout(game.timer);
+    game.timer = setTimeout(() => handleTimeout(game), ROUND_TIME);
+}
+
+async function handleTimeout(game) {
+    if (!activeGames.has(game.channel.id)) return;
+    if (!game.roundActive) return; // already resolved by an answer/skip/stop
+
+    game.roundActive = false;
+    game.timer = null;
+
+    const country = game.currentCountry;
+
+    await game.channel.send({
+        embeds: [
+            createEmbed(
+                "⏱️ انتهى الوقت!",
+                `🏳️ الإجابة الصحيحة: **${country.name_ar}**\n\n🏳️ **علم جديد...**`,
+                COLORS.GOLD
+            )
+        ]
+    });
+
+    await sendFlag(game);
+}
+
+async function handleSkip(game, message) {
+    game.roundActive = false;
+
+    if (game.timer) {
+        clearTimeout(game.timer);
+        game.timer = null;
+    }
+
+    const country = game.currentCountry;
+
+    await message.channel.send({
+        embeds: [
+            createEmbed(
+                "⏭️ تم تخطي العلم!",
+                `🏳️ الإجابة الصحيحة: **${country.name_ar}**`,
+                COLORS.GOLD
+            )
+        ]
+    });
+
+    await sendFlag(game);
+}
+
+async function handleCorrectAnswer(game, message, country) {
+    game.roundActive = false;
+
+    if (game.timer) {
+        clearTimeout(game.timer);
+        game.timer = null;
+    }
+
+    const elapsedMs = Date.now() - game.startedAt;
+    const elapsedSeconds = (elapsedMs / 1000).toFixed(2);
+
+    await message.channel.send({
+        embeds: [
+            createEmbed(
+                "🎉 كفو عليك!",
+                `<@${message.author.id}>\n\n` +
+                `🏳️ الإجابة الصحيحة: **${country.name_ar}**\n` +
+                `⏱️ جاوبت خلال **${elapsedSeconds} ثانية**`,
+                COLORS.GREEN
+            )
+        ]
+    });
+
+    await sendFlag(game);
+}
+
+async function handleStop(game, message) {
+    // Stop accepting anything else immediately, then clean up fully.
+    game.roundActive = false;
+    cleanupGame(game.channel.id);
+
+    await message.channel.send({
+        embeds: [
+            createEmbed(
+                "🛑 تم إيقاف اللعبة",
+                "تم إيقاف لعبة تخمين الأعلام.",
+                COLORS.RED
+            )
+        ]
+    });
+}
+
+// ======================================================
+// START GAME
+// ======================================================
+
+async function startFlagsGame(interactionOrMessage) {
+    const channel = interactionOrMessage.channel;
+    const guild = interactionOrMessage.guild;
+
+    if (isChannelBusy(channel.id)) {
+        const payload = {
+            content: "❌ توجد لعبة تخمين أعلام شغالة بالفعل في هذه القناة.",
+            ephemeral: true
+        };
+
+        // The caller may be a slash/select interaction that was already
+        // deferred/replied to (e.g. via deferUpdate in games/index.js),
+        // or a plain message — handle all cases without ever throwing
+        // "interaction already acknowledged".
+        if (interactionOrMessage.deferred || interactionOrMessage.replied) {
+            await interactionOrMessage.followUp(payload).catch(() => {});
+        } else if (typeof interactionOrMessage.reply === "function") {
+            await interactionOrMessage.reply(payload).catch(() => {});
+        }
+
+        return;
+    }
+
+    const game = {
+        channelId: channel.id,
+        channel,
+        guildId: guild ? guild.id : null,
+        currentCountry: null,
+        lastFlag: null,
+        roundActive: false,
+        startedAt: null,
+        timer: null,
+        collector: null
+    };
+
+    activeGames.set(channel.id, game);
+
+    // Public announcement — visible to everyone in the channel.
+    await channel.send({
+        embeds: [
+            createEmbed(
+                "🏳️ تخمين الأعلام",
+                "خمن اسم الدولة من العلم!\n" +
+                "⏭️ إذا ما عرفت، اكتب `skip` أو `سكب`",
+                COLORS.BLUE
+            )
+        ]
+    });
+
+    // Collector filtered to this channel only, with no idle time limit
+    // (the game itself manages rounds/timeouts). Cleared fully on cleanup.
+    const collector = channel.createMessageCollector({
+        filter: m => !m.author.bot
+    });
+
+    game.collector = collector;
+
+    collector.on("collect", async (message) => {
+        // If the game was cleaned up mid-flight, stop reacting entirely.
+        if (!activeGames.has(channel.id)) return;
+
+        const content = message.content;
+
+        // 1) stop / ايقاف is checked before anything else, including
+        //    skip and country matching — any player can use it.
+        if (isStopCommand(content)) {
+            await handleStop(game, message);
+            return;
+        }
+
+        if (isSkipCommand(content)) {
+            await handleSkip(game, message);
+            return;
+        }
+
+        if (!game.roundActive) {
+            // No round in flight (race between round transitions) — ignore silently.
+            return;
+        }
+
+        const matched = matchCountry(content);
+
+        if (!matched) {
+            // Wrong/irrelevant answer — completely ignored, per spec.
+            return;
+        }
+
+        if (matched.name_en !== game.currentCountry.name_en) {
+            // Matched a different valid country than the current flag —
+            // still wrong for this round, ignore silently.
+            return;
+        }
+
+        await handleCorrectAnswer(game, message, matched);
+    });
+
+    await sendFlag(game);
+}
+
+function stopFlagsGame(channelId) {
+    cleanupGame(channelId);
+}
+
+module.exports = {
+    startFlagsGame,
+    stopFlagsGame,
+    isChannelBusy
+};
+
+
+========== FILE: index.js ==========
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder
+} = require("discord.js");
+
+const mafia = require("./mafia");
+const flags = require("./flags");
+const whoami = require("./whoami");
+
+const playCommand =
+    new SlashCommandBuilder()
+        .setName("play")
+        .setDescription("اختيار لعبة للعب");
+
+async function handleInteraction(interaction) {
+
+    // ================================
+    // /play
+    // ================================
+    if (
+        interaction.isChatInputCommand() &&
+        interaction.commandName === "play"
+    ) {
+        const embed =
+            new EmbedBuilder()
+                .setTitle("🎮 Trivia BOT | الألعاب")
+                .setDescription(
+                    "اختر اللعبة التي تريد لعبها من القائمة بالأسفل."
+                )
+                .setColor(0x2B2D42)
+                .setFooter({ text: "Trivia BOT" })
+                .setTimestamp();
+
+        const menu =
+            new StringSelectMenuBuilder()
+                .setCustomId("play_games")
+                .setPlaceholder("🎮 اختر لعبة")
+                .addOptions([
+                    {
+                        label: "المافيا",
+                        description: "لعبة المافيا الجماعية",
+                        value: "mafia",
+                        emoji: "🎭"
+                    },
+                    {
+                        label: "تخمين الأعلام",
+                        description: "خمن اسم الدولة من العلم",
+                        value: "flags",
+                        emoji: "🏳️"
+                    },
+                    {
+                        label: "من أنا؟",
+                        description: "خمن الشخصية من التلميحات",
+                        value: "whoami",
+                        emoji: "🕵️"
+                    }
+                ]);
+
+        const row =
+            new ActionRowBuilder()
+                .addComponents(menu);
+
+        await interaction.reply({
+            embeds: [embed],
+            components: [row]
+        });
+
+        return true;
+    }
+
+    // ================================
+    // اختيار اللعبة
+    // ================================
+    if (
+        interaction.isStringSelectMenu() &&
+        interaction.customId === "play_games"
+    ) {
+        const game = interaction.values[0];
+
+        // المافيا
+        if (game === "mafia") {
+            await mafia.createGame(interaction);
+            return true;
+        }
+
+        // الأعلام
+        if (game === "flags") {
+            await interaction.deferUpdate();
+            await flags.startFlagsGame(interaction);
+            return true;
+        }
+
+       if (game === "whoami") {
+    await interaction.reply({
+        content: "❌ اللعبة متوقفة حاليًا للصيانة.",
+        ephemeral: true
+    });
+
+    return true;
+}
+
+    return true;
+}
+    // ================================
+    // تفاعلات المافيا
+    // ================================
+    const handledByMafia =
+        await mafia.handleInteraction(interaction);
+
+    if (handledByMafia) {
+        return true;
+    }
+
+    // ================================
+    // أزرار لعبة من أنا؟
+    // ================================
+    const handledByWhoAmI =
+        await whoami.handleButton(interaction);
+
+    if (handledByWhoAmI) {
+        return true;
+    }
+
+    return false;
+}
+
+// ================================
+// رسائل لعبة من أنا؟
+// ================================
+async function handleMessage(message) {
+
+    const handledByWhoAmI =
+        await whoami.handleMessage(message);
+
+    if (handledByWhoAmI) {
+        return true;
+    }
+
+    return false;
+}
+
+module.exports = {
+    commands: [playCommand],
+    handleInteraction,
+    handleMessage
+};
+
+
+========== FILE: mafia.js ==========
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    StringSelectMenuBuilder
+} = require("discord.js");
+
+const games = new Map();
+
+const COLORS = {
+    RED: 0xFF0000,
+    BLUE: 0x0000FF,
+    BLACK: 0x000000,
+    WHITE: 0xFFFFFF,
+    GREEN: 0x00FF7F,
+    GOLD: 0xFFD700
+};
+
+const MIN_PLAYERS = 7;
+const MAX_PLAYERS = 20;
+
+const NIGHT_TIME = 60 * 1000;          // دقيقة
+const DISCUSSION_TIME = 3 * 60 * 1000; // 3 دقائق
+const VOTE_TIME = 60 * 1000;           // دقيقة
+const INTERMISSION_TIME = 5 * 1000;    // فاصل بين الجولات
+
+// ======================================================
+// COMMAND
+// ======================================================
+
+const mafiaCommand = new SlashCommandBuilder()
+    .setName("mafia")
+    .setDescription("لعبة المافيا")
+    .addSubcommand(sub =>
+        sub
+            .setName("start")
+            .setDescription("إنشاء لعبة مافيا")
+    );
+
+// ======================================================
+// HELPERS - GENERAL
+// ======================================================
+
+function createEmbed(title, description, color = COLORS.BLUE) {
+    return new EmbedBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setColor(color)
+        .setFooter({ text: "Trivia BOT • Mafia Game" })
+        .setTimestamp();
+}
+
+function getGame(guildId) {
+    return games.get(guildId);
+}
+
+function alivePlayers(game) {
+    return [...game.players.values()].filter(p => p.alive);
+}
+
+function isAlive(game, userId) {
+    const player = game.players.get(userId);
+    return !!player && player.alive;
+}
+
+function formatDuration(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    if (minutes <= 0) {
+        return `${seconds} ثانية`;
+    }
+
+    return `${minutes} دقيقة و ${seconds} ثانية`;
+}
+
+// Clears any pending phase timer to guarantee only one timer ever runs per game.
+function clearGameTimer(game) {
+    if (game.timer) {
+        clearTimeout(game.timer);
+        game.timer = null;
+    }
+}
+
+// Safely replies to (or follows up on) an interaction so nothing ever
+// surfaces as "This interaction failed" to the user.
+async function safeReply(interaction, payload) {
+    try {
+        if (interaction.deferred || interaction.replied) {
+            await interaction.followUp(payload);
+        } else {
+            await interaction.reply(payload);
+        }
+    } catch {
+        // Interaction likely expired/already acknowledged elsewhere — ignore.
+    }
+}
+
+async function safeDeferUpdate(interaction) {
+    try {
+        if (!interaction.deferred && !interaction.replied) {
+            await interaction.deferUpdate();
+        }
+    } catch {}
+}
+
+async function safeSend(channel, payload) {
+    try {
+        return await channel.send(payload);
+    } catch {
+        return null;
+    }
+}
+
+async function safeDM(user, payload) {
+    try {
+        return await user.send(payload);
+    } catch {
+        return null;
+    }
+}
+
+async function safeEditMessage(message, payload) {
+    if (!message) return;
+    try {
+        await message.edit(payload);
+    } catch {}
+}
+
+// ======================================================
+// ROLE BALANCING (7 -> 20 players)
+// ======================================================
+
+function getRoleCounts(playerCount) {
+    // Mafia scales roughly to ~1/4 of the lobby, always leaving the
+    // civilian/investigative side with a majority.
+    let mafia = 2;
+
+    if (playerCount >= 9) mafia = 3;
+    if (playerCount >= 13) mafia = 4;
+    if (playerCount >= 17) mafia = 5;
+
+    let detective = 1;
+    let doctor = 1;
+
+    if (playerCount >= 12) detective = 2;
+    if (playerCount >= 16) doctor = 2;
+
+    // Safety net: never let special roles eat more than ~70% of the lobby.
+    while (mafia + detective + doctor > Math.floor(playerCount * 0.7)) {
+        if (doctor > 1) doctor--;
+        else if (detective > 1) detective--;
+        else if (mafia > 2) mafia--;
+        else break;
+    }
+
+    const civilian = playerCount - mafia - detective - doctor;
+
+    return { mafia, detective, doctor, civilian };
+}
+
+function assignRoles(game) {
+    const users = [...game.players.values()];
+    const counts = getRoleCounts(users.length);
+    const roles = [];
+
+    for (let i = 0; i < counts.mafia; i++) roles.push("mafia");
+    for (let i = 0; i < counts.detective; i++) roles.push("detective");
+    for (let i = 0; i < counts.doctor; i++) roles.push("doctor");
+    while (roles.length < users.length) roles.push("civilian");
+
+    // Fisher-Yates shuffle
+    for (let i = roles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [roles[i], roles[j]] = [roles[j], roles[i]];
+    }
+
+    users.forEach((player, index) => {
+        player.role = roles[index];
+    });
+}
+
+function roleName(role) {
+    switch (role) {
+        case "mafia": return "🔪 المافيا";
+        case "detective": return "🕵️ المحقق";
+        case "doctor": return "👨‍⚕️ الطبيب";
+        default: return "👤 مواطن";
+    }
+}
+
+function roleDescription(role) {
+    switch (role) {
+        case "mafia":
+            return (
+                "أنت من **المافيا** 🔪\n\n" +
+                "في كل ليلة تختارون هدفًا معًا لقتله.\n" +
+                "هدفكم التخلص من جميع الأبرياء."
+            );
+        case "detective":
+            return (
+                "أنت **المحقق** 🕵️\n\n" +
+                "في كل ليلة يمكنك فحص لاعب واحد " +
+                "لمعرفة هل هو من المافيا أم لا."
+            );
+        case "doctor":
+            return (
+                "أنت **الطبيب** 👨‍⚕️\n\n" +
+                "في كل ليلة تختار لاعبًا واحدًا لحمايته من القتل " +
+                "(لا يمكنك حماية نفسك)."
+            );
+        default:
+            return (
+                "أنت **مواطن** 👤\n\n" +
+                "ليس لديك قدرة خاصة.\n" +
+                "ساعد المدينة في اكتشاف المافيا."
+            );
+    }
+}
+
+function checkWinner(game) {
+    const alive = alivePlayers(game);
+    const mafia = alive.filter(p => p.role === "mafia").length;
+    const civilians = alive.filter(p => p.role !== "mafia").length;
+
+    if (mafia === 0) return "civilians";
+    if (mafia >= civilians) return "mafia";
+    return null;
+}
+
+async function endGame(game, winner) {
+    if (!game) return;
+
+    clearGameTimer(game);
+    games.delete(game.guildId);
+
+    const winnerText = winner === "mafia"
+        ? "🔪 **فريق المافيا فاز!**"
+        : "🕵️ **فريق المواطنين فاز!**";
+
+    const mafiaList = [...game.players.values()]
+        .filter(p => p.role === "mafia")
+        .map(p => `• ${p.user.username}`)
+        .join("\n") || "لا يوجد";
+
+    const townList = [...game.players.values()]
+        .filter(p => p.role !== "mafia")
+        .map(p => `• ${p.user.username} — ${roleName(p.role)}`)
+        .join("\n") || "لا يوجد";
+
+    const duration = game.startedAt
+        ? formatDuration(Date.now() - game.startedAt)
+        : null;
+
+    const description =
+        `${winnerText}\n\n` +
+        `👥 عدد اللاعبين: **${game.players.size}**\n` +
+        (duration ? `⏱️ مدة اللعبة: **${duration}**\n` : "") +
+        `\n**🔪 فريق المافيا**\n${mafiaList}\n\n` +
+        `**🕵️ فريق المواطنين**\n${townList}`;
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                "🏆 انتهت لعبة المافيا",
+                description,
+                winner === "mafia" ? COLORS.RED : COLORS.BLUE
+            )
+        ]
+    });
+}
+
+// ======================================================
+// SEND ROLE
+// ======================================================
+
+async function sendRole(player, game) {
+    let extra = "";
+
+    if (player.role === "mafia") {
+        const teammates = [...game.players.values()]
+            .filter(p => p.role === "mafia" && p.user.id !== player.user.id)
+            .map(p => `• ${p.user.username}`)
+            .join("\n");
+
+        if (teammates) {
+            extra = `\n\n**👥 زملاؤك في المافيا:**\n${teammates}`;
+        }
+    }
+
+    const embed = createEmbed(
+        "🎭 دورك في المافيا",
+        roleDescription(player.role) + extra +
+        `\n\n👥 عدد اللاعبين: **${game.players.size}**`,
+        player.role === "mafia" ? COLORS.RED : COLORS.BLUE
+    );
+
+    const sent = await safeDM(player.user, { embeds: [embed] });
+    return !!sent;
+}
+
+// ======================================================
+// NIGHT ACTION MENU
+// ======================================================
+
+async function sendNightMenu(player, game) {
+    const targets = alivePlayers(game).filter(target => {
+        if (target.user.id === player.user.id) return false;
+
+        // Mafia can't target other mafia members.
+        if (player.role === "mafia" && target.role === "mafia") return false;
+
+        return true;
+    });
+
+    if (!targets.length) return;
+
+    let placeholder = "اختر لاعبًا";
+    if (player.role === "mafia") placeholder = "اختر من تريد قتله";
+    if (player.role === "doctor") placeholder = "اختر من تريد حمايته";
+    if (player.role === "detective") placeholder = "اختر من تريد التحقيق معه";
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId(`mafia_night_${game.guildId}`)
+        .setPlaceholder(placeholder)
+        .addOptions(
+            targets.map(target => ({
+                label: target.user.username.slice(0, 100),
+                value: target.user.id,
+                description: "اختيار هذا اللاعب"
+            }))
+        );
+
+    const row = new ActionRowBuilder().addComponents(menu);
+
+    const message = await safeDM(player.user, {
+        content: "🌙 **بدأ الليل**\nاختر هدفك خلال الوقت المتاح:",
+        components: [row]
+    });
+
+    // Track the DM so we can edit it once the player confirms a choice,
+    // and so we know not to resend the same menu twice.
+    if (message) {
+        game.nightMessages.set(player.user.id, message);
+    }
+}
+
+// ======================================================
+// NIGHT
+// ======================================================
+
+async function startNight(game) {
+    if (!games.has(game.guildId)) return;
+
+    const winner = checkWinner(game);
+    if (winner) {
+        await endGame(game, winner);
+        return;
+    }
+
+    game.phase = "night";
+    game.round += 1;
+
+    game.mafiaVotes.clear();
+    game.detectiveTargets.clear();
+    game.doctorTarget = null;
+    game.nightMessages.clear();
+    game.nightActed.clear();
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                `🌙 الليلة ${game.round}`,
+                "الجميع يدخل وضع الصمت.\n\n" +
+                "🔪 المافيا تختار هدفها.\n" +
+                "👨‍⚕️ الطبيب يختار من يحمي.\n" +
+                "🕵️ المحقق يختار من يفحص.\n\n" +
+                `تم إرسال الخيارات في الخاص.\n⏱️ الوقت: **${NIGHT_TIME / 1000} ثانية**`,
+                COLORS.BLACK
+            )
+        ]
+    });
+
+    for (const player of alivePlayers(game)) {
+        if (["mafia", "doctor", "detective"].includes(player.role)) {
+            await sendNightMenu(player, game);
+        }
+    }
+
+    clearGameTimer(game);
+    game.timer = setTimeout(() => finishNight(game), NIGHT_TIME);
+}
+
+// ======================================================
+// FINISH NIGHT
+// ======================================================
+
+function resolveMafiaTarget(game) {
+    if (game.mafiaVotes.size === 0) return null;
+
+    const counts = {};
+    for (const targetId of game.mafiaVotes.values()) {
+        counts[targetId] = (counts[targetId] || 0) + 1;
+    }
+
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const topVotes = entries[0][1];
+    const tied = entries.filter(e => e[1] === topVotes);
+
+    // A tie among mafia targets results in no kill.
+    if (tied.length > 1) return null;
+
+    return entries[0][0];
+}
+
+async function finishNight(game) {
+    if (!games.has(game.guildId)) return;
+
+    game.timer = null;
+
+    const killedUserId = resolveMafiaTarget(game);
+    const saved = game.doctorTarget;
+
+    let message = "☀️ **أشرقت الشمس!**\n\n";
+    let victimUsername = null;
+
+    if (killedUserId && killedUserId !== saved) {
+        const victim = game.players.get(killedUserId);
+
+        if (victim && victim.alive) {
+            victim.alive = false;
+            victimUsername = victim.user.username;
+            message += `💀 تم العثور على **${victim.user.username}** مقتولًا.\n`;
+        } else {
+            message += "✨ لم يمت أحد الليلة.\n";
+        }
+    } else {
+        message += "✨ لم يمت أحد الليلة.\n";
+    }
+
+    const winner = checkWinner(game);
+
+    if (winner) {
+        await safeSend(game.channel, {
+            embeds: [createEmbed("☀️ نتيجة الليل", message, COLORS.RED)]
+        });
+
+        await endGame(game, winner);
+        return;
+    }
+
+    game.phase = "discussion";
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                "☀️ صباح الخير",
+                message +
+                `\n\n🗣️ أمامكم **${DISCUSSION_TIME / 60000} دقائق** للنقاش.\n` +
+                `بعدها يبدأ التصويت مباشرة.`,
+                COLORS.WHITE
+            )
+        ]
+    });
+
+    clearGameTimer(game);
+    game.timer = setTimeout(() => startVoting(game), DISCUSSION_TIME);
+}
+
+// ======================================================
+// VOTING
+// ======================================================
+
+async function startVoting(game) {
+    if (!games.has(game.guildId)) return;
+
+    game.phase = "voting";
+    game.votes.clear();
+
+    const players = alivePlayers(game);
+    if (!players.length) return;
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId(`mafia_vote_${game.guildId}`)
+        .setPlaceholder("اختر الشخص الذي تريد التصويت ضده")
+        .addOptions(
+            players.map(player => ({
+                label: player.user.username.slice(0, 100),
+                value: player.user.id,
+                description: "التصويت لخروج هذا اللاعب"
+            }))
+        );
+
+    const row = new ActionRowBuilder().addComponents(menu);
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                "🗳️ بدأ التصويت",
+                "اختر اللاعب الذي تريد التصويت ضده.\n" +
+                "لن تُعلن الأصوات إلا بعد انتهاء الوقت.\n\n" +
+                `🕐 وقت التصويت: **${VOTE_TIME / 1000} ثانية**`,
+                COLORS.BLUE
+            )
+        ],
+        components: [row]
+    });
+
+    clearGameTimer(game);
+    game.timer = setTimeout(() => finishVoting(game), VOTE_TIME);
+}
+
+// ======================================================
+// FINISH VOTING
+// ======================================================
+
+async function finishVoting(game) {
+    if (!games.has(game.guildId)) return;
+
+    game.timer = null;
+
+    const counts = {};
+    for (const targetId of game.votes.values()) {
+        counts[targetId] = (counts[targetId] || 0) + 1;
+    }
+
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+    const tally = entries.length
+        ? entries.map(([id, count]) => {
+            const p = game.players.get(id);
+            const name = p ? p.user.username : "لاعب غير معروف";
+            return `• ${name}: **${count}** صوت`;
+        }).join("\n")
+        : "لم يصوت أحد.";
+
+    let message = `**📊 نتائج الأصوات:**\n${tally}\n\n`;
+
+    if (!entries.length) {
+        message += "⚖️ لم يصوت أحد. لم يخرج أي لاعب.";
+    } else {
+        const topVotes = entries[0][1];
+        const tied = entries.filter(e => e[1] === topVotes);
+
+        if (tied.length > 1) {
+            message += "⚖️ حدث تعادل في التصويت. لم يخرج أي لاعب.";
+        } else {
+            const eliminatedId = entries[0][0];
+            const eliminated = game.players.get(eliminatedId);
+
+            if (eliminated) {
+                eliminated.alive = false;
+                message += `🚪 تم إخراج **${eliminated.user.username}**.\n` +
+                    `🎭 دوره كان: **${roleName(eliminated.role)}**`;
+            }
+        }
+    }
+
+    const winner = checkWinner(game);
+
+    if (winner) {
+        await safeSend(game.channel, {
+            embeds: [createEmbed("🗳️ نتيجة التصويت", message, COLORS.RED)]
+        });
+
+        await endGame(game, winner);
+        return;
+    }
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                "🗳️ نتيجة التصويت",
+                message + `\n\n🌙 تستعدون الآن لليل جديد...`,
+                COLORS.BLUE
+            )
+        ]
+    });
+
+    clearGameTimer(game);
+    game.timer = setTimeout(() => startNight(game), INTERMISSION_TIME);
+}
+
+// ======================================================
+// START GAME
+// ======================================================
+
+async function startGame(game) {
+    if (!games.has(game.guildId)) return;
+
+    if (game.players.size < MIN_PLAYERS) {
+        await safeSend(game.channel, {
+            embeds: [
+                createEmbed(
+                    "❌ لا يمكن بدء اللعبة",
+                    `الحد الأدنى هو **${MIN_PLAYERS} لاعبين**.`,
+                    COLORS.RED
+                )
+            ]
+        });
+        return;
+    }
+
+    assignRoles(game);
+
+    for (const player of game.players.values()) {
+        const sent = await sendRole(player, game);
+
+        if (!sent) {
+            await safeSend(game.channel, {
+                embeds: [
+                    createEmbed(
+                        "❌ تعذر بدء اللعبة",
+                        `لم أستطع إرسال الدور الخاص إلى **${player.user.username}**.\n` +
+                        "تأكد أن الرسائل الخاصة مفتوحة.",
+                        COLORS.RED
+                    )
+                ]
+            });
+
+            games.delete(game.guildId);
+            return;
+        }
+    }
+
+    const counts = getRoleCounts(game.players.size);
+
+    game.phase = "starting";
+    game.startedAt = Date.now();
+
+    await safeSend(game.channel, {
+        embeds: [
+            createEmbed(
+                "🎭 بدأت لعبة المافيا",
+                `👥 عدد اللاعبين: **${game.players.size}**\n\n` +
+                `🔪 المافيا: **${counts.mafia}**\n` +
+                `🕵️ المحقق: **${counts.detective}**\n` +
+                `👨‍⚕️ الطبيب: **${counts.doctor}**\n` +
+                `👤 المواطنون: **${counts.civilian}**\n\n` +
+                `🎭 تم إرسال الأدوار في الخاص.\n` +
+                `🌙 أول ليلة تبدأ الآن.`,
+                COLORS.RED
+            )
+        ]
+    });
+
+    clearGameTimer(game);
+    game.timer = setTimeout(() => startNight(game), INTERMISSION_TIME);
+}
+
+// ======================================================
+// CREATE GAME
+// ======================================================
+
+async function createGame(interaction) {
+    if (games.has(interaction.guild.id)) {
+        await safeReply(interaction, {
+            content: "❌ توجد لعبة مافيا شغالة حاليًا في هذا السيرفر.",
+            ephemeral: true
+        });
+        return;
+    }
+
+    const game = {
+        guildId: interaction.guild.id,
+        channelId: interaction.channel.id,
+        channel: interaction.channel,
+        hostId: interaction.user.id,
+        players: new Map(),
+        phase: "lobby",
+        round: 0,
+        startedAt: null,
+
+        votes: new Map(),
+        mafiaVotes: new Map(),
+        detectiveTargets: new Map(),
+        doctorTarget: null,
+
+        nightMessages: new Map(), // userId -> DM message (for edit-on-confirm)
+        nightActed: new Set(),    // userIds that already locked in a night action
+
+        timer: null,
+        lobbyMessage: null
+    };
+
+    game.players.set(interaction.user.id, {
+        user: interaction.user,
+        alive: true,
+        role: null
+    });
+
+    games.set(interaction.guild.id, game);
+
+    const embed = createEmbed(
+        "🎭 لعبة المافيا",
+        "تم إنشاء لعبة جديدة!\n\n" +
+        `👥 اللاعبين: **1/${MAX_PLAYERS}**\n` +
+        `📌 الحد الأدنى للبدء: **${MIN_PLAYERS}**\n\n` +
+        "اضغط **دخول اللعبة** للانضمام.\n" +
+        "منشئ اللعبة فقط يستطيع الضغط على **بدء اللعبة**.",
+        COLORS.RED
+    );
+
+    const row = buildLobbyRow(game);
+
+    await interaction.reply({ embeds: [embed], components: [row] });
+    game.lobbyMessage = await interaction.fetchReply();
+}
+
+// ======================================================
+// LOBBY UI
+// ======================================================
+
+function buildLobbyRow(game) {
+    return new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId(`mafia_join_${game.guildId}`)
+            .setLabel("دخول اللعبة")
+            .setEmoji("🎭")
+            .setStyle(ButtonStyle.Success)
+            .setDisabled(game.players.size >= MAX_PLAYERS),
+
+        new ButtonBuilder()
+            .setCustomId(`mafia_leave_${game.guildId}`)
+            .setLabel("خروج")
+            .setEmoji("🚪")
+            .setStyle(ButtonStyle.Danger),
+
+        new ButtonBuilder()
+            .setCustomId(`mafia_start_${game.guildId}`)
+            .setLabel("بدء اللعبة")
+            .setEmoji("▶️")
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(game.players.size < MIN_PLAYERS)
+    );
+}
+
+async function updateLobby(game) {
+    const names = [...game.players.values()]
+        .map((player, index) => {
+            const hostTag = player.user.id === game.hostId ? " 👑" : "";
+            return `${index + 1}. <@${player.user.id}>${hostTag}`;
+        })
+        .join("\n");
+
+    const embed = createEmbed(
+        "🎭 لعبة المافيا",
+        `👥 اللاعبين: **${game.players.size}/${MAX_PLAYERS}**\n\n` +
+        `${names || "لا يوجد لاعبون"}\n\n` +
+        `📌 تحتاج **${MIN_PLAYERS}** لاعبين على الأقل للبدء.`,
+        COLORS.RED
+    );
+
+    const row = buildLobbyRow(game);
+
+    await safeEditMessage(game.lobbyMessage, { embeds: [embed], components: [row] });
+}
+
+// ======================================================
+// INTERACTION HANDLER
+// ======================================================
+
+async function handleMafiaInteraction(interaction) {
+    // -----------------------------------------------
+    // SLASH COMMAND
+    // -----------------------------------------------
+    if (interaction.isChatInputCommand() && interaction.commandName === "mafia") {
+        const subcommand = interaction.options.getSubcommand();
+
+        if (subcommand === "start") {
+            await createGame(interaction);
+            return true;
+        }
+    }
+
+    // -----------------------------------------------
+    // BUTTONS
+    // -----------------------------------------------
+    if (interaction.isButton() && interaction.customId.startsWith("mafia_")) {
+        const parts = interaction.customId.split("_");
+        const action = parts[1];
+        const guildId = parts[2];
+        const game = games.get(guildId);
+
+        if (!game) {
+            await safeReply(interaction, {
+                content: "❌ هذه اللعبة انتهت أو لم تعد موجودة.",
+                ephemeral: true
+            });
+            return true;
+        }
+
+        // JOIN
+        if (action === "join") {
+            if (game.phase !== "lobby") {
+                await safeReply(interaction, { content: "❌ اللعبة بدأت بالفعل.", ephemeral: true });
+                return true;
+            }
+
+            if (game.players.has(interaction.user.id)) {
+                await safeReply(interaction, { content: "✅ أنت داخل اللعبة بالفعل.", ephemeral: true });
+                return true;
+            }
+
+            if (game.players.size >= MAX_PLAYERS) {
+                await safeReply(interaction, { content: "❌ اللعبة ممتلئة.", ephemeral: true });
+                return true;
+            }
+
+            game.players.set(interaction.user.id, {
+                user: interaction.user,
+                alive: true,
+                role: null
+            });
+
+            await safeReply(interaction, { content: "✅ دخلت لعبة المافيا.", ephemeral: true });
+            await updateLobby(game);
+            return true;
+        }
+
+        // LEAVE
+        if (action === "leave") {
+            if (game.phase !== "lobby") {
+                await safeReply(interaction, { content: "❌ لا يمكنك الخروج بعد بدء اللعبة.", ephemeral: true });
+                return true;
+            }
+
+            if (!game.players.has(interaction.user.id)) {
+                await safeReply(interaction, { content: "❌ أنت لست داخل اللعبة.", ephemeral: true });
+                return true;
+            }
+
+            const wasHost = interaction.user.id === game.hostId;
+            game.players.delete(interaction.user.id);
+
+            await safeReply(interaction, { content: "🚪 خرجت من اللعبة.", ephemeral: true });
+
+            if (game.players.size === 0) {
+                games.delete(game.guildId);
+
+                await safeEditMessage(game.lobbyMessage, {
+                    embeds: [createEmbed("❌ انتهت اللعبة", "خرج جميع اللاعبين.", COLORS.RED)],
+                    components: []
+                });
+
+                return true;
+            }
+
+            // Host migration instead of cancelling the lobby.
+            if (wasHost) {
+                const newHost = [...game.players.values()][0];
+                game.hostId = newHost.user.id;
+
+                await safeSend(game.channel, {
+                    embeds: [
+                        createEmbed(
+                            "👑 تغيير المضيف",
+                            `أصبح <@${newHost.user.id}> هو مضيف اللعبة الجديد.`,
+                            COLORS.GOLD
+                        )
+                    ]
+                });
+            }
+
+            await updateLobby(game);
+            return true;
+        }
+
+        // START
+        if (action === "start") {
+            if (interaction.user.id !== game.hostId) {
+                await safeReply(interaction, { content: "❌ فقط منشئ اللعبة يستطيع بدءها.", ephemeral: true });
+                return true;
+            }
+
+            if (game.phase !== "lobby") {
+                await safeReply(interaction, { content: "❌ اللعبة بدأت بالفعل.", ephemeral: true });
+                return true;
+            }
+
+            if (game.players.size < MIN_PLAYERS) {
+                await safeReply(interaction, {
+                    content: `❌ تحتاج على الأقل **${MIN_PLAYERS} لاعبين**.`,
+                    ephemeral: true
+                });
+                return true;
+            }
+
+            await safeDeferUpdate(interaction);
+            await startGame(game);
+            return true;
+        }
+    }
+
+    // -----------------------------------------------
+    // NIGHT SELECT
+    // -----------------------------------------------
+    if (interaction.isStringSelectMenu() && interaction.customId.startsWith("mafia_night_")) {
+        const guildId = interaction.customId.replace("mafia_night_", "");
+        const game = games.get(guildId);
+
+        if (!game) {
+            await safeReply(interaction, { content: "❌ اللعبة انتهت.", ephemeral: true });
+            return true;
+        }
+
+        if (game.phase !== "night") {
+            await safeReply(interaction, { content: "❌ ليس وقت اختيار هدف الآن.", ephemeral: true });
+            return true;
+        }
+
+        const player = game.players.get(interaction.user.id);
+
+        if (!player || !player.alive) {
+            await safeReply(interaction, { content: "❌ أنت لست لاعبًا حيًا.", ephemeral: true });
+            return true;
+        }
+
+        // Lock the choice once confirmed for this night — no changing mid-round.
+        if (game.nightActed.has(interaction.user.id)) {
+            await safeReply(interaction, {
+                content: "✅ لقد سجّلت اختيارك بالفعل لهذه الليلة.",
+                ephemeral: true
+            });
+            return true;
+        }
+
+        const targetId = interaction.values[0];
+        const target = game.players.get(targetId);
+
+        if (!target || !target.alive) {
+            await safeReply(interaction, { content: "❌ هذا اللاعب غير متاح.", ephemeral: true });
+            return true;
+        }
+
+        if (player.role === "mafia" && target.role === "mafia") {
+            await safeReply(interaction, {
+                content: "❌ لا يمكنك استهداف زميلك في المافيا.",
+                ephemeral: true
+            });
+            return true;
+        }
+
+        let confirmText = "";
+
+        if (player.role === "mafia") {
+            game.mafiaVotes.set(interaction.user.id, targetId);
+            confirmText = `🔪 تم اختيار **${target.user.username}** كهدف.`;
+        } else if (player.role === "doctor") {
+            game.doctorTarget = targetId;
+            confirmText = `👨‍⚕️ ستحمي **${target.user.username}** الليلة.`;
+        } else if (player.role === "detective") {
+            game.detectiveTargets.set(interaction.user.id, targetId);
+            const result = target.role === "mafia"
+                ? "🔪 نعم، هذا اللاعب من المافيا."
+                : "✅ لا، هذا اللاعب ليس من المافيا.";
+            confirmText = `أنت حققت في **${target.user.username}**.\n\n${result}`;
+        }
+
+        game.nightActed.add(interaction.user.id);
+
+        await safeDeferUpdate(interaction);
+
+        // Edit the original DM in place so the menu can't be reused, and to
+        // clearly show the confirmation instead of just an ephemeral reply.
+        const dmMessage = game.nightMessages.get(interaction.user.id);
+
+        if (dmMessage) {
+            await safeEditMessage(dmMessage, {
+                content: "✅ **تم تسجيل اختيارك.**",
+                embeds: player.role === "detective"
+                    ? [createEmbed("🕵️ نتيجة التحقيق", confirmText, COLORS.BLUE)]
+                    : [],
+                components: []
+            });
+        }
+
+        if (player.role !== "detective") {
+            await safeDM(player.user, { content: confirmText });
+        }
+
+        return true;
+    }
+
+    // -----------------------------------------------
+    // VOTE SELECT
+    // -----------------------------------------------
+    if (interaction.isStringSelectMenu() && interaction.customId.startsWith("mafia_vote_")) {
+        const guildId = interaction.customId.replace("mafia_vote_", "");
+        const game = games.get(guildId);
+
+        if (!game) {
+            await safeReply(interaction, { content: "❌ اللعبة انتهت.", ephemeral: true });
+            return true;
+        }
+
+        if (game.phase !== "voting") {
+            await safeReply(interaction, { content: "❌ ليس وقت التصويت.", ephemeral: true });
+            return true;
+        }
+
+        if (!isAlive(game, interaction.user.id)) {
+            await safeReply(interaction, { content: "❌ اللاعب الميت لا يستطيع التصويت.", ephemeral: true });
+            return true;
+        }
+
+        const targetId = interaction.values[0];
+
+        if (targetId === interaction.user.id) {
+            await safeReply(interaction, { content: "❌ لا يمكنك التصويت لنفسك.", ephemeral: true });
+            return true;
+        }
+
+        if (!isAlive(game, targetId)) {
+            await safeReply(interaction, { content: "❌ هذا اللاعب غير متاح.", ephemeral: true });
+            return true;
+        }
+
+        game.votes.set(interaction.user.id, targetId);
+
+        const target = game.players.get(targetId);
+
+        await safeReply(interaction, {
+            content: `🗳️ تم تسجيل تصويتك ضد **${target.user.username}**. (لن يظهر تصويتك للآخرين حتى انتهاء الوقت)`,
+            ephemeral: true
+        });
+
+        return true;
+    }
+
+    return false;
+}
+
+module.exports = {
+    createGame,
+    handleInteraction: handleMafiaInteraction
+};
+
+
+
+========== FILE: number-guess\index.js ==========
+'use strict';
+
+const { ButtonStyle } = require('discord.js');
+const { makeRow, gameEmbed, button, stopButton } = require('../shared/ui');
+const logic = require('./logic');
+
+function render(session) {
+    const remaining = logic.MAX_ATTEMPTS - session.guesses.length;
+    let description = `حاول تخمين رقم من **1 إلى 20**. لديك **${logic.MAX_ATTEMPTS} محاولات**.\n\nالمحاولات المتبقية: **${remaining}**`;
+    if (session.lastHint) description += `\n\n${session.lastHint}`;
+    if (session.guesses.length) description += `\nالأرقام التي جرّبتها: ${session.guesses.join('، ')}`;
+
+    if (session.finished) {
+        return {
+            embeds: [gameEmbed(`${logic.definition.emoji} ${logic.definition.label}`,
+                `${description}\n\nالنقاط: **${session.score}**`, session.winner ? 0x57F287 : 0xED4245)],
+            components: [],
+            allowedMentions: { parse: [] },
+        };
+    }
+
+    const buttons = Array.from({ length: 20 }, (_, index) => {
+        const value = index + 1;
+        return button(`number:${value}`, String(value), ButtonStyle.Secondary, session.guesses.includes(value));
+    });
+
+    const rows = [];
+    for (let index = 0; index < buttons.length; index += 5) rows.push(makeRow(buttons.slice(index, index + 5)));
+    rows.push(makeRow([stopButton()]));
+
+    return {
+        embeds: [gameEmbed(`${logic.definition.emoji} ${logic.definition.label}`, description)],
+        components: rows,
+        allowedMentions: { parse: [] },
+    };
+}
+
+module.exports = {
+    definition: logic.definition,
+    createSession: logic.createSession,
+    handleAction: logic.handleAction,
+    render,
+};
+
+
+========== FILE: number-guess\logic.js ==========
+'use strict';
+
+const MAX_ATTEMPTS = 6;
+const definition = {
+    id: 'number',
+    label: 'خمّن الرقم',
+    description: 'اكتشف الرقم من 1 إلى 20 خلال محاولات محدودة',
+    emoji: '🔢',
+};
+
+function createSession(ownerId) {
+    return {
+        gameId: definition.id,
+        ownerId,
+        secret: Math.floor(Math.random() * 20) + 1,
+        guesses: [],
+        lastHint: null,
+        score: 0,
+        correctAnswers: 0,
+        finished: false,
+        winner: null,
+        completionNotified: false,
+    };
+}
+
+function handleAction(session, action) {
+    if (session.finished) return { error: 'انتهت هذه اللعبة بالفعل.' };
+    if (!action.startsWith('number:')) return { error: 'هذا الإجراء غير متاح للعبة تخمين الرقم.' };
+
+    const guess = Number(action.split(':')[1]);
+    if (!Number.isInteger(guess) || guess < 1 || guess > 20 || session.guesses.includes(guess)) {
+        return { error: 'هذا التخمين غير صالح أو تم استخدامه.' };
+    }
+
+    session.guesses.push(guess);
+    if (guess === session.secret) {
+        session.score = Math.max(1, MAX_ATTEMPTS - session.guesses.length + 2);
+        session.correctAnswers = 1;
+        session.winner = session.ownerId;
+        session.lastHint = `🎉 صحيح! الرقم هو **${session.secret}**.`;
+        session.finished = true;
+        return { changed: true, completed: true };
+    }
+
+    if (session.guesses.length >= MAX_ATTEMPTS) {
+        session.lastHint = `انتهت المحاولات. الرقم الصحيح كان **${session.secret}**.`;
+        session.finished = true;
+        return { changed: true, completed: true };
+    }
+
+    session.lastHint = guess < session.secret
+        ? '⬆️ الرقم الصحيح أكبر من تخمينك.'
+        : '⬇️ الرقم الصحيح أصغر من تخمينك.';
+
+    return { changed: true };
+}
+
+module.exports = { MAX_ATTEMPTS, definition, createSession, handleAction };
+
+
+========== FILE: quiz\index.js ==========
+'use strict';
+
+const { createMcqGame } = require('../shared/mcqEngine');
+const questions = require('./questions');
+
+module.exports = createMcqGame({
+    id: 'quiz',
+    label: 'تحدي المعلومات',
+    description: 'أسئلة عامة واختيارات متعددة',
+    emoji: '🧠',
+    mode: 'quiz',
+    questions,
+});
+
+
+========== FILE: quiz\questions.js ==========
+'use strict';
+
+module.exports = [
+    { q: 'ما عاصمة اليابان؟', a: 'طوكيو', options: ['طوكيو', 'سيول', 'بكين', 'بانكوك'] },
+    { q: 'كم عدد أضلاع الشكل السداسي؟', a: '6', options: ['5', '6', '7', '8'] },
+    { q: 'أي كوكب يُعرف بالكوكب الأحمر؟', a: 'المريخ', options: ['الزهرة', 'المشتري', 'المريخ', 'عطارد'] },
+    { q: 'ما أكبر محيط على الأرض؟', a: 'المحيط الهادئ', options: ['المحيط الأطلسي', 'المحيط الهندي', 'المحيط المتجمد الشمالي', 'المحيط الهادئ'] },
+    { q: 'كم دقيقة في ساعتين؟', a: '120', options: ['60', '90', '120', '180'] },
+    { q: 'ما اللغة الرسمية في البرازيل؟', a: 'البرتغالية', options: ['الإسبانية', 'البرتغالية', 'الفرنسية', 'الإنجليزية'] },
+    { q: 'أي حيوان يُعرف بسفينة الصحراء؟', a: 'الجمل', options: ['الحصان', 'الجمل', 'اللاما', 'الفيل'] },
+    { q: 'كم عدد أيام السنة الكبيسة؟', a: '366', options: ['364', '365', '366', '367'] },
+    { q: 'ما الغاز الذي تمتصه النباتات في البناء الضوئي؟', a: 'ثاني أكسيد الكربون', options: ['الأكسجين', 'الهيدروجين', 'ثاني أكسيد الكربون', 'النيتروجين'] },
+    { q: 'ما أصغر عدد أولي؟', a: '2', options: ['0', '1', '2', '3'] },
+    { q: 'في أي قارة تقع الأرجنتين؟', a: 'أمريكا الجنوبية', options: ['أوروبا', 'أفريقيا', 'أمريكا الجنوبية', 'آسيا'] },
+    { q: 'ما وحدة قياس شدة التيار الكهربائي؟', a: 'الأمبير', options: ['الفولت', 'الأمبير', 'الواط', 'الأوم'] },
+    { q: 'ما الحيوان الأسرع على اليابسة؟', a: 'الفهد', options: ['الأسد', 'الفهد', 'الحصان', 'الغزال'] },
+    { q: 'ما عاصمة المملكة العربية السعودية؟', a: 'الرياض', options: ['جدة', 'مكة', 'الرياض', 'الدمام'] },
+    { q: 'كم ضلعًا للمثلث؟', a: '3', options: ['2', '3', '4', '5'] },
+    { q: 'أي مادة ينجذب إليها المغناطيس عادةً؟', a: 'الحديد', options: ['الخشب', 'الزجاج', 'الحديد', 'البلاستيك'] },
+    { q: 'ما أكبر كوكب في المجموعة الشمسية؟', a: 'المشتري', options: ['الأرض', 'زحل', 'المشتري', 'نبتون'] },
+    { q: 'كم ثانية في الدقيقة؟', a: '60', options: ['30', '45', '60', '100'] },
+    { q: 'ما العضو الذي يضخ الدم في جسم الإنسان؟', a: 'القلب', options: ['الرئة', 'الكبد', 'القلب', 'الكلى'] },
+    { q: 'أي فصل يأتي بعد الشتاء؟', a: 'الربيع', options: ['الصيف', 'الخريف', 'الربيع', 'الشتاء'] },
+    { q: 'ما عاصمة مصر؟', a: 'القاهرة', options: ['الإسكندرية', 'القاهرة', 'الأقصر', 'أسوان'] },
+    { q: 'ما المعدن السائل في درجة حرارة الغرفة؟', a: 'الزئبق', options: ['الحديد', 'النحاس', 'الزئبق', 'الألومنيوم'] },
+    { q: 'ما العدد الناتج عن 9 × 7؟', a: '63', options: ['56', '62', '63', '72'] },
+    { q: 'ما أقرب نجم إلى الأرض؟', a: 'الشمس', options: ['الشمس', 'سيريوس', 'النسر الواقع', 'الشعرى اليمانية'] },
+];
+
+
+========== FILE: riddles\index.js ==========
+'use strict';
+
+const { createMcqGame } = require('../shared/mcqEngine');
+const questions = require('./riddles');
+
+module.exports = createMcqGame({
+    id: 'riddles',
+    label: 'حل الألغاز',
+    description: 'ألغاز وتلميحات تدريجية',
+    emoji: '🧩',
+    mode: 'riddles',
+    questions,
+});
+
+
+========== FILE: riddles\riddles.js ==========
+'use strict';
+
+module.exports = [
+    { q: 'له أسنان ولا يعض، ما هو؟', hint: 'تستخدمه لترتيب الشعر.', a: 'المشط', options: ['المشط', 'المفتاح', 'المنشار', 'الساعة'] },
+    { q: 'كلما أخذت منه كبر، ما هو؟', hint: 'قد تجده في الأرض.', a: 'الحفرة', options: ['الجبل', 'الحفرة', 'البحر', 'الصندوق'] },
+    { q: 'يمشي بلا قدمين ويبكي بلا عينين، ما هو؟', hint: 'تراه في السماء أحيانًا.', a: 'السحاب', options: ['السحاب', 'النهر', 'الطائر', 'الظل'] },
+    { q: 'شيء تملكه أنت ويستعمله الناس أكثر منك، ما هو؟', hint: 'يرتبط بكيف يناديك الآخرون.', a: 'اسمك', options: ['بيتك', 'اسمك', 'هاتفك', 'قلمك'] },
+    { q: 'له رقبة وليس له رأس، ما هو؟', hint: 'قد تملؤه بالماء.', a: 'الزجاجة', options: ['الزجاجة', 'القميص', 'الشجرة', 'الكرسي'] },
+    { q: 'يسمع بلا أذن ويتكلم بلا لسان، ما هو؟', hint: 'قد يعيد كلامك في مكان واسع.', a: 'الصدى', options: ['الصدى', 'الراديو', 'الكتاب', 'المرآة'] },
+    { q: 'ما الشيء الذي يكتب ولا يقرأ؟', hint: 'تستخدمه في المدرسة أو المكتب.', a: 'القلم', options: ['الكتاب', 'القلم', 'الدفتر', 'الممحاة'] },
+    { q: 'له عين واحدة ولا يرى، ما هو؟', hint: 'تحتاجه عند الخياطة.', a: 'الإبرة', options: ['الإبرة', 'الكاميرا', 'العاصفة', 'الكوب'] },
+    { q: 'يملأ الغرفة ولا يشغل مساحة، ما هو؟', hint: 'تحتاجه لترى الأشياء.', a: 'الضوء', options: ['الضوء', 'الدخان', 'الهواء', 'الصوت'] },
+    { q: 'شيء كلما زاد نقص، ما هو؟', hint: 'ينقص مع مرور الوقت.', a: 'العمر المتبقي', options: ['العمر المتبقي', 'المال', 'الطول', 'الظل'] },
+    { q: 'له أوراق وليس نباتًا، وله جلد وليس حيوانًا، ما هو؟', hint: 'يحمل معلومات أو قصصًا.', a: 'الكتاب', options: ['الكتاب', 'المحفظة', 'الشجرة', 'الحقيبة'] },
+    { q: 'ما الشيء الذي له مفاتيح ولا يفتح أبوابًا؟', hint: 'قد تصنع به موسيقى.', a: 'البيانو', options: ['القفل', 'البيانو', 'الباب', 'الخريطة'] },
+];
+
+
+========== FILE: shared\mcqEngine.js ==========
+'use strict';
+
+const { ButtonStyle } = require('discord.js');
+const {
+    shuffle,
+    makeRow,
+    gameEmbed,
+    button,
+    stopButton,
+} = require('./ui');
+
+const ROUNDS_PER_GAME = 5;
+
+function createMcqGame(config) {
+    const { id, label, description, emoji, questions, mode } = config;
+
+    function makeQuestion(item, allItems) {
+        if (mode !== 'scramble') {
+            return { ...item, options: shuffle(item.options) };
+        }
+
+        const distractors = shuffle(allItems.filter(word => word.word !== item.word))
+            .slice(0, 3)
+            .map(word => word.word);
+
+        let scrambled = shuffle(item.word.split('')).join('');
+        if (scrambled === item.word && item.word.length > 2) {
+            scrambled = item.word.slice(1) + item.word[0];
+        }
+
+        return {
+            word: item.word,
+            meaning: item.meaning,
+            scrambled,
+            answer: item.word,
+            options: shuffle([item.word, ...distractors]),
+        };
+    }
+
+    function createSession(ownerId) {
+        return {
+            gameId: id,
+            ownerId,
+            questions: shuffle(questions)
+                .slice(0, ROUNDS_PER_GAME)
+                .map(item => makeQuestion(item, questions)),
+            round: 0,
+            score: 0,
+            correctAnswers: 0,
+            stage: 'question',
+            finished: false,
+            hintRevealed: false,
+            lastAnswerCorrect: false,
+            lastPoints: 0,
+            completionNotified: false,
+        };
+    }
+
+    function answerOf(question) {
+        return mode === 'scramble' ? question.answer : question.a;
+    }
+
+    function render(session) {
+        const current = session.questions[session.round];
+        if (!current) {
+            return {
+                embeds: [gameEmbed(`${emoji} ${label}`, `انتهت اللعبة. مجموع نقاطك: **${session.score}**`, 0x57F287)],
+                components: [],
+                allowedMentions: { parse: [] },
+            };
+        }
+
+        if (session.stage === 'question') {
+            let text;
+            if (mode === 'scramble') {
+                text = `رتّب الحروف لاكتشاف الكلمة التي تعني **${current.meaning}**.\n\n**الحروف:** ${current.scrambled.split('').join(' · ')}`;
+            } else {
+                text = current.q;
+            }
+
+            if (mode === 'riddles' && session.hintRevealed) {
+                text += `\n\n💡 **التلميح:** ${current.hint}`;
+            }
+
+            text += `\n\nالجولة **${session.round + 1}/${session.questions.length}** • نقاطك **${session.score}**`;
+
+            const answerButtons = current.options.map((option, index) =>
+                button(`answer:${index}`, String(option), ButtonStyle.Secondary)
+            );
+
+            const rows = [makeRow(answerButtons)];
+            if (mode === 'riddles') {
+                rows.push(makeRow([
+                    button('hint', session.hintRevealed ? 'تم عرض التلميح' : 'عرض تلميح', ButtonStyle.Primary, session.hintRevealed),
+                    stopButton(),
+                ]));
+            } else {
+                rows.push(makeRow([stopButton()]));
+            }
+
+            return {
+                embeds: [gameEmbed(`${emoji} ${label}`, text)],
+                components: rows,
+                allowedMentions: { parse: [] },
+            };
+        }
+
+        const lastRound = session.round === session.questions.length - 1;
+        const correct = session.lastAnswerCorrect;
+        const status = correct ? '✅ إجابة صحيحة!' : '❌ إجابة غير صحيحة.';
+        const answer = answerOf(current);
+        const pointText = correct ? `\nحصلت على **${session.lastPoints}** نقطة.` : '';
+        const summary = lastRound
+            ? `انتهت الجولات • مجموع النقاط: **${session.score}**`
+            : `النقاط: **${session.score}** • الجولة ${session.round + 1}/${session.questions.length}`;
+
+        const embed = gameEmbed(
+            `${emoji} ${label}`,
+            `${status}\nالإجابة الصحيحة: **${answer}**${pointText}\n\n${summary}`,
+            correct ? 0x57F287 : 0xED4245
+        );
+
+        if (lastRound || session.stage === 'finished') {
+            return { embeds: [embed], components: [], allowedMentions: { parse: [] } };
+        }
+
+        return {
+            embeds: [embed],
+            components: [makeRow([
+                button('next', 'السؤال التالي', ButtonStyle.Primary),
+                stopButton(),
+            ])],
+            allowedMentions: { parse: [] },
+        };
+    }
+
+    function handleAction(session, action) {
+        if (session.finished) return { error: 'انتهت هذه اللعبة بالفعل.' };
+
+        if (action === 'hint' && mode === 'riddles') {
+            if (session.stage !== 'question') return { error: 'يمكن طلب التلميح أثناء السؤال فقط.' };
+            if (session.hintRevealed) return { error: 'استخدمت التلميح لهذا السؤال بالفعل.' };
+            session.hintRevealed = true;
+            return { changed: true };
+        }
+
+        if (action.startsWith('answer:')) {
+            if (session.stage !== 'question') return { error: 'لقد أجبت عن هذا السؤال بالفعل.' };
+            const index = Number(action.split(':')[1]);
+            const current = session.questions[session.round];
+
+            if (!Number.isInteger(index) || index < 0 || index >= current.options.length) {
+                return { error: 'اختيار غير صالح.' };
+            }
+
+            const correct = current.options[index] === answerOf(current);
+            const points = correct
+                ? mode === 'riddles'
+                    ? (session.hintRevealed ? 1 : 2)
+                    : 1
+                : 0;
+
+            session.lastAnswerCorrect = correct;
+            session.lastPoints = points;
+            session.score += points;
+            if (correct) session.correctAnswers++;
+
+            const lastRound = session.round === session.questions.length - 1;
+            session.stage = lastRound ? 'finished' : 'result';
+            if (lastRound) session.finished = true;
+
+            return { changed: true, completed: lastRound };
+        }
+
+        if (action === 'next') {
+            if (session.stage !== 'result') return { error: 'أجب عن السؤال الحالي أولًا.' };
+            session.round++;
+            session.stage = 'question';
+            session.hintRevealed = false;
+            return { changed: true };
+        }
+
+        return { error: 'هذا الإجراء غير متاح لهذه اللعبة.' };
+    }
+
+    return {
+        definition: { id, label, description, emoji },
+        createSession,
+        render,
+        handleAction,
+    };
+}
+
+module.exports = { createMcqGame };
+
+
+========== FILE: shared\ui.js ==========
+'use strict';
+
+const {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    StringSelectMenuBuilder,
+} = require('discord.js');
+
+const PREFIX = 'playextras';
+const SESSION_TTL_MS = 15 * 60 * 1000;
+
+function shuffle(items) {
+    const result = [...items];
+    for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+}
+
+function makeRow(components) {
+    return new ActionRowBuilder().addComponents(components);
+}
+
+function actionId(action) {
+    return `${PREFIX}:action:${action}`;
+}
+
+function gameEmbed(title, description, color = 0x5865F2) {
+    return new EmbedBuilder()
+        .setColor(color)
+        .setTitle(String(title).slice(0, 256))
+        .setDescription(String(description || '').slice(0, 4096))
+        .setFooter({ text: 'Trivia BOT • /play' })
+        .setTimestamp();
+}
+
+function button(action, label, style = ButtonStyle.Secondary, disabled = false) {
+    return new ButtonBuilder()
+        .setCustomId(actionId(action))
+        .setLabel(String(label).slice(0, 80))
+        .setStyle(style)
+        .setDisabled(Boolean(disabled));
+}
+
+function stopButton(disabled = false, label = 'إنهاء اللعبة') {
+    return button('stop', label, ButtonStyle.Danger, disabled);
+}
+
+function buildExtraGamesRow(ownerId, games) {
+    if (!ownerId) throw new TypeError('ownerId is required to build the /play games menu.');
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId(`${PREFIX}:select:${ownerId}`)
+        .setPlaceholder('اختر لعبة إضافية من /play')
+        .setMinValues(1)
+        .setMaxValues(1)
+        .addOptions(games.map(game => ({
+            label: game.label,
+            value: game.id,
+            description: game.description,
+            emoji: game.emoji,
+        })));
+
+    return new ActionRowBuilder().addComponents(menu);
+}
+
+module.exports = {
+    PREFIX,
+    SESSION_TTL_MS,
+    shuffle,
+    makeRow,
+    actionId,
+    gameEmbed,
+    button,
+    stopButton,
+    buildExtraGamesRow,
+};
+
+
+========== FILE: tic-tac-toe\index.js ==========
+'use strict';
+
+const { ButtonStyle } = require('discord.js');
+const { makeRow, gameEmbed, button, stopButton } = require('../shared/ui');
+const logic = require('./logic');
+
+function render(session) {
+    let description;
+    if (!session.playerO) {
+        description = `بدأت اللعبة مع <@${session.playerX}> كـ **X**. اضغط **انضمام للعب** لتكون اللاعب O.\nلن تبدأ الحركة حتى ينضم لاعب آخر.`;
+    } else if (session.finished) {
+        description = session.winner
+            ? `🏆 الفائز: <@${session.winner}>\nX: <@${session.playerX}> • O: <@${session.playerO}>`
+            : `🤝 انتهت اللعبة بالتعادل.\nX: <@${session.playerX}> • O: <@${session.playerO}>`;
+    } else {
+        const currentPlayer = session.turn === 'X' ? session.playerX : session.playerO;
+        description = `X: <@${session.playerX}>\nO: <@${session.playerO}>\n\nالدور الحالي: <@${currentPlayer}> (**${session.turn}**)`;
+    }
+
+    const rows = [];
+    for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+        const cells = [];
+        for (let col = 0; col < 3; col++) {
+            const index = rowIndex * 3 + col;
+            const mark = session.board[index];
+            const style = mark === 'X' ? ButtonStyle.Primary
+                : mark === 'O' ? ButtonStyle.Success
+                    : ButtonStyle.Secondary;
+            cells.push(button(`ttt-cell:${index}`, mark || '·', style,
+                session.finished || !session.playerO || Boolean(mark)));
+        }
+        rows.push(makeRow(cells));
+    }
+
+    if (!session.finished && !session.playerO) {
+        rows.push(makeRow([
+            button('ttt-join', 'انضمام للعب كـ O', ButtonStyle.Success),
+            stopButton(false, 'إلغاء اللعبة'),
+        ]));
+    } else if (!session.finished) {
+        rows.push(makeRow([stopButton()]));
+    }
+
+    return {
+        embeds: [gameEmbed(`${logic.definition.emoji} ${logic.definition.label}`, description,
+            session.finished ? 0x57F287 : 0x5865F2)],
+        components: rows,
+        allowedMentions: { parse: [] },
+    };
+}
+
+module.exports = {
+    definition: logic.definition,
+    createSession: logic.createSession,
+    handleAction: logic.handleAction,
+    render,
+};
+
+
+========== FILE: tic-tac-toe\logic.js ==========
+'use strict';
+
+const definition = {
+    id: 'ttt',
+    label: 'إكس أو',
+    description: 'تحدٍّ بين عضوين',
+    emoji: '⭕',
+};
+
+function createSession(ownerId) {
+    return {
+        gameId: definition.id,
+        ownerId,
+        playerX: ownerId,
+        playerO: null,
+        board: Array(9).fill(null),
+        turn: 'X',
+        winner: null,
+        score: 0,
+        correctAnswers: 0,
+        finished: false,
+        completionNotified: false,
+    };
+}
+
+function winningLine(board) {
+    const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6],
+    ];
+    return lines.find(([a, b, c]) => board[a] && board[a] === board[b] && board[a] === board[c]) || null;
+}
+
+function handleAction(session, action, userId) {
+    if (session.finished) return { error: 'انتهت هذه اللعبة بالفعل.' };
+
+    if (action === 'ttt-join') {
+        if (userId === session.playerX) return { error: 'أنت بدأت اللعبة كـ X؛ دع عضوًا آخر ينضم.' };
+        if (session.playerO) return { error: 'انضم لاعب آخر بالفعل.' };
+        session.playerO = userId;
+        return { changed: true };
+    }
+
+    if (!action.startsWith('ttt-cell:')) {
+        return { error: 'هذا الإجراء غير متاح للعبة إكس أو.' };
+    }
+
+    if (!session.playerO) return { error: 'انتظر حتى ينضم لاعب ثانٍ.' };
+    if (![session.playerX, session.playerO].includes(userId)) return { error: 'أنت لست أحد لاعبي هذه الجولة.' };
+
+    const currentPlayer = session.turn === 'X' ? session.playerX : session.playerO;
+    if (userId !== currentPlayer) return { error: 'ليس دورك الآن.' };
+
+    const cell = Number(action.split(':')[1]);
+    if (!Number.isInteger(cell) || cell < 0 || cell > 8 || session.board[cell]) {
+        return { error: 'هذا المربع غير متاح.' };
+    }
+
+    session.board[cell] = session.turn;
+    if (winningLine(session.board)) {
+        session.finished = true;
+        session.winner = userId;
+        session.score = 1;
+        session.correctAnswers = 1;
+        return { changed: true, completed: true };
+    }
+
+    if (session.board.every(Boolean)) {
+        session.finished = true;
+        session.winner = null;
+        return { changed: true, completed: true };
+    }
+
+    session.turn = session.turn === 'X' ? 'O' : 'X';
+    return { changed: true };
+}
+
+module.exports = { definition, createSession, winningLine, handleAction };
+
+
+========== FILE: update-images.js ==========
+const fs = require("fs");
+const path = require("path");
+
+const CHARACTERS_FILE =
+    path.join(__dirname, "characters.json");
+
+const API_URL =
+    "https://graphql.anilist.co";
+
+const BACKUP_FILE =
+    path.join(
+        __dirname,
+        `characters.backup-${Date.now()}.json`
+    );
+
+// AniList API مجاني ومتاح بدون API key.
+// الطلبات GraphQL تستخدم POST حسب توثيق AniList.
+const REQUEST_DELAY_MS = 700;
+const RETRIES = 4;
+
+// ==========================================
+// أدوات عامة
+// ==========================================
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function normalize(text) {
+    return String(text ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_\-'.،,؟?!:؛]/g, "")
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/ؤ/g, "و")
+        .replace(/ئ/g, "ي");
+}
+
+function getSearchNames(character) {
+    const names = [];
+
+    const add = value => {
+        if (!value) {
+            return;
+        }
+
+        const text = String(value).trim();
+
+        if (text && !names.includes(text)) {
+            names.push(text);
+        }
+    };
+
+    // الأفضلية للاسم الإنجليزي الرسمي.
+    add(character.answer);
+    add(character.name);
+
+    for (const variant of character.answer_variants || []) {
+        add(variant);
+    }
+
+    return names;
+}
+
+function getResultNames(result) {
+    const names = [];
+    const name = result?.name || {};
+
+    const add = value => {
+        if (value) {
+            names.push(String(value));
+        }
+    };
+
+    add(name.full);
+    add(name.userPreferred);
+    add(name.native);
+
+    for (const alternative of name.alternative || []) {
+        add(alternative);
+    }
+
+    return names;
+}
+
+function exactMatch(result, character) {
+    if (!result) {
+        return false;
+    }
+
+    const targetNames = new Set(
+        getSearchNames(character)
+            .map(normalize)
+            .filter(Boolean)
+    );
+
+    const resultNames =
+        getResultNames(result)
+            .map(normalize)
+            .filter(Boolean);
+
+    return resultNames.some(name =>
+        targetNames.has(name)
+    );
+}
+
+function imageFromResult(result) {
+    return (
+        result?.image?.large ||
+        result?.image?.medium ||
+        null
+    );
+}
+
+// ==========================================
+// استدعاء AniList GraphQL
+// ==========================================
+
+const CHARACTER_QUERY = `
+query ($search: String!) {
+    Page(page: 1, perPage: 10) {
+        characters(search: $search) {
+            id
+            name {
+                first
+                middle
+                last
+                full
+                native
+                alternative
+                userPreferred
+            }
+            image {
+                large
+                medium
+            }
+            siteUrl
+        }
+    }
+}
+`;
+
+async function requestAniList(search) {
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= RETRIES; attempt++) {
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify({
+                    query: CHARACTER_QUERY,
+                    variables: {
+                        search
+                    }
+                })
+            });
+
+            const text = await response.text();
+
+            let data;
+
+            try {
+                data = JSON.parse(text);
+            } catch {
+                throw new Error(
+                    `استجابة غير صالحة من AniList (HTTP ${response.status})`
+                );
+            }
+
+            if (!response.ok) {
+                const message =
+                    data?.errors?.[0]?.message ||
+                    `HTTP ${response.status}`;
+
+                throw new Error(message);
+            }
+
+            if (Array.isArray(data?.errors) && data.errors.length) {
+                throw new Error(
+                    data.errors[0]?.message ||
+                    "AniList GraphQL Error"
+                );
+            }
+
+            return data?.data?.Page?.characters || [];
+        } catch (error) {
+            lastError = error;
+
+            if (attempt === RETRIES) {
+                break;
+            }
+
+            const wait = 1500 * attempt;
+
+            console.log(
+                `⚠️ AniList فشل، إعادة المحاولة بعد ${Math.ceil(wait / 1000)} ثانية...`
+            );
+
+            await sleep(wait);
+        }
+    }
+
+    throw lastError || new Error("AniList request failed");
+}
+
+// ==========================================
+// البحث عن الصورة الصحيحة
+// ==========================================
+
+async function findCharacterImage(character) {
+    const searchNames = getSearchNames(character);
+
+    for (const searchName of searchNames) {
+        const results = await requestAniList(searchName);
+
+        // لا نأخذ أول نتيجة أبدًا.
+        // يجب أن يكون الاسم مطابقًا لأحد الأسماء المعروفة للشخصية.
+        const matched = results.find(result =>
+            exactMatch(result, character)
+        );
+
+        if (matched) {
+            const image = imageFromResult(matched);
+
+            if (image) {
+                return {
+                    image,
+                    matchedName:
+                        matched?.name?.full ||
+                        matched?.name?.userPreferred ||
+                        searchName,
+                    id: matched.id,
+                    url: matched.siteUrl || null
+                };
+            }
+        }
+
+        await sleep(REQUEST_DELAY_MS);
+    }
+
+    return null;
+}
+
+// ==========================================
+// تحديد الشخصيات المطلوب فحصها
+// ==========================================
+
+function getArguments() {
+    const args = process.argv.slice(2);
+
+    const testIndex = args.indexOf("--test");
+
+    if (testIndex !== -1) {
+        const name = args[testIndex + 1];
+
+        if (!name) {
+            throw new Error(
+                `استخدم: node update-images.js --test "Naruto Uzumaki"`
+            );
+        }
+
+        return {
+            mode: "test",
+            name
+        };
+    }
+
+    const limitIndex = args.indexOf("--limit");
+
+    if (limitIndex !== -1) {
+        const value = Number(args[limitIndex + 1]);
+
+        if (!Number.isInteger(value) || value <= 0) {
+            throw new Error(
+                `قيمة --limit غير صحيحة.`
+            );
+        }
+
+        return {
+            mode: "limit",
+            limit: value
+        };
+    }
+
+    return {
+        mode: "all"
+    };
+}
+
+function selectCharacters(characters, options) {
+    if (options.mode === "test") {
+        const target = normalize(options.name);
+
+        return characters
+            .map((character, index) => ({ character, index }))
+            .filter(({ character }) =>
+                getSearchNames(character)
+                    .some(name => normalize(name) === target)
+            );
+    }
+
+    if (options.mode === "limit") {
+        return characters
+            .slice(0, options.limit)
+            .map((character, index) => ({ character, index }));
+    }
+
+    return characters.map((character, index) => ({
+        character,
+        index
+    }));
+}
+
+// ==========================================
+// التشغيل
+// ==========================================
+
+async function main() {
+    if (!fs.existsSync(CHARACTERS_FILE)) {
+        console.error(
+            `❌ لم أجد الملف: ${CHARACTERS_FILE}`
+        );
+        process.exit(1);
+    }
+
+    let characters;
+
+    try {
+        characters = JSON.parse(
+            fs.readFileSync(
+                CHARACTERS_FILE,
+                "utf8"
+            )
+        );
+    } catch (error) {
+        console.error(
+            "❌ characters.json غير صالح:",
+            error.message
+        );
+        process.exit(1);
+    }
+
+    if (!Array.isArray(characters)) {
+        console.error(
+            "❌ characters.json يجب أن يكون Array."
+        );
+        process.exit(1);
+    }
+
+    const options = getArguments();
+    const selected = selectCharacters(characters, options);
+
+    if (!selected.length) {
+        console.error(
+            "❌ لم أجد الشخصية المطلوبة.",
+        );
+        process.exit(1);
+    }
+
+    // النسخة الاحتياطية قبل أول تعديل.
+    fs.copyFileSync(
+        CHARACTERS_FILE,
+        BACKUP_FILE
+    );
+
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+    console.log(
+        "🖼️ Trivia BOT | IMAGE UPDATER"
+    );
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+    console.log(
+        `📚 عدد الشخصيات في الملف: ${characters.length}`
+    );
+    console.log(
+        `🔎 المطلوب فحصه الآن: ${selected.length}`
+    );
+    console.log(
+        "🌐 المصدر: AniList Character API"
+    );
+    console.log(
+        "🚫 لا نستخدم TMDB /search/person ولا صور ممثلين."
+    );
+    console.log(
+        `💾 النسخة الاحتياطية: ${path.basename(BACKUP_FILE)}`
+    );
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+
+    let found = 0;
+    let missing = 0;
+    let failed = 0;
+
+    for (let i = 0; i < selected.length; i++) {
+        const { character, index } = selected[i];
+        const displayName =
+            character.name ||
+            character.answer ||
+            `#${index + 1}`;
+
+        process.stdout.write(
+            `[${i + 1}/${selected.length}] ${displayName} ... `
+        );
+
+        try {
+            const result = await findCharacterImage(character);
+
+            if (result) {
+                // نحفظ صورة الشخصية نفسها.
+                character.image = result.image;
+                character.image_source = "AniList";
+                character.image_anilist_id = result.id;
+                character.image_matched_name = result.matchedName;
+                character.image_source_url = result.url;
+                character.image_status = "found";
+
+                found++;
+
+                console.log(
+                    `✅ ${result.matchedName}`
+                );
+            } else {
+                // لا نترك صورة قديمة يمكن أن تكون خاطئة.
+                character.image = null;
+                character.image_source = null;
+                character.image_anilist_id = null;
+                character.image_matched_name = null;
+                character.image_source_url = null;
+                character.image_status = "not_found";
+
+                missing++;
+
+                console.log(
+                    "❌ لا توجد مطابقة موثوقة"
+                );
+            }
+        } catch (error) {
+            failed++;
+
+            console.log(
+                `⚠️ خطأ: ${error.message}`
+            );
+        }
+
+        // حفظ فوري في وضع الاختبار، وكل 10 شخصيات في الفحص الكامل.
+        if (
+            options.mode === "test" ||
+            (i + 1) % 10 === 0 ||
+            i === selected.length - 1
+        ) {
+            fs.writeFileSync(
+                CHARACTERS_FILE,
+                JSON.stringify(
+                    characters,
+                    null,
+                    2
+                ),
+                "utf8"
+            );
+
+            console.log(
+                `💾 تم حفظ characters.json عند ${i + 1}/${selected.length}`
+            );
+        }
+
+        if (i < selected.length - 1) {
+            await sleep(REQUEST_DELAY_MS);
+        }
+    }
+
+    fs.writeFileSync(
+        CHARACTERS_FILE,
+        JSON.stringify(
+            characters,
+            null,
+            2
+        ),
+        "utf8"
+    );
+
+    console.log("");
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+    console.log(
+        "✅ انتهى تحديث الصور"
+    );
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+    console.log(`🟢 صور موجودة: ${found}`);
+    console.log(`🔴 صور غير موجودة: ${missing}`);
+    console.log(`🟡 أخطاء أثناء الفحص: ${failed}`);
+    console.log(
+        `📦 الملف المحدث: ${path.basename(CHARACTERS_FILE)}`
+    );
+    console.log(
+        `💾 النسخة الاحتياطية: ${path.basename(BACKUP_FILE)}`
+    );
+    console.log(
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    );
+}
+
+main().catch(error => {
+    console.error(
+        "❌ خطأ غير متوقع:",
+        error.message
+    );
+    process.exit(1);
+});
+
+
+========== FILE: whoami.js ==========
+const { EmbedBuilder } = require("discord.js");
+
+const characters = require("./characters.json");
+
+// ==========================================
+// الألعاب النشطة
+// ==========================================
+
+const activeGames = new Map();
+
+// ==========================================
+// تنظيف الإجابات
+// ==========================================
+
+function normalizeAnswer(text) {
+    return String(text ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_\-'.،,؟?!:؛]/g, "")
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/ؤ/g, "و")
+        .replace(/ئ/g, "ي");
+}
+
+function getAllAnswerVariants(character) {
+    return [
+        character?.answer,
+        character?.name,
+        character?.name_ar,
+        ...(Array.isArray(character?.answer_variants)
+            ? character.answer_variants
+            : [])
+    ].filter(Boolean);
+}
+
+function isUniqueShortName(shortName, currentCharacter) {
+    let matches = 0;
+
+    for (const character of characters) {
+        const values = getAllAnswerVariants(character);
+        const parts = new Set();
+
+        for (const value of values) {
+            String(value)
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean)
+                .forEach(part => {
+                    parts.add(normalizeAnswer(part));
+                });
+        }
+
+        if (parts.has(shortName)) {
+            matches++;
+
+            if (matches > 1) {
+                return false;
+            }
+        }
+    }
+
+    if (matches === 1) {
+        return true;
+    }
+
+    return getAllAnswerVariants(currentCharacter).some(value =>
+        String(value)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .some(part => normalizeAnswer(part) === shortName)
+    );
+}
+
+function buildCharacterAnswers(character) {
+    const answers = new Set();
+
+    for (const value of getAllAnswerVariants(character)) {
+        const normalized = normalizeAnswer(value);
+
+        if (normalized) {
+            answers.add(normalized);
+        }
+
+        const parts = String(value)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (parts.length > 1) {
+            for (const part of parts) {
+                const shortName = normalizeAnswer(part);
+
+                if (
+                    shortName.length >= 3 &&
+                    isUniqueShortName(shortName, character)
+                ) {
+                    answers.add(shortName);
+                }
+            }
+        }
+    }
+
+    return answers;
+}
+
+function isCorrectAnswer(input, character) {
+    return buildCharacterAnswers(character).has(
+        normalizeAnswer(input)
+    );
+}
+
+// ==========================================
+// طلب التلميح
+// ==========================================
+
+function isHintRequest(text) {
+    const value = String(text ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/[؟?!.,،]/g, "");
+
+    return [
+        "تلميح",
+        "التلميح",
+        "عطني تلميح",
+        "عطني التلميح",
+        "اعطني تلميح",
+        "اعطني التلميح",
+        "hint"
+    ].includes(value);
+}
+
+// ==========================================
+// طلب شخصية جديدة
+// ==========================================
+
+function isNextRequest(text) {
+    const value = String(text ?? "")
+        .toLowerCase()
+        .trim()
+        .replace(/[؟?!.,،]/g, "");
+
+    return [
+        "التالي",
+        "التالى",
+        "شخصية جديدة",
+        "شخصيه جديده",
+        "next"
+    ].includes(value);
+}
+
+// ==========================================
+// اختيار شخصية
+// ==========================================
+
+function getRandomCharacter(previousCharacter = null) {
+    if (!Array.isArray(characters) || characters.length === 0) {
+        return null;
+    }
+
+    if (characters.length === 1) {
+        return characters[0];
+    }
+
+    let character;
+
+    do {
+        character =
+            characters[
+                Math.floor(Math.random() * characters.length)
+            ];
+    } while (
+        previousCharacter &&
+        character.answer === previousCharacter.answer
+    );
+
+    return character;
+}
+
+// ==========================================
+// بيانات اللعبة
+// ==========================================
+
+function createGameData(channelId, previousCharacter = null) {
+    const character = getRandomCharacter(previousCharacter);
+
+    if (!character) {
+        return null;
+    }
+
+    const image =
+        typeof character.image === "string" &&
+        character.image.trim()
+            ? character.image.trim()
+            : null;
+
+    return {
+        gameId:
+            `${channelId}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+        character,
+        image,
+        hintIndex: 0,
+        startedAt: Date.now(),
+        winner: null
+    };
+}
+
+// ==========================================
+// Embed اللعبة
+// ==========================================
+
+function buildGameEmbed(game) {
+    const firstHint =
+        game.character.hints?.[0] ||
+        "🟢 التلميح 1: حاول معرفة الشخصية من المعلومات المتاحة.";
+
+    const embed =
+        new EmbedBuilder()
+            .setTitle("🕵️ Trivia BOT | من أنا؟")
+            .setDescription(
+                "🎭 **خمن الشخصية!**\n\n" +
+                `${firstHint}\n\n` +
+                "💬 اكتب إجابتك في الشات.\n" +
+                "💡 تريد تلميحًا؟ اكتب **تلميح**\n" +
+                "➡️ تريد شخصية جديدة؟ اكتب **التالي**"
+            )
+            .setColor(0x2B2D42)
+            .setFooter({ text: "Trivia BOT • من أنا؟" })
+            .setTimestamp();
+
+    // الصورة الكبيرة محفوظة مسبقًا داخل characters.json.
+    if (game.image) {
+        embed.setImage(game.image);
+    }
+
+    return embed;
+}
+
+// ==========================================
+// بدء اللعبة
+// ==========================================
+
+async function startWhoAmIGame(interaction) {
+    const channelId = interaction.channel.id;
+
+    if (activeGames.has(channelId)) {
+        return interaction.reply({
+            content:
+                "❌ توجد لعبة **من أنا؟** تعمل بالفعل في هذا الروم.",
+            ephemeral: true
+        });
+    }
+
+    if (!Array.isArray(characters) || characters.length === 0) {
+        return interaction.reply({
+            content:
+                "❌ لا توجد شخصيات داخل characters.json.",
+            ephemeral: true
+        });
+    }
+
+    const game = createGameData(channelId);
+
+    if (!game) {
+        return interaction.reply({
+            content: "❌ تعذر إنشاء اللعبة.",
+            ephemeral: true
+        });
+    }
+
+    activeGames.set(channelId, game);
+
+    console.log(
+        `🎭 Who Am I | ${game.character.name || game.character.answer} | صورة: ${
+            game.image ? "✅ موجودة" : "❌ غير موجودة"
+        }`
+    );
+
+    await interaction.reply({
+        embeds: [buildGameEmbed(game)]
+    });
+}
+
+// ==========================================
+// استقبال رسائل اللعبة
+// ==========================================
+
+async function handleMessage(message) {
+    if (message.author.bot) {
+        return false;
+    }
+
+    const game = activeGames.get(message.channel.id);
+
+    if (!game) {
+        return false;
+    }
+
+    const content = String(message.content || "").trim();
+
+    if (!content || content.startsWith("/")) {
+        return false;
+    }
+
+    // ==========================================
+    // التالي
+    // ==========================================
+
+    if (isNextRequest(content)) {
+        const newGame = createGameData(
+            message.channel.id,
+            game.character
+        );
+
+        if (!newGame) {
+            await message.channel.send({
+                content: "❌ تعذر إنشاء شخصية جديدة."
+            });
+
+            return true;
+        }
+
+        activeGames.set(message.channel.id, newGame);
+
+        console.log(
+            `🎭 Who Am I | ${newGame.character.name || newGame.character.answer} | صورة: ${
+                newGame.image ? "✅ موجودة" : "❌ غير موجودة"
+            }`
+        );
+
+        await message.channel.send({
+            embeds: [buildGameEmbed(newGame)]
+        });
+
+        return true;
+    }
+
+    // ==========================================
+    // تلميح
+    // ==========================================
+
+    if (isHintRequest(content)) {
+        const nextHintIndex = game.hintIndex + 1;
+
+        if (
+            nextHintIndex >= 6 ||
+            !game.character.hints?.[nextHintIndex]
+        ) {
+            await message.channel.send({
+                content:
+                    "🔥 **خلصت كل التلميحات!**\n" +
+                    "💭 حاول تخمن الشخصية أو اكتب **التالي** لشخصية جديدة."
+            });
+
+            return true;
+        }
+
+        game.hintIndex = nextHintIndex;
+
+        const hint = game.character.hints[nextHintIndex];
+
+        const embed =
+            new EmbedBuilder()
+                .setTitle(`💡 التلميح ${nextHintIndex + 1}`)
+                .setDescription(
+                    `${hint}\n\n` +
+                    "💬 **اكتب إجابتك في الشات.**\n" +
+                    "💡 تلميح آخر؟ اكتب **تلميح**\n" +
+                    "➡️ شخصية جديدة؟ اكتب **التالي**"
+                )
+                .setColor(0xFEE75C)
+                .setFooter({ text: "Trivia BOT • من أنا؟" })
+                .setTimestamp();
+
+        if (game.image) {
+            embed.setImage(game.image);
+        }
+
+        await message.channel.send({
+            embeds: [embed]
+        });
+
+        return true;
+    }
+
+    // ==========================================
+    // الإجابة
+    // ==========================================
+
+    if (isCorrectAnswer(content, game.character)) {
+        const winner = message.author;
+
+        game.winner = winner.id;
+
+        const duration = Math.floor(
+            (Date.now() - game.startedAt) / 1000
+        );
+
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+
+        const timeText =
+            minutes > 0
+                ? `${minutes} دقيقة و ${seconds} ثانية`
+                : `${seconds} ثانية`;
+
+        const embed =
+            new EmbedBuilder()
+                .setTitle("🎉 إجابة صحيحة!")
+                .setDescription(
+                    `🏆 الفائز: ${winner}\n\n` +
+                    `🎭 الشخصية: **${game.character.name}**\n` +
+                    `🇸🇦 بالعربي: **${game.character.name_ar}**\n\n` +
+                    `⏱️ الوقت: **${timeText}**\n\n` +
+                    "➡️ اكتب **التالي** للانتقال إلى شخصية جديدة."
+                )
+                .setColor(0x57F287)
+                .setFooter({ text: "Trivia BOT • من أنا؟" })
+                .setTimestamp();
+
+        if (game.image) {
+            embed.setImage(game.image);
+        }
+
+        await message.channel.send({
+            embeds: [embed]
+        });
+
+        return true;
+    }
+
+    return false;
+}
+
+// ==========================================
+// إيقاف اللعبة
+// ==========================================
+
+async function stopWhoAmIGame(interaction) {
+    const game = activeGames.get(interaction.channel.id);
+
+    if (!game) {
+        return interaction.reply({
+            content: "❌ لا توجد لعبة من أنا؟ تعمل حاليًا.",
+            ephemeral: true
+        });
+    }
+
+    activeGames.delete(interaction.channel.id);
+
+    const embed =
+        new EmbedBuilder()
+            .setTitle("🛑 انتهت لعبة من أنا؟")
+            .setDescription(
+                `🎭 الشخصية كانت: **${game.character.name}**\n` +
+                `🇸🇦 بالعربي: **${game.character.name_ar}**`
+            )
+            .setColor(0xED4245)
+            .setTimestamp();
+
+    if (game.image) {
+        embed.setImage(game.image);
+    }
+
+    await interaction.reply({
+        embeds: [embed]
+    });
+}
+
+module.exports = {
+    startWhoAmIGame,
+    handleMessage,
+    stopWhoAmIGame
+};
+
+
+========== FILE: word-scramble\index.js ==========
+'use strict';
+
+const { createMcqGame } = require('../shared/mcqEngine');
+const words = require('./words');
+
+module.exports = createMcqGame({
+    id: 'scramble',
+    label: 'فك الكلمة',
+    description: 'رتّب الحروف واختر الكلمة الصحيحة',
+    emoji: '🔤',
+    mode: 'scramble',
+    questions: words,
+});
+
+
+========== FILE: word-scramble\words.js ==========
+'use strict';
+
+module.exports = [
+    { word: 'PLANET', meaning: 'كوكب' },
+    { word: 'GAMING', meaning: 'ألعاب' },
+    { word: 'ROCKET', meaning: 'صاروخ' },
+    { word: 'TIGER', meaning: 'نمر' },
+    { word: 'OCEAN', meaning: 'محيط' },
+    { word: 'PUZZLE', meaning: 'لغز' },
+    { word: 'CASTLE', meaning: 'قلعة' },
+    { word: 'BRIDGE', meaning: 'جسر' },
+    { word: 'FOREST', meaning: 'غابة' },
+    { word: 'ORANGE', meaning: 'برتقال' },
+    { word: 'SILVER', meaning: 'فضة' },
+    { word: 'ISLAND', meaning: 'جزيرة' },
+    { word: 'FRIEND', meaning: 'صديق' },
+    { word: 'DRAGON', meaning: 'تنين' },
+    { word: 'WINDOW', meaning: 'نافذة' },
+    { word: 'GARDEN', meaning: 'حديقة' },
+    { word: 'MIRROR', meaning: 'مرآة' },
+    { word: 'THUNDER', meaning: 'رعد' },
+];
+

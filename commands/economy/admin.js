@@ -1,0 +1,12 @@
+const { SlashCommandBuilder } = require('discord.js');
+const handler = require('../../systems/economy/admin');
+const data = new SlashCommandBuilder().setName('daily-admin').setDescription('إدارة رصيد الاقتصاد (مالك البوت فقط)')
+  .addSubcommand(s => s.setName('add').setDescription('إضافة عملات لمستخدم')
+    .addUserOption(o => o.setName('user').setDescription('المستخدم').setRequired(true))
+    .addIntegerOption(o => o.setName('amount').setDescription('الكمية').setMinValue(1).setRequired(true)))
+  .addSubcommand(s => s.setName('set').setDescription('تعيين رصيد مستخدم')
+    .addUserOption(o => o.setName('user').setDescription('المستخدم').setRequired(true))
+    .addIntegerOption(o => o.setName('amount').setDescription('الرصيد الجديد').setMinValue(0).setRequired(true)))
+  .addSubcommand(s => s.setName('reset').setDescription('تصفير بيانات اقتصاد مستخدم')
+    .addUserOption(o => o.setName('user').setDescription('المستخدم').setRequired(true)));
+module.exports = { data, execute: handler.execute };

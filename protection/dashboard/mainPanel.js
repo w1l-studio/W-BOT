@@ -1,0 +1,36 @@
+'use strict';
+
+const { EmbedBuilder } = require('discord.js');
+const { buildFeatureToggleRows, FEATURES } = require('./components');
+
+const LABELS = {
+  antiNuke: 'مكافحة التخريب الإداري',
+  antiSpam: 'مكافحة السبام',
+  antiRaid: 'مكافحة الهجمات الجماعية',
+  antiLink: 'حماية الروابط',
+  antiRole: 'حماية الرتب والصلاحيات',
+  antiChannel: 'مراقبة القنوات',
+  antiWebhook: 'مراقبة Webhooks',
+};
+
+function buildMainPanel(status) {
+  const embed = new EmbedBuilder()
+    .setColor(status.emergency ? 0xED4245 : 0x5865F2)
+    .setTitle('🛡️ Trivia BOT • مركز الحماية')
+    .setDescription([
+      `**حالة النظام:** ${status.enabled ? '🟢 يعمل' : '🔴 متوقف'}`,
+      `**وضع التشغيل:** ${status.operatingMode === 'enforce' ? '⚠️ تنفيذ الإجراءات' : '👁️ مراقبة فقط'}`,
+      `**وضع الطوارئ:** ${status.emergency ? '🚨 مفعّل' : '✅ متوقف'}${status.emergency ? ` • ${status.emergencyChannelCount} قناة تحت الإغلاق` : ''}`,
+      `${status.failedChannelIds?.length ? `⚠️ تعذّر تعديل ${status.failedChannelIds.length} قناة؛ راجع /security status.` : ''}`,
+      `**روم السجلات:** ${status.logChannelId ? `<#${status.logChannelId}>` : 'غير محدد'}`,
+      `**القائمة الموثوقة:** ${status.whitelistUsers} عضو • ${status.whitelistRoles} رتبة`,
+      '',
+      'وضع المراقبة يسجل الحالات دون حذف رسائل أو تنفيذ عقوبات تلقائية. فعّل وضع التنفيذ فقط بعد الاختبار.',
+    ].join('\n'))
+    .addFields(FEATURES.map((key) => ({ name: LABELS[key], value: status.features[key] ? '🟢 مفعّل' : '🔴 متوقف', inline: true })))
+    .setFooter({ text: 'Trivia Security • لوحة خاصة بالإدارة' })
+    .setTimestamp();
+  return { embeds: [embed], components: buildFeatureToggleRows(status) };
+}
+
+module.exports = { buildMainPanel, LABELS };

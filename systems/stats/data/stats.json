@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-19T19:37:07.423Z",
+  "guilds": {
+    "1551431706731479199": {
+      "members": {
+        "joins": 7,
+        "leaves": 6,
+        "daily": {
+          "2026-10-16": {
+            "joins": 1,
+            "leaves": 0,
+            "memberCount": 33
+          },
+          "2026-10-17": {
+            "joins": 2,
+            "leaves": 1,
+            "memberCount": 41
+          },
+          "2026-10-18": {
+            "joins": 2,
+            "leaves": 1,
+            "memberCount": 42
+          },
+          "2026-10-19": {
+            "joins": 2,
+            "leaves": 4,
+            "memberCount": 47
+          }
+        },
+        "snapshots": {
+          "2026-10-16": 33,
+          "2026-10-17": 41,
+          "2026-10-18": 42,
+          "2026-10-19": 47
+        }
+      },
+      "messages": {
+        "total": 67,
+        "daily": {
+          "2026-10-14": {
+            "total": 11,
+            "channels": {
+              "1552283128112881714": 11
+            },
+            "users": {
+              "1487388575329681570": 11
+            },
+            "hours": {
+              "21": 11
+            }
+          },
+          "2026-10-15": {
+            "total": 47,
+            "channels": {
+              "1552283128112881714": 47
+            },
+            "users": {
+              "1487388575329681570": 47
+            },
+            "hours": {
+              "14": 3,
+              "15": 6,
+              "19": 3,
+              "01": 6,
+              "02": 2,
+              "03": 4,
+              "04": 11,
+              "05": 10,
+              "06": 2
+            }
+          },
+          "2026-10-16": {
+            "total": 4,
+            "channels": {
+              "1551445284490449016": 2,
+              "1552283128112881714": 2
+            },
+            "users": {
+              "1487388575329681570": 4
+            },
+            "hours": {
+              "19": 4
+            }
+          },
+          "2026-10-17": {
+            "total": 1,
+            "channels": {
+              "1552283128112881714": 1
+            },
+            "users": {
+              "1487388575329681570": 1
+            },
+            "hours": {
+              "20": 1
+            }
+          },
+          "2026-10-19": {
+            "total": 4,
+            "channels": {
+              "1552283128112881714": 2,
+              "1551445284490449016": 2
+            },
+            "users": {
+              "1487388575329681570": 3,
+              "1459281184587645061": 1
+            },
+            "hours": {
+              "12": 2,
+              "16": 2
+            }
+          }
+        }
+      },
+      "games": {
+        "totalSessions": 0,
+        "totalAnswers": 0,
+        "totalCorrect": 0,
+        "totalWins": 0,
+        "byGame": {},
+        "daily": {}
+      },
+      "economy": {
+        "earned": 0,
+        "spent": 0,
+        "transfers": 0,
+        "daily": {},
+        "users": {}
+      },
+      "users": {
+        "1487388575329681570": {
+          "messages": 66,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": "2026-10-19T16:36:21.373Z",
+          "joinedAt": null,
+          "leftAt": null,
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1545873541633806451": {
+          "messages": 0,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": null,
+          "joinedAt": "2026-10-16T12:48:31.405Z",
+          "leftAt": null,
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1518361849387684092": {
+          "messages": 0,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": null,
+          "joinedAt": "2026-10-18T00:03:56.942Z",
+          "leftAt": "2026-10-17T22:42:08.977Z",
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1561312016562520134": {
+          "messages": 0,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": null,
+          "joinedAt": "2026-10-19T19:37:05.999Z",
+          "leftAt": "2026-10-19T19:37:06.668Z",
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1459281184587645061": {
+          "messages": 1,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": "2026-10-19T16:06:31.518Z",
+          "joinedAt": null,
+          "leftAt": null,
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1561797734070231153": {
+          "messages": 0,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": null,
+          "joinedAt": "2026-10-19T18:46:58.426Z",
+          "leftAt": "2026-10-19T18:55:32.581Z",
+          "bestStreak": 0,
+          "byGame": {}
+        },
+        "1560665773658083540": {
+          "messages": 0,
+          "gamesPlayed": 0,
+          "answers": 0,
+          "correctAnswers": 0,
+          "wins": 0,
+          "lastActiveAt": null,
+          "joinedAt": null,
+          "leftAt": "2026-10-19T19:07:31.293Z",
+          "bestStreak": 0,
+          "byGame": {}
+        }
+      },
+      "channels": {
+        "1552283128112881714": 63,
+        "1551445284490449016": 4
+      }
+    }
+  }
+}
